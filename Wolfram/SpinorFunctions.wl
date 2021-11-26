@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-BeginPackage["SpinorOperations`"]
+BeginPackage["SpinorFunctions`"]
 
 
 (* ::Section:: *)
