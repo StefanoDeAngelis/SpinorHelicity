@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-BeginPackage["DdimFunctions`"]
+BeginPackage["DdimFunctions`",{"YoungSymm`"}]
 
 
 (* ::Section:: *)
@@ -57,7 +57,7 @@ RelabelDummies[OptionsPattern[]][exp_] :=
 			];
 		newdummies = Complement[newdummies, Complement[indices, dummies]][[
 			 ;; Length @ dummies]];
-		ReplaceAll[exp, Thread[Rule[dummies, newdummies]]]
+		YoungSymm`ReLabel[exp, dummies, newdummies]
 	]
 
 
@@ -93,7 +93,7 @@ Relabel[OptionsPattern[]][exp_, n_:0] :=
 				{i, Length @ indices}
 			];
 		indices = SortBy[indices, MemberQ[dummies, #]&];
-		ReplaceAll[exp, Thread[Rule[indices, newindices]]]
+		YoungSymm`ReLabel[exp, indices, newindices]
 	]
 
 
@@ -125,7 +125,7 @@ FromDotIndices[OptionsPattern[]][exp_Times, n_:0] :=
 				,
 				#
 			]& /@ (Flatten @ ReplaceAll[List @@ Relabel["Indices" -> OptionValue[
-				"Indices"]][exp, n], Power[x_, y_] :> ConstantArray[x, y]])
+				"Indices"]][exp, n], Power[x_(*?(MatchQ[Head[#],DotProduct]&)*), y_] :> ConstantArray[x, y]])
 		]
 
 
