@@ -74,7 +74,7 @@ Metric /: Metric[\[Nu]_,\[Rho]_] EpsilonPol[a_][\[Mu]___,\[Nu]_,\[Sigma]___] := 
 (*Polarisation tensor*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Boxes*)
 
 
@@ -152,7 +152,7 @@ FieldStr /: FieldStr[a_][\[Mu]_,\[Nu]_] FieldStr[a_][\[Rho]_,\[Sigma]_] := Riema
 
 
 (* ::Subsection:: *)
-(*Field strength tensor*)
+(*Riemann tensor*)
 
 
 (* ::Subsubsection::Closed:: *)
@@ -173,7 +173,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "riemann" -> RiemannBox["\[SelectionPlaceholder]"]["\[Placeholder]","\[Placeholder]","\[Placeholder]","\[Placeholder]"]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
@@ -183,7 +183,8 @@ Riemann /: MakeBoxes[Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_], StandardForm 
 Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_] /; \[Not]OrderedQ[{\[Mu],\[Nu]}] := - Riemann[a][\[Nu],\[Mu],\[Rho],\[Sigma]]
 Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_] /; \[Not]OrderedQ[{\[Rho],\[Sigma]}] := - Riemann[a][\[Mu],\[Nu],\[Sigma],\[Rho]]
 Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_] /; \[Not]DuplicateFreeQ[{\[Mu],\[Nu],\[Rho],\[Sigma]}] := 0
-Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_] /; \[Not]OrderedQ[{\[Mu],\[Rho]}] := Riemann[a][\[Rho],\[Sigma],\[Mu],\[Nu]]
+Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_] /; \[Not]OrderedQ[{\[Nu],\[Sigma]}] := Riemann[a][\[Rho],\[Sigma],\[Mu],\[Nu]]
+Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_] /; (OrderedQ[{\[Rho],\[Mu]}]&&OrderedQ[{\[Rho],\[Nu]}]) := - Riemann[a][\[Nu],\[Rho],\[Mu],\[Sigma]] - Riemann[a][\[Rho],\[Mu],\[Nu],\[Sigma]]
 
 Riemann /: Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_] Momentum[a_][\[Alpha]_] /; MemberQ[{\[Mu],\[Nu],\[Rho],\[Sigma]},\[Alpha]] := 0
 Riemann /: Riemann[a_][\[Mu]1_,\[Nu]1_,\[Rho]1_,\[Sigma]1_] Riemann[a_][\[Mu]2_,\[Nu]2_,\[Rho]2_,\[Sigma]2_] /; \[Not]DuplicateFreeQ[{\[Mu]1,\[Nu]1,\[Rho]1,\[Sigma]1,\[Mu]2,\[Nu]2,\[Rho]2,\[Sigma]2}] := 0
