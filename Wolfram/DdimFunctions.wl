@@ -11,6 +11,9 @@ RelabelDummies::usage = "..."
 Relabel::usage = "..."
 FromDotIndices::usage = "..."
 
+CombinePolarisations::usage = "..."
+DecombinePolarisations::usage = "..."
+
 
 (* ::Section:: *)
 (*D-dimensional Functions*)
@@ -110,9 +113,9 @@ FromDotIndices[OptionsPattern[]][exp_Plus,n_:0] :=
 FromDotIndices[OptionsPattern[]][exp_Times, n_:0] :=
 	Times @@
 		Module[{i = 1 + n},
-			i = i + Length @ Join[Cases[exp, HoldPattern[DdimVariables`EpsilonPol[
+			i = i + Length @ Join[Cases[Numerator[exp], HoldPattern[DdimVariables`EpsilonPol[
 				_][h__]] | HoldPattern[DdimVariables`FieldStr[_][h__]] | HoldPattern[
-				DdimVariables`Riemann[_][h__]] :> h, \[Infinity]], Cases[exp, HoldPattern[DdimVariables`Momentum[
+				DdimVariables`Riemann[_][h__]] :> h, \[Infinity]], Cases[Numerator[exp], HoldPattern[DdimVariables`Momentum[
 				_][h_]] :> h, \[Infinity]]];
 			If[MatchQ[#, DdimVariables`DotProduct[_, _]],
 				If[OptionValue["Indices"] == "Greek",
@@ -125,8 +128,17 @@ FromDotIndices[OptionsPattern[]][exp_Times, n_:0] :=
 				,
 				#
 			]& /@ (Flatten @ ReplaceAll[List @@ Relabel["Indices" -> OptionValue[
-				"Indices"]][exp, n], Power[x_(*?(MatchQ[Head[#],DotProduct]&)*), y_] :> ConstantArray[x, y]])
-		]
+				"Indices"]][Numerator[exp], n], Power[x_(*?(MatchQ[Head[#],DotProduct]&)*), y_] :> ConstantArray[x, y]])
+		]/Denominator[exp]
+
+
+(* ::Subsection:: *)
+(*Combine Polarisation Vectors*)
+
+
+CombinePolarisations[exp_]:=ReplaceRepeated[exp, {DdimVariables`EpsilonPol[a_][\[Mu]_] DdimVariables`EpsilonPol[a_][\[Nu]_] :> DdimVariables`EpsilonPol[a][\[Mu],\[Nu]],DdimVariables`FieldStr[a_][\[Mu]_,\[Nu]_] DdimVariables`FieldStr[a_][\[Rho]_,\[Sigma]_] :> DdimVariables`Riemann[a][\[Mu],\[Nu],\[Rho],\[Sigma]]}]
+
+DecombinePolarisations[exp_]:=ReplaceRepeated[exp, {DdimVariables`EpsilonPol[a_][\[Mu]_,\[Nu]_]:>DdimVariables`EpsilonPol[a][\[Mu]] DdimVariables`EpsilonPol[a][\[Nu]],DdimVariables`Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_]:>DdimVariables`FieldStr[a][\[Mu],\[Nu]] DdimVariables`FieldStr[a][\[Rho],\[Sigma]]}]
 
 
 (* ::Subsection:: *)

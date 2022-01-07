@@ -65,6 +65,7 @@ Metric /: Metric[\[Mu]_,\[Nu]_] Metric[\[Nu]_,\[Rho]_] := Metric[\[Mu],\[Rho]]
 Metric /: Metric[\[Nu]_,\[Mu]_] Metric[\[Nu]_,\[Rho]_] := Metric[\[Mu],\[Rho]]
 
 Metric /: Metric[\[Mu]_,\[Nu]_] Momentum[a_][\[Nu]_] := Momentum[a][\[Mu]]
+Metric /: Metric[\[Mu]_,\[Nu]_] Momentum[a_][\[Mu]_] := Momentum[a][\[Nu]]
 
 Metric /: Metric[\[Mu]_,\[Nu]_] EpsilonPol[a_][\[Rho]___,\[Nu]_,\[Sigma]___] := EpsilonPol[a][\[Rho],\[Mu],\[Sigma]]
 Metric /: Metric[\[Nu]_,\[Rho]_] EpsilonPol[a_][\[Mu]___,\[Nu]_,\[Sigma]___] := EpsilonPol[a][\[Mu],\[Rho],\[Sigma]]
@@ -98,7 +99,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "eps" -> EpsilonPolBox["\[SelectionPlaceholder]"]["\[Placeholder]"]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
@@ -111,7 +112,6 @@ EpsilonPol[a_][\[Mu]_,\[Mu]_] := 0
 
 EpsilonPol /: EpsilonPol[a_][\[Mu]__] Momentum[a_][\[Nu]_] /; MemberQ[{\[Mu]},\[Nu]] := 0
 EpsilonPol /: EpsilonPol[a_][\[Mu]__] EpsilonPol[a_][\[Nu]__] /; \[Not]MatchQ[Complement[{\[Mu]},{\[Nu]}],{\[Mu]}] := 0
-EpsilonPol /: EpsilonPol[a_][\[Mu]_] EpsilonPol[a_][\[Nu]_] := EpsilonPol[a][\[Mu],\[Nu]] (*Double-copy*)
 
 
 (* ::Subsection:: *)
@@ -148,7 +148,6 @@ FieldStr[a_][\[Mu]_,\[Mu]_] := 0
 
 FieldStr /: FieldStr[a_][\[Mu]_,\[Nu]_] Momentum[a_][\[Rho]_] /; MemberQ[{\[Mu],\[Nu]},\[Rho]] := 0
 FieldStr /: FieldStr[a_][\[Mu]_,\[Nu]_] FieldStr[a_][\[Rho]_,\[Sigma]_] /; \[Not]DuplicateFreeQ[{\[Mu],\[Nu],\[Rho],\[Sigma]}] := 0
-FieldStr /: FieldStr[a_][\[Mu]_,\[Nu]_] FieldStr[a_][\[Rho]_,\[Sigma]_] := Riemann[a][\[Mu],\[Nu],\[Rho],\[Sigma]]
 
 
 (* ::Subsection:: *)
@@ -173,7 +172,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "riemann" -> RiemannBox["\[SelectionPlaceholder]"]["\[Placeholder]","\[Placeholder]","\[Placeholder]","\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
@@ -217,7 +216,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "mom" -> MomentumBox["\[SelectionPlaceholder]"]["\[Placeholder]"]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
@@ -225,6 +224,7 @@ Momentum /: MakeBoxes[Momentum[a_][\[Mu]_], StandardForm | TraditionalForm] := M
 Momentum /: MakeBoxes[Momentum[a_], StandardForm | TraditionalForm] := MomBox[ToBoxes[a]]
 
 Momentum /: Momentum[a_][\[Nu]_] Momentum[a_][\[Nu]_] := Mass[a]^2
+Momentum /: Momentum[a_][\[Nu]_]^2 := Mass[a]^2
 
 Momentum[a_][\[Mu]_] /; MatchQ[Head[a],Times]&&a[[1]]==-1 := - Momentum[-a][\[Mu]]
 Momentum[a_][\[Mu]_] /; a < 0 := - Momentum[-a][\[Mu]]
@@ -234,18 +234,18 @@ Momentum[a_][\[Mu]_] /; a < 0 := - Momentum[-a][\[Mu]]
 (*Masses*)
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Boxes*)
 
 
 MassBox[label_]:=
 	TemplateBox[{label},"Mass",
-		DisplayFunction->(SubscriptBox["m",RowBox[{#1}]]&),
+		DisplayFunction->(SubscriptBox["M",RowBox[{#1}]]&),
 		InterpretationFunction -> (RowBox[{"Mass","[",RowBox[{#1}],"]"}]&)
 	]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
@@ -312,7 +312,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "dotee" -> DotProduct[EpsilonPol["\[SelectionPlaceholder]"],EpsilonPol["\[Placeholder]"]]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 

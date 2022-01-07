@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-BeginPackage["HelicityVariables`",{"DdimVariables`"}]
+BeginPackage["HelicityVariables`"]
 
 
 (* ::Section:: *)
@@ -18,6 +18,9 @@ SpinorMV::usage = "..."
 EpsilonSpin::usage = "..."
 EpsilonLorentzDotted::usage = "..."
 EpsilonLorentzUndotted::usage = "..."
+
+MassUntilde::usage = "..."
+MassTilde::usage = "..."
 
 $up::usage = "..."
 $down::usage = "..."
@@ -47,6 +50,8 @@ Begin["`Private`"]
 (*- error for wrong spin indices contractions and then identities should be simplified.*)
 (*- finish the gluing of chains with angle/angle or square/square LG contractions. DONE!*)
 (*- define a trace from AngleSquareChain and a simplification for AngleAngleChain/SquareSquareChain when the first and the last have LG indices contracted.*)
+(*- properties of spinor should be given as function, maybe. This could slow down the code.*)
+(*-when two identical momenta are adjacent in a chain, the expression should simplify*)
 
 
 (* ::Subsection:: *)
@@ -236,7 +241,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "Sddd" -> SpinorDottedMVBox[$down,$down]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
@@ -257,9 +262,9 @@ SpinorMV[$down] /: MakeBoxes[SpinorMV[$down][a_,J_], StandardForm | TraditionalF
 SpinorMV[] /: MakeBoxes[SpinorMV[][a_], StandardForm | TraditionalForm] := SpinorMVBox[][ToBoxes[a]]
 
 
-SpinorDottedMV /: SpinorDottedMV[pos1_,$down][i_,a_,I_] SpinorDottedMV[pos2_,$up][i_,b_,I_] := Mass[i] EpsilonLorentzDotted[pos1,pos2][a,b]
+SpinorDottedMV /: SpinorDottedMV[pos1_,$down][i_,a_,I_] SpinorDottedMV[pos2_,$up][i_,b_,I_] := MassTilde[i] EpsilonLorentzDotted[pos1,pos2][a,b]
 
-SpinorUndottedMV /: SpinorUndottedMV[pos1_,$up][i_,a_,I_] SpinorUndottedMV[pos2_,$down][i_,b_,I_] := Mass[i] EpsilonLorentzUndotted[pos1,pos2][a,b]
+SpinorUndottedMV /: SpinorUndottedMV[pos1_,$up][i_,a_,I_] SpinorUndottedMV[pos2_,$down][i_,b_,I_] := MassUntilde[i] EpsilonLorentzUndotted[pos1,pos2][a,b]
 
 
 SpinorUndottedMV /: SpinorUndottedMV[$up,pos_][l1_,a_,J_] SpinorUndottedML[$down][l2_,a_] := - AngleB[SpinorML[l2],SpinorMV[pos][l1,J]];
@@ -586,23 +591,23 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "abMdMd" -> AngleBracketBox[SpinorMVBox[$down]["\[SelectionPlaceholder]","\[Placeholder]"], SpinorMVBox[$down]["\[Placeholder]","\[Placeholder]"]]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
 AngleB /: MakeBoxes[AngleB[a_, b_], StandardForm | TraditionalForm] := AngleBracketBox[ToBoxes[a], ToBoxes[b]]
 
-AngleB /: HoldPattern[AngleB[a_,SpinorMV[$up][i_,I_]] AngleB[b_,SpinorMV[$down][i_,I_]]] := Mass[i] AngleB[a,b]
-AngleB /: HoldPattern[AngleB[SpinorMV[$up][i_,I_],a_] AngleB[b_,SpinorMV[$down][i_,I_]]] := -Mass[i] AngleB[a,b]
-AngleB /: HoldPattern[AngleB[a_,SpinorMV[$up][i_,I_]] AngleB[SpinorMV[$down][i_,I_],b_]] := -Mass[i] AngleB[a,b]
-AngleB /: HoldPattern[AngleB[SpinorMV[$up][i_,I_],a_] AngleB[SpinorMV[$down][i_,I_],b_]] := Mass[i] AngleB[a,b]
+AngleB /: HoldPattern[AngleB[a_,SpinorMV[$up][i_,I_]] AngleB[b_,SpinorMV[$down][i_,I_]]] := MassUntilde[i] AngleB[a,b]
+AngleB /: HoldPattern[AngleB[SpinorMV[$up][i_,I_],a_] AngleB[b_,SpinorMV[$down][i_,I_]]] := -MassUntilde[i] AngleB[a,b]
+AngleB /: HoldPattern[AngleB[a_,SpinorMV[$up][i_,I_]] AngleB[SpinorMV[$down][i_,I_],b_]] := -MassUntilde[i] AngleB[a,b]
+AngleB /: HoldPattern[AngleB[SpinorMV[$up][i_,I_],a_] AngleB[SpinorMV[$down][i_,I_],b_]] := MassUntilde[i] AngleB[a,b]
 
 
 AngleB[a_, b_] /; (a == b) := 0
 AngleB[a_, b_] /; \[Not]OrderedQ[{a,b}] := -AngleB[b, a]
 
 
-AngleB[SpinorMV[pos1_][a_,I_],SpinorMV[pos2_][a_,J_]]:=EpsilonSpin[pos1,pos2][I,J]*Mass[a]
+AngleB[SpinorMV[pos1_][a_,I_],SpinorMV[pos2_][a_,J_]]:=EpsilonSpin[pos1,pos2][I,J]*MassUntilde[a]
 
 
 AngleB[a_Plus,b_] := Plus@@ (AngleB[#,b] &/@ List@@ a)
@@ -618,14 +623,14 @@ AngleB /: HoldPattern[AngleB[SpinorMV[pos1_][i_,I_],a_]SquareSquareChain[b_,list
 AngleB /: HoldPattern[AngleB[a_,SpinorMV[pos1_][i_,I_]] AngleSquareChain[b_,list_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$up],-1,1]*AngleAngleChain[b,Append[list,i],a]
 AngleB /: HoldPattern[AngleB[SpinorMV[pos1_][i_,I_],a_] AngleSquareChain[b_,list_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$up],1,-1]*AngleAngleChain[b,Append[list,i],a]
 
-AngleB /: HoldPattern[AngleB[a_,SpinorMV[pos1_][i_,I_]]AngleSquareChain[SpinorMV[pos2_][i_,I_],list_List,b_]] := If[MatchQ[pos1,$down],1,-1]Mass[i]AngleSquareChain[a,list,b]
-AngleB /: HoldPattern[AngleB[SpinorMV[pos1_][i_,I_],a_]AngleSquareChain[SpinorMV[pos2_][i_,I_],list_List,b_]] := If[MatchQ[pos1,$down],-1,1]Mass[i]AngleSquareChain[a,list,b]
+AngleB /: HoldPattern[AngleB[a_,SpinorMV[pos1_][i_,I_]]AngleSquareChain[SpinorMV[pos2_][i_,I_],list_List,b_]] := If[MatchQ[pos1,$down],1,-1]MassUntilde[i]AngleSquareChain[a,list,b]
+AngleB /: HoldPattern[AngleB[SpinorMV[pos1_][i_,I_],a_]AngleSquareChain[SpinorMV[pos2_][i_,I_],list_List,b_]] := If[MatchQ[pos1,$down],-1,1]MassUntilde[i]AngleSquareChain[a,list,b]
 
 
-AngleB /: HoldPattern[AngleB[a_,SpinorMV[pos1_][i_,I_]]AngleAngleChain[SpinorMV[pos2_][i_,I_],list_List,b_]] := If[MatchQ[pos1,$down],1,-1]Mass[i]AngleAngleChain[a,list,b]
-AngleB /: HoldPattern[AngleB[SpinorMV[pos1_][i_,I_],a_]AngleAngleChain[SpinorMV[pos2_][i_,I_],list_List,b_]] := If[MatchQ[pos1,$down],-1,1]Mass[i]AngleAngleChain[a,list,b]
-AngleB /: HoldPattern[AngleB[SpinorMV[pos1_][i_,I_],a_]AngleAngleChain[b_,list_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$down],-1,1]Mass[i]AngleAngleChain[b,list,a]
-AngleB /: HoldPattern[AngleB[a_,SpinorMV[pos1_][i_,I_]]AngleAngleChain[b_,list_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$down],1,-1]Mass[i]AngleAngleChain[b,list,a]
+AngleB /: HoldPattern[AngleB[a_,SpinorMV[pos1_][i_,I_]]AngleAngleChain[SpinorMV[pos2_][i_,I_],list_List,b_]] := If[MatchQ[pos1,$down],1,-1]MassUntilde[i]AngleAngleChain[a,list,b]
+AngleB /: HoldPattern[AngleB[SpinorMV[pos1_][i_,I_],a_]AngleAngleChain[SpinorMV[pos2_][i_,I_],list_List,b_]] := If[MatchQ[pos1,$down],-1,1]MassUntilde[i]AngleAngleChain[a,list,b]
+AngleB /: HoldPattern[AngleB[SpinorMV[pos1_][i_,I_],a_]AngleAngleChain[b_,list_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$down],-1,1]MassUntilde[i]AngleAngleChain[b,list,a]
+AngleB /: HoldPattern[AngleB[a_,SpinorMV[pos1_][i_,I_]]AngleAngleChain[b_,list_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$down],1,-1]MassUntilde[i]AngleAngleChain[b,list,a]
 
 
 (* ::Subsection:: *)
@@ -668,16 +673,16 @@ SetOptions[EvaluationNotebook[],
 
 SquareB /: MakeBoxes[SquareB[a_, b_], StandardForm | TraditionalForm] := SquareBracketBox[ToBoxes[a], ToBoxes[b]]
 
-SquareB /: HoldPattern[SquareB[a_,SpinorMV[$up][i_,I_]] SquareB[b_,SpinorMV[$down][i_,I_]]] := Mass[i] SquareB[a,b]
-SquareB /: HoldPattern[SquareB[SpinorMV[$up][i_,I_],a_] SquareB[b_,SpinorMV[$down][i_,I_]]] := -Mass[i] SquareB[a,b]
-SquareB /: HoldPattern[SquareB[a_,SpinorMV[$up][i_,I_]] SquareB[SpinorMV[$down][i_,I_],b_]] := -Mass[i] SquareB[a,b]
-SquareB /: HoldPattern[SquareB[SpinorMV[$up][i_,I_],a_] SquareB[SpinorMV[$down][i_,I_],b_]] := Mass[i] SquareB[a,b]
+SquareB /: HoldPattern[SquareB[a_,SpinorMV[$up][i_,I_]] SquareB[b_,SpinorMV[$down][i_,I_]]] := MassTilde[i] SquareB[a,b]
+SquareB /: HoldPattern[SquareB[SpinorMV[$up][i_,I_],a_] SquareB[b_,SpinorMV[$down][i_,I_]]] := -MassTilde[i] SquareB[a,b]
+SquareB /: HoldPattern[SquareB[a_,SpinorMV[$up][i_,I_]] SquareB[SpinorMV[$down][i_,I_],b_]] := -MassTilde[i] SquareB[a,b]
+SquareB /: HoldPattern[SquareB[SpinorMV[$up][i_,I_],a_] SquareB[SpinorMV[$down][i_,I_],b_]] := MassTilde[i] SquareB[a,b]
 
 
 SquareB[a_, b_] /; (a == b) := 0
 SquareB[a_, b_] /; \[Not]OrderedQ[{a, b}] := -SquareB[b, a]
 
-SquareB[SpinorMV[pos1_][a_,I_],SpinorMV[pos2_][a_,J_]]:=EpsilonSpin[pos1,pos2][I,J]*Mass[a]
+SquareB[SpinorMV[pos1_][a_,I_],SpinorMV[pos2_][a_,J_]]:=EpsilonSpin[pos1,pos2][I,J]*MassTilde[a]
 
 SquareB[a_Plus,b_] :=Plus@@ (SquareB[#,b] &/@ List@@a)
 SquareB[a_,b_Plus] :=Plus@@ (SquareB[a,#] &/@ List@@b)
@@ -698,14 +703,14 @@ SquareB /: HoldPattern[SquareB[SpinorMV[pos1_][i_,I_],a_]AngleAngleChain[b_,list
 SquareB /: HoldPattern[SquareB[a_,SpinorMV[pos1_][i_,I_]] AngleSquareChain[SpinorMV[pos2_][i_,I_],list_List,b_]] := If[MatchQ[pos1,$down],1,-1]*SquareSquareChain[a,Prepend[list,i],b]
 SquareB /: HoldPattern[SquareB[SpinorMV[pos1_][i_,I_],a_] AngleSquareChain[SpinorMV[pos2_][i_,I_],list_List,b_]] := If[MatchQ[pos1,$down],-1,1]*SquareSquareChain[a,Prepend[list,i],b]
 
-SquareB /: HoldPattern[SquareB[SpinorMV[pos1_][i_,I_],a_]AngleSquareChain[b_,list_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$down],-1,1]Mass[i]AngleSquareChain[b,list,a]
-SquareB /: HoldPattern[SquareB[a_,SpinorMV[pos1_][i_,I_]]AngleSquareChain[b_,list_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$down],1,-1]Mass[i]AngleSquareChain[b,list,a]
+SquareB /: HoldPattern[SquareB[SpinorMV[pos1_][i_,I_],a_]AngleSquareChain[b_,list_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$down],-1,1]MassTilde[i]AngleSquareChain[b,list,a]
+SquareB /: HoldPattern[SquareB[a_,SpinorMV[pos1_][i_,I_]]AngleSquareChain[b_,list_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$down],1,-1]MassTilde[i]AngleSquareChain[b,list,a]
 
 
-SquareB /: HoldPattern[SquareB[a_,SpinorMV[pos1_][i_,I_]]SquareSquareChain[SpinorMV[pos2_][i_,I_],list_List,b_]] := If[MatchQ[pos1,$down],1,-1]Mass[i]SquareSquareChain[a,list,b]
-SquareB /: HoldPattern[SquareB[SpinorMV[pos1_][i_,I_],a_]SquareSquareChain[SpinorMV[pos2_][i_,I_],list_List,b_]] := If[MatchQ[pos1,$down],-1,1]Mass[i]SquareSquareChain[a,list,b]
-SquareB /: HoldPattern[SquareB[SpinorMV[pos1_][i_,I_],a_]SquareSquareChain[b_,list_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$down],-1,1]Mass[i]SquareSquareChain[b,list,a]
-SquareB /: HoldPattern[SquareB[a_,SpinorMV[pos1_][i_,I_]]SquareSquareChain[b_,list_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$down],1,-1]Mass[i]SquareSquareChain[b,list,a]
+SquareB /: HoldPattern[SquareB[a_,SpinorMV[pos1_][i_,I_]]SquareSquareChain[SpinorMV[pos2_][i_,I_],list_List,b_]] := If[MatchQ[pos1,$down],1,-1]MassTilde[i]SquareSquareChain[a,list,b]
+SquareB /: HoldPattern[SquareB[SpinorMV[pos1_][i_,I_],a_]SquareSquareChain[SpinorMV[pos2_][i_,I_],list_List,b_]] := If[MatchQ[pos1,$down],-1,1]MassTilde[i]SquareSquareChain[a,list,b]
+SquareB /: HoldPattern[SquareB[SpinorMV[pos1_][i_,I_],a_]SquareSquareChain[b_,list_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$down],-1,1]MassTilde[i]SquareSquareChain[b,list,a]
+SquareB /: HoldPattern[SquareB[a_,SpinorMV[pos1_][i_,I_]]SquareSquareChain[b_,list_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$down],1,-1]MassTilde[i]SquareSquareChain[b,list,a]
 
 
 (* ::Subsection:: *)
@@ -741,14 +746,14 @@ AngleAngleChain /: HoldPattern[AngleAngleChain[a_,list1_List,SpinorMV[pos1_][i_,
 AngleAngleChain /: HoldPattern[AngleAngleChain[a_,list1_List,SpinorMV[pos1_][i_,I_]]AngleSquareChain[b_,list2_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$up],-1,1]*AngleAngleChain[b,Join[list2,Prepend[Reverse@list1,i]],a]
 AngleAngleChain /: HoldPattern[AngleAngleChain[SpinorMV[pos1_][i_,I_],list1_List,a_]AngleSquareChain[b_,list2_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$up],1,-1]*AngleAngleChain[b,Join[list2,Prepend[list1,i]],a]
 
-AngleAngleChain /: HoldPattern[AngleAngleChain[SpinorMV[pos1_][i_,I_],list1_List,a_]AngleSquareChain[SpinorMV[pos2_][i_,I_],list2_List,b_]] := If[MatchQ[pos1,$down],-1,1]Mass[i]AngleSquareChain[a,Join[Reverse@list1,list2],b]
-AngleAngleChain /: HoldPattern[AngleAngleChain[a_,list1_List,SpinorMV[pos1_][i_,I_]]AngleSquareChain[SpinorMV[pos2_][i_,I_],list2_List,b_]] := If[MatchQ[pos1,$down],1,-1]Mass[i]AngleSquareChain[a,Join[list1,list2],b]
+AngleAngleChain /: HoldPattern[AngleAngleChain[SpinorMV[pos1_][i_,I_],list1_List,a_]AngleSquareChain[SpinorMV[pos2_][i_,I_],list2_List,b_]] := If[MatchQ[pos1,$down],-1,1]MassUntilde[i]AngleSquareChain[a,Join[Reverse@list1,list2],b]
+AngleAngleChain /: HoldPattern[AngleAngleChain[a_,list1_List,SpinorMV[pos1_][i_,I_]]AngleSquareChain[SpinorMV[pos2_][i_,I_],list2_List,b_]] := If[MatchQ[pos1,$down],1,-1]MassUntilde[i]AngleSquareChain[a,Join[list1,list2],b]
 
 
-AngleAngleChain /: HoldPattern[AngleAngleChain[SpinorMV[$down][i_,I_],list1_List,a_]AngleAngleChain[SpinorMV[$up][i_,I_],list2_List,b_]] := - Mass[i]AngleAngleChain[a,Join[Reverse@list1,list2],b]
-AngleAngleChain /: HoldPattern[AngleAngleChain[a_,list1_List,SpinorMV[$down][i_,I_]]AngleAngleChain[b_,list2_List,SpinorMV[$up][i_,I_]]] := - Mass[i]AngleAngleChain[a,Join[list1,Reverse@list2],b]
+AngleAngleChain /: HoldPattern[AngleAngleChain[SpinorMV[$down][i_,I_],list1_List,a_]AngleAngleChain[SpinorMV[$up][i_,I_],list2_List,b_]] := - MassUntilde[i]AngleAngleChain[a,Join[Reverse@list1,list2],b]
+AngleAngleChain /: HoldPattern[AngleAngleChain[a_,list1_List,SpinorMV[$down][i_,I_]]AngleAngleChain[b_,list2_List,SpinorMV[$up][i_,I_]]] := - MassUntilde[i]AngleAngleChain[a,Join[list1,Reverse@list2],b]
 
-AngleAngleChain /: HoldPattern[AngleAngleChain[a_,list1_List,SpinorMV[pos1_][i_,I_]]AngleAngleChain[SpinorMV[pos2_][i_,I_],list2_List,b_]] := If[MatchQ[pos1,$down],1,-1] Mass[i]AngleAngleChain[a,Join[list1,list2],b]
+AngleAngleChain /: HoldPattern[AngleAngleChain[a_,list1_List,SpinorMV[pos1_][i_,I_]]AngleAngleChain[SpinorMV[pos2_][i_,I_],list2_List,b_]] := If[MatchQ[pos1,$down],1,-1] MassUntilde[i]AngleAngleChain[a,Join[list1,list2],b]
 
 
 (* ::Subsection:: *)
@@ -778,14 +783,14 @@ SquareSquareChain[a_,b_List,c_] /; \[Not]OrderedQ[{a,c}] := -SquareSquareChain[c
 SquareSquareChain /: HoldPattern[SquareSquareChain[a_,list1_List,SpinorMV[pos1_][i_,I_]]AngleSquareChain[SpinorMV[pos2_][i_,I_],list2_List,b_]] := If[MatchQ[pos1,$down],1,-1]*SquareSquareChain[a,Join[list1,Prepend[list2,i]],b]
 SquareSquareChain /: HoldPattern[SquareSquareChain[SpinorMV[pos1_][i_,I_],list1_List,a_]AngleSquareChain[SpinorMV[pos2_][i_,I_],list2_List,b_]] := If[MatchQ[pos1,$down],-1,1]*SquareSquareChain[a,Join[Reverse@list1,Prepend[list2,i]],b]
 
-SquareSquareChain /: HoldPattern[SquareSquareChain[SpinorMV[pos1_][i_,I_],list1_List,a_]AngleSquareChain[b_,list2_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$up],1,-1]Mass[i]AngleSquareChain[b,Join[list2,list1],b]
-SquareSquareChain /: HoldPattern[SquareSquareChain[a_,list1_List,SpinorMV[pos1_][i_,I_]]AngleSquareChain[b_,list2_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$up],-1,1]Mass[i]AngleSquareChain[b,Join[list2,Reverse@list1],b]
+SquareSquareChain /: HoldPattern[SquareSquareChain[SpinorMV[pos1_][i_,I_],list1_List,a_]AngleSquareChain[b_,list2_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$up],1,-1]MassTilde[i]AngleSquareChain[b,Join[list2,list1],b]
+SquareSquareChain /: HoldPattern[SquareSquareChain[a_,list1_List,SpinorMV[pos1_][i_,I_]]AngleSquareChain[b_,list2_List,SpinorMV[pos2_][i_,I_]]] := If[MatchQ[pos1,$up],-1,1]MassTilde[i]AngleSquareChain[b,Join[list2,Reverse@list1],b]
 
 
-SquareSquareChain /: HoldPattern[SquareSquareChain[SpinorMV[$down][i_,I_],list1_List,a_]SquareSquareChain[SpinorMV[$up][i_,I_],list2_List,b_]] := - Mass[i]SquareSquareChain[a,Join[Reverse@list1,list2],b]
-SquareSquareChain /: HoldPattern[SquareSquareChain[a_,list1_List,SpinorMV[$down][i_,I_]]SquareSquareChain[b_,list2_List,SpinorMV[$up][i_,I_]]] := - Mass[i]SquareSquareChain[a,Join[list1,Reverse@list2],b]
+SquareSquareChain /: HoldPattern[SquareSquareChain[SpinorMV[$down][i_,I_],list1_List,a_]SquareSquareChain[SpinorMV[$up][i_,I_],list2_List,b_]] := - MassTilde[i]SquareSquareChain[a,Join[Reverse@list1,list2],b]
+SquareSquareChain /: HoldPattern[SquareSquareChain[a_,list1_List,SpinorMV[$down][i_,I_]]SquareSquareChain[b_,list2_List,SpinorMV[$up][i_,I_]]] := - MassTilde[i]SquareSquareChain[a,Join[list1,Reverse@list2],b]
 
-SquareSquareChain /: HoldPattern[SquareSquareChain[a_,list1_List,SpinorMV[pos1_][i_,I_]]SquareSquareChain[SpinorMV[pos2_][i_,I_],list2_List,b_]] := If[MatchQ[pos1,$down],1,-1] Mass[i]SquareSquareChain[a,Join[list1,list2],b]
+SquareSquareChain /: HoldPattern[SquareSquareChain[a_,list1_List,SpinorMV[pos1_][i_,I_]]SquareSquareChain[SpinorMV[pos2_][i_,I_],list2_List,b_]] := If[MatchQ[pos1,$down],1,-1] MassTilde[i]SquareSquareChain[a,Join[list1,list2],b]
 
 
 (* ::Subsection:: *)
@@ -809,8 +814,40 @@ AngleSquareChainBox[a_,b_, c__] :=
 AngleSquareChain /: MakeBoxes[AngleSquareChain[a_, c_List,b_], StandardForm | TraditionalForm] := AngleSquareChainBox[ToBoxes[a], ToBoxes[b], Sequence@@(ToBoxes/@c)]
 
 
-AngleSquareChain /: HoldPattern[AngleSquareChain[SpinorMV[$down][i_,I_],list1_List,a_]AngleSquareChain[SpinorMV[$up][i_,I_],list2_List,b_]] := Mass[i]SquareSquareChain[a,Join[Reverse@list1,list2],b]
-AngleSquareChain /: HoldPattern[AngleSquareChain[a_,list1_List,SpinorMV[$down][i_,I_]]AngleSquareChain[b_,list2_List,SpinorMV[$up][i_,I_]]] := Mass[i]AngleAngleChain[a,Join[list1,Reverse@list2],b]
+AngleSquareChain /: HoldPattern[AngleSquareChain[SpinorMV[$down][i_,I_],list1_List,a_]AngleSquareChain[SpinorMV[$up][i_,I_],list2_List,b_]] := MassUntilde[i]SquareSquareChain[a,Join[Reverse@list1,list2],b]
+AngleSquareChain /: HoldPattern[AngleSquareChain[a_,list1_List,SpinorMV[$down][i_,I_]]AngleSquareChain[b_,list2_List,SpinorMV[$up][i_,I_]]] := MassTilde[i]AngleAngleChain[a,Join[list1,Reverse@list2],b]
+
+
+(* ::Subsection:: *)
+(*Masses*)
+
+
+(* ::Subsubsection::Closed:: *)
+(*Boxes*)
+
+
+MassUntildeBox[label_]:=
+	TemplateBox[{label},"Mass",
+		DisplayFunction->(SubscriptBox["m",RowBox[{#1}]]&),
+		InterpretationFunction -> (RowBox[{"Mass","[",RowBox[{#1}],"]"}]&)
+	]
+	
+MassTildeBox[label_]:=
+	TemplateBox[{label},"Mass",
+		DisplayFunction->(SubscriptBox[OverscriptBox["m","~"],RowBox[{#1}]]&),
+		InterpretationFunction -> (RowBox[{"Mass","[",RowBox[{#1}],"]"}]&)
+	]
+
+
+(* ::Subsubsection::Closed:: *)
+(*Properties*)
+
+
+MassUntilde /: MakeBoxes[MassUntilde[a_], StandardForm | TraditionalForm] := MassUntildeBox[ToBoxes[a]]
+
+MassTilde /: MakeBoxes[MassTilde[a_], StandardForm | TraditionalForm] := MassTildeBox[ToBoxes[a]]
+
+(*MassTilde /: MassTilde[a_]^b_. MassUntilde[a_]^c_. := Mass[a]^(2*Min[b,c]) * MassTilde[a]^(Max[0,b-c]) * MassUntilde[a]^(Max[0,c-b])*)
 
 
 (* ::Subsection:: *)
