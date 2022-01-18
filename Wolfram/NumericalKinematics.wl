@@ -22,6 +22,12 @@ GenerateKinematics::usage = "..."
 (*Numerical Kinematics*)
 
 
+(* ::Text:: *)
+(*TODOs:*)
+(*- Option "Label" in GenerateKinematics*)
+(*- Option "MomentumConservation"->False in GenerateKinematics*)
+
+
 Begin["`Private`"]
 
 
@@ -127,11 +133,11 @@ NMomentum /: MakeBoxes[NMomentum[a_], StandardForm | TraditionalForm] := Numeric
 )
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Generate Kinematics*)
 
 
-Options[GenerateKinematics]={"Masses"->{},"Identical"->{},"HighestNumber"->5,"Labels"->"Numeric","Chirality"->"Minus"(*or "Plus"*)};
+Options[GenerateKinematics]={"Masses"->{},"Identical"->{},"HighestNumber"->5,"Labels"->"Numeric","Chirality"->"Minus"(*or "Plus"*),"Echos"->True};
 
 GenerateKinematics[n_Integer,OptionsPattern[]]:=
 Module[{twistors,duals,massive=OptionValue["Masses"],x},
@@ -209,7 +215,7 @@ twistors=Flatten[twistors,1];
 
 duals=If[Length[#]==2,Reverse[{-1,1}*#],#]&/@duals;
 
-Set@@@Echo[Thread[Rule[x,Flatten[#,1]&@{twistors,Flatten[duals,1],massive}]]]
+Set@@@(If[OptionValue["Echos"],Echo[#],#]&@Thread[Rule[x,Flatten[#,1]&@{twistors,Flatten[duals,1],massive}]])
 ];
 
 ]

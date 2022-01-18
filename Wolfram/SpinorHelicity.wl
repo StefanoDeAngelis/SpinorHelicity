@@ -13,6 +13,7 @@ Particles::usage = "..."
 ToSp::usage = "..."
 ToBracket::usage = "..."
 
+SpinorComponents::usage = "..."
 NEvaluate::usage = "..."
 
 
@@ -98,13 +99,30 @@ Helicity[x_, label_] := 0*)
 ToBracket[exp_] := ReplaceAll[ReplaceAll[exp, Sp[a__] /; (Length[{a}] > 2) :> Sum[Sp[#[[i]], #[[j]]]& @ {a}, {i, Length[{a}]}, {j, i + 1, Length[{a}]}]], Sp[i_, j_] :> AML[i, j] SML[j, i]]*)
 
 
+(* ::Subsection::Closed:: *)
+(*Spin components*)
+
+
+SpinorComponents[exp_] :=
+	DeleteCases[
+		Flatten@
+			CoefficientList[#1,Flatten@Table[z[i, n], {i, #2}, {n, 2}]],
+		0
+	]&[
+		ReplaceRepeated[exp,SpinorMV[][i_]:>Sum[z[i, n]*SpinorMV[$up][i,n],{n, 2}]],
+		Sort@DeleteDuplicates@Cases[exp,SpinorMV[][i_]:>i,\[Infinity]]
+	]
+
+
 (* ::Subsection:: *)
 (*NEvaluate*)
 
 
+Attributes[NEvaluate]={Listable};
+
 NEvaluate[exp_] :=
 	Block[{SpinorMV, AngleB, SquareB, AngleAngleChain, AngleSquareChain,
-		 SquareSquareChain, MassUntilde, MassTilde},
+		 SquareSquareChain, TraceChain, MassUntilde, MassTilde},
 		 
 		SpinorMV[$down][i_, 1] := -SpinorMV[$up][i, 2];
 		SpinorMV[$down][i_, 2] := SpinorMV[$up][i, 1];
@@ -296,6 +314,22 @@ NEvaluate[exp_] :=
 					,
 					NEpsilon[]
 				] . NSpinorDottedMV[j, J];
+				
+		TraceChain[ list_List] :=
+				Tr[
+					Dot[
+						Sequence @@
+							Table[
+								If[OddQ[n],
+									NEpsilon[] . Transpose[NMomentum[list[[n]]]] . NEpsilon[-1],
+									NMomentum[list[[n]]]
+								]
+								,
+								{n, Length[list]}
+							]
+					]
+				];
+		
 		MassUntilde[i_] := -AngleB[SpinorMV[$up][i, 1], SpinorMV[$up][i, 2]
 			];
 		MassTilde[i_] := SquareB[SpinorMV[$up][i, 1], SpinorMV[$up][i, 2]];
