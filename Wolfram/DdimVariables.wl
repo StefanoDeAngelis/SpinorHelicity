@@ -12,6 +12,7 @@ EpsilonPol::usage = "..."
 FieldStr::usage = "..."
 Riemann::usage = "..."
 Momentum::usage = "..."
+FTrace::usage = "..."
 
 Mass::usage = "..."
 
@@ -99,7 +100,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "eps" -> EpsilonPolBox["\[SelectionPlaceholder]"]["\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
@@ -126,6 +127,11 @@ FieldStrBox[a_][\[Mu]_,\[Nu]_] :=
     TemplateBox[{a,\[Mu],\[Nu]}, "FieldStr",
         DisplayFunction -> (SubsuperscriptBox["F",RowBox[{#1}],RowBox[{#2,#3}]]&),
         InterpretationFunction -> (RowBox[{"FieldStr","[",RowBox[{#1}],"]","[",RowBox[{#2}],",",RowBox[{#3}],"]"}]&)]
+        
+FStrBox[a_] :=
+    TemplateBox[{a}, "FieldStr",
+        DisplayFunction -> (SubscriptBox["F",RowBox[{#1}]]&),
+        InterpretationFunction -> (RowBox[{"FieldStr","[",RowBox[{#1}],"]"}]&)]
 
 
 (* ::Subsubsection::Closed:: *)
@@ -141,6 +147,7 @@ SetOptions[EvaluationNotebook[],
 
 
 FieldStr /: MakeBoxes[FieldStr[a_][\[Mu]_,\[Nu]_], StandardForm | TraditionalForm] := FieldStrBox[ToBoxes[a]][ToBoxes[\[Mu]],ToBoxes[\[Nu]]]
+FieldStr /: MakeBoxes[FieldStr[a_], StandardForm | TraditionalForm] := FStrBox[ToBoxes[a]]
 
 
 FieldStr[a_][\[Mu]_,\[Nu]_] /; \[Not]OrderedQ[{\[Mu],\[Nu]}] := - FieldStr[a][\[Nu],\[Mu]]
@@ -216,25 +223,56 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "mom" -> MomentumBox["\[SelectionPlaceholder]"]["\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
 Momentum /: MakeBoxes[Momentum[a_][\[Mu]_], StandardForm | TraditionalForm] := MomentumBox[ToBoxes[a]][ToBoxes[\[Mu]]]
 Momentum /: MakeBoxes[Momentum[a_], StandardForm | TraditionalForm] := MomBox[ToBoxes[a]]
 
-Momentum /: Momentum[a_][\[Nu]_] Momentum[a_][\[Nu]_] := Mass[a]^2
-Momentum /: Momentum[a_][\[Nu]_]^2 := Mass[a]^2
+(*Momentum /: Momentum[a_][\[Nu]_] Momentum[a_][\[Nu]_] := Mass[a]^2
+Momentum /: Momentum[a_][\[Nu]_]^2 := Mass[a]^2*)
 
 Momentum[a_][\[Mu]_] /; MatchQ[Head[a],Times]&&a[[1]]==-1 := - Momentum[-a][\[Mu]]
 Momentum[a_][\[Mu]_] /; a < 0 := - Momentum[-a][\[Mu]]
 
 
 (* ::Subsection:: *)
+(*FTrace*)
+
+
+(* ::Subsubsection::Closed:: *)
+(*Boxes*)
+
+
+ClearAll[FTraceBox]
+
+
+FTraceBox[a_,c__,b_] :=
+    TemplateBox[{b,Sequence@@Riffle[{a,c,b},"\[CenterDot]"],Sequence@@Riffle[{c},","]}, "FTrace",
+        DisplayFunction -> (RowBox[{TemplateSlotSequence[{2,4+2*Length[{c}]}]}]&),
+        InterpretationFunction->(RowBox[{"FTrace","[",RowBox[{#2,",","{",TemplateSlotSequence[5+2*Length[{c}]],"}",",",#1}],"]"}]&)
+        ]
+
+
+(* ::Subsubsection::Closed:: *)
+(*Properties*)
+
+
+FTrace /: MakeBoxes[FTrace[a_,c_List,b_], StandardForm | TraditionalForm] := FTraceBox[ToBoxes[a],Sequence@@(ToBoxes/@c),ToBoxes[b]]
+
+FTrace[a_Plus,c_List,b_]:=FTrace[#,c,b]&/@a
+FTrace[a_,c_List,b_Plus]:=FTrace[a,c,#]&/@b
+FTrace[a_,{c___,d_Plus,e___},b_]:=FTrace[a,{c,#,e},b]&/@d
+
+FTrace[a_,c_List,b_]/;!OrderedQ[{a,b}]:=(-1)^Length[c]*FTrace[b,Reverse@c,a]
+
+
+(* ::Subsection:: *)
 (*Masses*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Boxes*)
 
 
@@ -245,7 +283,7 @@ MassBox[label_]:=
 	]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
@@ -293,9 +331,9 @@ Mandelstam[a__]/;\[Not]OrderedQ[{a}]:=Mandelstam[Sequence@@Sort[{a}]]
 
 
 DotProductBox[a_,b_] :=
-    TemplateBox[{a,b}, "Dot",
+    TemplateBox[{a,b}, "DotProduct",
         DisplayFunction -> (RowBox[{#1,"\[CenterDot]",#2}]&),
-        InterpretationFunction -> (RowBox[{"Dot","[",RowBox[{#1,",",#2}],"]"}]&)]
+        InterpretationFunction -> (RowBox[{"DotProduct","[",RowBox[{#1,",",#2}],"]"}]&)]
 
 
 (* ::Subsubsection::Closed:: *)
@@ -321,7 +359,10 @@ DotProduct /: MakeBoxes[DotProduct[a_,b_], StandardForm | TraditionalForm] := Do
 
 DotProduct[a_,b_] /; \[Not]OrderedQ[{a,b}] := DotProduct[b,a]
 
-DotProduct[Momentum[a_],Momentum[a_]] := Mass[a]^2
+DotProduct[a_Plus,b_]:=DotProduct[#,b]&/@a
+DotProduct[a_,b_Plus]:=DotProduct[a,#]&/@b
+
+(*DotProduct[Momentum[a_],Momentum[a_]] := Mass[a]^2*)
 
 
 End[]

@@ -10,6 +10,7 @@ BeginPackage["DdimFunctions`",{"YoungSymm`"}]
 RelabelDummies::usage = "..."
 Relabel::usage = "..."
 FromDotIndices::usage = "..."
+ToTrace::usage = "..."
 
 CombinePolarisations::usage = "..."
 DecombinePolarisations::usage = "..."
@@ -27,7 +28,7 @@ Begin["`Private`"]
 (*-Problem: e.g. latin indices after 26 give errors. We should define some sort of index mod 26 which adds a number to the letter after 26. {a,b...z,a1,b1,...z1,a2,...}*)
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Relabel Dummies*)
 
 
@@ -39,10 +40,12 @@ RelabelDummies[OptionsPattern[]][x_Plus] :=
 
 RelabelDummies[OptionsPattern[]][exp_] :=
 	Module[{dummies, indices, newdummies},
-		dummies = Join[Cases[exp, HoldPattern[DdimVariables`EpsilonPol[_][h__
-			]] | HoldPattern[DdimVariables`FieldStr[_][h__]] | HoldPattern[DdimVariables`Riemann[
-			_][h__]] :> h, \[Infinity]], Cases[exp, HoldPattern[DdimVariables`Momentum[_][h_
-			]] :> h, \[Infinity]]];
+		dummies = (*Join[Cases[exp, HoldPattern[DdimVariables`Momentum[_][h_]
+			] :> h, \[Infinity]], Cases[exp, HoldPattern[DdimVariables`EpsilonPol[_][h__]] 
+			:> h, \[Infinity]], Cases[exp, HoldPattern[DdimVariables`FieldStr[_][h__]] :> h,
+			 \[Infinity]], Cases[exp, HoldPattern[DdimVariables`Riemann[_][h__]] :> h, \[Infinity]]];*)
+			Join[Cases[exp, HoldPattern[DdimVariables`EpsilonPol[_][h__]] | HoldPattern[DdimVariables`FieldStr[_][h__]] | HoldPattern[DdimVariables`Riemann[_][h__]] :> h, \[Infinity]], Cases[exp, HoldPattern[DdimVariables`Momentum[_][h_]] :> h, \[Infinity]]];
+		
 		indices = DeleteDuplicates[dummies];
 		dummies = Select[Tally[dummies], #[[2]] > 1&][[All, 1]];
 		newdummies =
@@ -64,22 +67,23 @@ RelabelDummies[OptionsPattern[]][exp_] :=
 	]
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Relabel*)
 
 
 Options[Relabel] = {"Indices" -> "Greek"}; 
 
-Relabel[OptionsPattern[]][x_Plus,n_:0] :=
-	Plus @@ (RelabelDummies["Indices" -> OptionValue["Indices"]][#,n]& /@ 
-		(List @@ x))
+Relabel[OptionsPattern[]][x_Plus, n_:0] :=
+	Plus @@ (Relabel["Indices" -> OptionValue["Indices"]][#, n]& /@ (List
+		 @@ x))
 
 Relabel[OptionsPattern[]][exp_, n_:0] :=
 	Module[{dummies, indices, newindices},
-		dummies = Join[Cases[exp, HoldPattern[DdimVariables`EpsilonPol[_][h__
-			]] | HoldPattern[DdimVariables`FieldStr[_][h__]] | HoldPattern[DdimVariables`Riemann[
-			_][h__]] :> h, \[Infinity]], Cases[exp, HoldPattern[DdimVariables`Momentum[_][h_
-			]] :> h, \[Infinity]]];
+		dummies = (*Join[Cases[exp, HoldPattern[DdimVariables`Momentum[_][h_]
+			] :> h, \[Infinity]], Cases[exp, HoldPattern[DdimVariables`EpsilonPol[_][h__]]:> h, \[Infinity]],
+			 Cases[exp, HoldPattern[DdimVariables`FieldStr[_][h__]]:> h, \[Infinity]], Cases[exp, 
+			HoldPattern[DdimVariables`Riemann[_][h__]] :> h, \[Infinity]]];*)
+			   Join[Cases[exp, HoldPattern[DdimVariables`EpsilonPol[_][h__]] | HoldPattern[DdimVariables`FieldStr[_][h__]] | HoldPattern[DdimVariables`Riemann[_][h__]] :> h, \[Infinity]], Cases[exp, HoldPattern[DdimVariables`Momentum[_][h_]] :> h, \[Infinity]]];
 		indices = DeleteDuplicates[dummies];
 		dummies = Select[Tally[dummies], #[[2]] > 1&][[All, 1]];
 		newindices =
@@ -101,6 +105,26 @@ Relabel[OptionsPattern[]][exp_, n_:0] :=
 
 
 (* ::Subsection:: *)
+(*ToTrace*)
+
+
+ToTrace[exp_Plus]:=ToTrace/@exp
+ToTrace[Times[a___,b_,c___]]/;MatchQ[b,Power[_,_?(#<0&)]]:=b*ToTrace[Times[a,c]]
+
+ToTrace[exp_]:=
+ReplaceRepeated[
+ReplaceRepeated[DecombinePolarisations[exp]//Expand,{f_[x_][a_]g_[y_][a_]/;MatchQ[f,DdimVariables`EpsilonPol|DdimVariables`Momentum]&&MatchQ[g,DdimVariables`EpsilonPol|DdimVariables`Momentum]:>DdimVariables`DotProduct[f[x],g[y]]}],
+{
+f_[x_][a_]DdimVariables`FieldStr[y_][a_,b_]/;MatchQ[f,DdimVariables`EpsilonPol|DdimVariables`Momentum]:>DdimVariables`FTrace[f[x],{DdimVariables`FieldStr[y]}][b],
+f_[x_][a_]DdimVariables`FieldStr[y_][b_,a_]/;MatchQ[f,DdimVariables`EpsilonPol|DdimVariables`Momentum]:>-DdimVariables`FTrace[f[x],{DdimVariables`FieldStr[y]}][b],
+DdimVariables`FTrace[x_,y_][a_]DdimVariables`FieldStr[z_][a_,b_]:>DdimVariables`FTrace[x,Append[y,DdimVariables`FieldStr[z]]][b],
+DdimVariables`FTrace[x_,y_][a_]DdimVariables`FieldStr[z_][b_,a_]:>-DdimVariables`FTrace[x,Append[y,DdimVariables`FieldStr[z]]][b],
+f_[x_][a_]DdimVariables`FTrace[y_,z_List][a_]/;MatchQ[f,DdimVariables`EpsilonPol|DdimVariables`Momentum]:>DdimVariables`FTrace[y,z,f[x]]
+}
+]
+
+
+(* ::Subsection::Closed:: *)
 (*From Dot To Indices*)
 
 
@@ -132,7 +156,7 @@ FromDotIndices[OptionsPattern[]][exp_Times, n_:0] :=
 		]/Denominator[exp]
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Combine Polarisation Vectors*)
 
 

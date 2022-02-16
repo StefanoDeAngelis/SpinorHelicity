@@ -777,7 +777,7 @@ SquareSquareChainBox[a_,b_, c__] :=
         InterpretationFunction -> (RowBox[{"SquareSquareChain","[",RowBox[{#1,",","{",Sequence@@Delete[Flatten@Table[{i,","},{i,{c}}],-1],"}",",",#2}],"]"}]&)]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
@@ -824,7 +824,7 @@ AngleSquareChainBox[a_,b_, c__] :=
         InterpretationFunction -> (RowBox[{"AngleSquareChain","[",RowBox[{#1,",","{",Sequence@@Delete[Flatten@Table[{i,","},{i,{c}}],-1],"}",",",#2}],"]"}]&)]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
@@ -839,6 +839,10 @@ AngleSquareChain[d_,c_,Times[a_,b__]]/;\[Not]MatchQ[a,SpinorML[_]|SpinorMV[_][_,
 
 AngleSquareChain /: HoldPattern[AngleSquareChain[SpinorMV[$down][i_,I_],list1_List,a_]AngleSquareChain[SpinorMV[$up][i_,I_],list2_List,b_]] := MassUntilde[i]SquareSquareChain[a,Join[Reverse@list1,list2],b]
 AngleSquareChain /: HoldPattern[AngleSquareChain[a_,list1_List,SpinorMV[$down][i_,I_]]AngleSquareChain[b_,list2_List,SpinorMV[$up][i_,I_]]] := MassTilde[i]AngleAngleChain[a,Join[list1,Reverse@list2],b]
+
+
+AngleSquareChain /: HoldPattern[AngleSquareChain[a_,list1_List,SpinorMV[$down][i_,I_]]AngleSquareChain[SpinorMV[$up][i_,I_],list2_List,b_]] := AngleSquareChain[a,Join[list1,{i},list2],b]
+AngleSquareChain /: HoldPattern[AngleSquareChain[a_,list1_List,SpinorMV[$up][i_,I_]]AngleSquareChain[SpinorMV[$down][i_,I_],list2_List,b_]] := -AngleSquareChain[a,Join[list1,{i},list2],b]
 
 
 AngleSquareChain /: AngleSquareChain[SpinorMV[$down][i_,I_],list_List,SpinorMV[$up][i_,I_]] := -TraceChain[Prepend[list,i]]
