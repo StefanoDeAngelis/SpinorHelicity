@@ -12,6 +12,10 @@ Relabel::usage = "..."
 FromDotIndices::usage = "..."
 ToTrace::usage = "..."
 
+SetMasses::usage = "..."
+ZeroMasses::usage = "..."
+ClearMasses::usage = "..."
+
 CombinePolarisations::usage = "..."
 DecombinePolarisations::usage = "..."
 
@@ -113,13 +117,28 @@ ToTrace[Times[a___,b_,c___]]/;MatchQ[b,Power[_,_?(#<0&)]]:=b*ToTrace[Times[a,c]]
 
 ToTrace[exp_]:=
 ReplaceRepeated[
-ReplaceRepeated[DecombinePolarisations[exp]//Expand,{f_[x_][a_]g_[y_][a_]/;MatchQ[f,DdimVariables`EpsilonPol|DdimVariables`Momentum]&&MatchQ[g,DdimVariables`EpsilonPol|DdimVariables`Momentum]:>DdimVariables`DotProduct[f[x],g[y]]}],
+ReplaceRepeated[
+ReplaceRepeated[
+DecombinePolarisations[exp]//Expand,
+{
+f_[x_][a_]g_[y_][a_]/;MatchQ[f,DdimVariables`EpsilonPol|DdimVariables`Momentum]&&MatchQ[g,DdimVariables`EpsilonPol|DdimVariables`Momentum]:>DdimVariables`DotProduct[f[x],g[y]]
+}
+],
 {
 f_[x_][a_]DdimVariables`FieldStr[y_][a_,b_]/;MatchQ[f,DdimVariables`EpsilonPol|DdimVariables`Momentum]:>DdimVariables`FTrace[f[x],{DdimVariables`FieldStr[y]}][b],
-f_[x_][a_]DdimVariables`FieldStr[y_][b_,a_]/;MatchQ[f,DdimVariables`EpsilonPol|DdimVariables`Momentum]:>-DdimVariables`FTrace[f[x],{DdimVariables`FieldStr[y]}][b],
+f_[x_][b_]DdimVariables`FieldStr[y_][a_,b_]/;MatchQ[f,DdimVariables`EpsilonPol|DdimVariables`Momentum]:>-DdimVariables`FTrace[f[x],{DdimVariables`FieldStr[y]}][a],
 DdimVariables`FTrace[x_,y_][a_]DdimVariables`FieldStr[z_][a_,b_]:>DdimVariables`FTrace[x,Append[y,DdimVariables`FieldStr[z]]][b],
-DdimVariables`FTrace[x_,y_][a_]DdimVariables`FieldStr[z_][b_,a_]:>-DdimVariables`FTrace[x,Append[y,DdimVariables`FieldStr[z]]][b],
-f_[x_][a_]DdimVariables`FTrace[y_,z_List][a_]/;MatchQ[f,DdimVariables`EpsilonPol|DdimVariables`Momentum]:>DdimVariables`FTrace[y,z,f[x]]
+DdimVariables`FTrace[x_,y_][b_]DdimVariables`FieldStr[z_][a_,b_]:>-DdimVariables`FTrace[x,Append[y,DdimVariables`FieldStr[z]]][a],
+f_[x_][a_]DdimVariables`FTrace[y_,z_List][a_]/;MatchQ[f,DdimVariables`EpsilonPol|DdimVariables`Momentum]:>DdimVariables`FTrace[y,z,f[x]],
+DdimVariables`FTrace[x_,z1_List][a_] DdimVariables`FTrace[y_,z2_List][a_]:>(-1)^(Length[z2])DdimVariables`FTrace[x,Join[z1,Reverse@z2],y]
+}
+],
+{
+DdimVariables`FieldStr[x_][a_,b_]DdimVariables`FieldStr[y_][b_,c_]:>DdimVariables`FTrace[DdimVariables`FieldStr[x],DdimVariables`FieldStr[y]][a,c],
+DdimVariables`FieldStr[x_][a_,c_]DdimVariables`FieldStr[y_][b_,c_]:>-DdimVariables`FTrace[DdimVariables`FieldStr[x],DdimVariables`FieldStr[y]][a,b],
+DdimVariables`FTrace[x__][a_,b_]DdimVariables`FieldStr[y_][b_,c_]:>DdimVariables`FTrace[x,DdimVariables`FieldStr[y]][a,c],
+DdimVariables`FTrace[x__][a_,c_]DdimVariables`FieldStr[y_][b_,c_]:>-DdimVariables`FTrace[x,DdimVariables`FieldStr[y]][a,b],
+DdimVariables`FTrace[x__][a_,a_]:>DdimVariables`FTrace[{x}]
 }
 ]
 
@@ -163,6 +182,44 @@ FromDotIndices[OptionsPattern[]][exp_Times, n_:0] :=
 CombinePolarisations[exp_]:=ReplaceRepeated[exp, {DdimVariables`EpsilonPol[a_][\[Mu]_] DdimVariables`EpsilonPol[a_][\[Nu]_] :> DdimVariables`EpsilonPol[a][\[Mu],\[Nu]],DdimVariables`FieldStr[a_][\[Mu]_,\[Nu]_] DdimVariables`FieldStr[a_][\[Rho]_,\[Sigma]_] :> DdimVariables`Riemann[a][\[Mu],\[Nu],\[Rho],\[Sigma]]}]
 
 DecombinePolarisations[exp_]:=ReplaceRepeated[exp, {DdimVariables`EpsilonPol[a_][\[Mu]_,\[Nu]_]:>DdimVariables`EpsilonPol[a][\[Mu]] DdimVariables`EpsilonPol[a][\[Nu]],DdimVariables`Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_]:>DdimVariables`FieldStr[a][\[Mu],\[Nu]] DdimVariables`FieldStr[a][\[Rho],\[Sigma]]}]
+
+
+(* ::Subsection:: *)
+(*SetMasses*)
+
+
+SetMasses[masses_List]:=
+(
+Unprotect[DdimVariables`DotProduct];
+Set@@@Transpose[{(DdimVariables`DotProduct[DdimVariables`Momentum[#],DdimVariables`Momentum[#]]&/@masses),(DdimVariables`Mass[#]^2&/@masses)}];
+Protect[DdimVariables`DotProduct];
+)
+
+
+(* ::Subsection:: *)
+(*ZeroMasses*)
+
+
+ZeroMasses[masses_List]:=(
+Unprotect[DdimVariables`Mass];
+Set@@@Transpose@{DdimVariables`Mass/@masses,Table[0,Length@masses]};
+Protect[DdimVariables`Mass];
+)
+
+
+(* ::Subsection:: *)
+(*ClearMasses*)
+
+
+ClearDownValues[f_]:=DownValues[f]=DeleteCases[DownValues[f],_?(FreeQ[First[#],Pattern]&)]
+
+
+ClearMasses[]:=(
+Unprotect[DdimVariables`Mass,DdimVariables`DotProduct];
+ClearDownValues[DdimVariables`Mass];
+ClearDownValues[DdimVariables`DotProduct];
+Protect[DdimVariables`Mass,DdimVariables`DotProduct];
+)
 
 
 (* ::Subsection:: *)

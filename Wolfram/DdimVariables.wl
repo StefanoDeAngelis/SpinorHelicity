@@ -8,10 +8,13 @@ BeginPackage["DdimVariables`",{"DdimFunctions`"}]
 
 
 Metric::usage = "..."
+
 EpsilonPol::usage = "..."
 FieldStr::usage = "..."
 Riemann::usage = "..."
 Momentum::usage = "..."
+Velocity::usage = "..."
+
 FTrace::usage = "..."
 
 Mass::usage = "..."
@@ -111,7 +114,7 @@ EpsilonPol /: MakeBoxes[EpsilonPol[a_], StandardForm | TraditionalForm] := EpBox
 EpsilonPol[a_][\[Mu]__] /; \[Not]OrderedQ[{\[Mu]}] := EpsilonPol[a][Sequence@@Sort[{\[Mu]}]]
 EpsilonPol[a_][\[Mu]_,\[Mu]_] := 0
 
-EpsilonPol /: EpsilonPol[a_][\[Mu]__] Momentum[a_][\[Nu]_] /; MemberQ[{\[Mu]},\[Nu]] := 0
+(*EpsilonPol /: EpsilonPol[a_][\[Mu]__] Momentum[a_][\[Nu]_] /; MemberQ[{\[Mu]},\[Nu]] := 0*)
 EpsilonPol /: EpsilonPol[a_][\[Mu]__] EpsilonPol[a_][\[Nu]__] /; \[Not]MatchQ[Complement[{\[Mu]},{\[Nu]}],{\[Mu]}] := 0
 
 
@@ -153,8 +156,8 @@ FieldStr /: MakeBoxes[FieldStr[a_], StandardForm | TraditionalForm] := FStrBox[T
 FieldStr[a_][\[Mu]_,\[Nu]_] /; \[Not]OrderedQ[{\[Mu],\[Nu]}] := - FieldStr[a][\[Nu],\[Mu]]
 FieldStr[a_][\[Mu]_,\[Mu]_] := 0
 
-FieldStr /: FieldStr[a_][\[Mu]_,\[Nu]_] Momentum[a_][\[Rho]_] /; MemberQ[{\[Mu],\[Nu]},\[Rho]] := 0
-FieldStr /: FieldStr[a_][\[Mu]_,\[Nu]_] FieldStr[a_][\[Rho]_,\[Sigma]_] /; \[Not]DuplicateFreeQ[{\[Mu],\[Nu],\[Rho],\[Sigma]}] := 0
+(*FieldStr /: FieldStr[a_][\[Mu]_,\[Nu]_] Momentum[a_][\[Rho]_] /; MemberQ[{\[Mu],\[Nu]},\[Rho]] := 0
+FieldStr /: FieldStr[a_][\[Mu]_,\[Nu]_] FieldStr[a_][\[Rho]_,\[Sigma]_] /; \[Not]DuplicateFreeQ[{\[Mu],\[Nu],\[Rho],\[Sigma]}] := 0*)
 
 
 (* ::Subsection:: *)
@@ -192,8 +195,8 @@ Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_] /; \[Not]DuplicateFreeQ[{\[Mu],\[Nu
 Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_] /; \[Not]OrderedQ[{\[Nu],\[Sigma]}] := Riemann[a][\[Rho],\[Sigma],\[Mu],\[Nu]]
 Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_] /; (OrderedQ[{\[Rho],\[Mu]}]&&OrderedQ[{\[Rho],\[Nu]}]) := - Riemann[a][\[Nu],\[Rho],\[Mu],\[Sigma]] - Riemann[a][\[Rho],\[Mu],\[Nu],\[Sigma]]
 
-Riemann /: Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_] Momentum[a_][\[Alpha]_] /; MemberQ[{\[Mu],\[Nu],\[Rho],\[Sigma]},\[Alpha]] := 0
-Riemann /: Riemann[a_][\[Mu]1_,\[Nu]1_,\[Rho]1_,\[Sigma]1_] Riemann[a_][\[Mu]2_,\[Nu]2_,\[Rho]2_,\[Sigma]2_] /; \[Not]DuplicateFreeQ[{\[Mu]1,\[Nu]1,\[Rho]1,\[Sigma]1,\[Mu]2,\[Nu]2,\[Rho]2,\[Sigma]2}] := 0
+(*Riemann /: Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_] Momentum[a_][\[Alpha]_] /; MemberQ[{\[Mu],\[Nu],\[Rho],\[Sigma]},\[Alpha]] := 0
+Riemann /: Riemann[a_][\[Mu]1_,\[Nu]1_,\[Rho]1_,\[Sigma]1_] Riemann[a_][\[Mu]2_,\[Nu]2_,\[Rho]2_,\[Sigma]2_] /; \[Not]DuplicateFreeQ[{\[Mu]1,\[Nu]1,\[Rho]1,\[Sigma]1,\[Mu]2,\[Nu]2,\[Rho]2,\[Sigma]2}] := 0*)
 
 
 (* ::Subsection:: *)
@@ -230,11 +233,52 @@ SetOptions[EvaluationNotebook[],
 Momentum /: MakeBoxes[Momentum[a_][\[Mu]_], StandardForm | TraditionalForm] := MomentumBox[ToBoxes[a]][ToBoxes[\[Mu]]]
 Momentum /: MakeBoxes[Momentum[a_], StandardForm | TraditionalForm] := MomBox[ToBoxes[a]]
 
-(*Momentum /: Momentum[a_][\[Nu]_] Momentum[a_][\[Nu]_] := Mass[a]^2
-Momentum /: Momentum[a_][\[Nu]_]^2 := Mass[a]^2*)
+(*Momentum /: Momentum[a_][\[Nu]_] Momentum[a_][\[Nu]_] := Mass[a]^2*)
+Momentum /: Momentum[a_][\[Nu]_]^2 := DotProduct[Momentum[a],Momentum[a]]
 
 Momentum[a_][\[Mu]_] /; MatchQ[Head[a],Times]&&a[[1]]==-1 := - Momentum[-a][\[Mu]]
 Momentum[a_][\[Mu]_] /; a < 0 := - Momentum[-a][\[Mu]]
+
+
+(* ::Subsection:: *)
+(*Velocity*)
+
+
+(* ::Subsubsection::Closed:: *)
+(*Boxes*)
+
+
+VelocityBox[a_][\[Mu]_] :=
+    TemplateBox[{a,\[Mu]}, "Velocity",
+        DisplayFunction -> (SubsuperscriptBox["v",RowBox[{#1}],RowBox[{#2}]]&),
+        InterpretationFunction -> (RowBox[{"Velocity","[",RowBox[{#1}],"]","[",RowBox[{#2}],"]"}]&)]
+
+VelBox[a_] :=
+    TemplateBox[{a}, "Velocity",
+        DisplayFunction -> (SubscriptBox["v",RowBox[{#1}]]&),
+        InterpretationFunction -> (RowBox[{"Velocity","[",RowBox[{#1}],"]"}]&)]
+
+
+(* ::Subsubsection::Closed:: *)
+(*Shortcuts*)
+
+
+SetOptions[EvaluationNotebook[],
+    InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "vel" -> VelocityBox["\[SelectionPlaceholder]"]["\[Placeholder]"]]]
+
+
+(* ::Subsubsection::Closed:: *)
+(*Properties*)
+
+
+Velocity /: MakeBoxes[Velocity[a_][\[Mu]_], StandardForm | TraditionalForm] := VelocityBox[ToBoxes[a]][ToBoxes[\[Mu]]]
+Velocity /: MakeBoxes[Velocity[a_], StandardForm | TraditionalForm] := VelBox[ToBoxes[a]]
+
+(*Momentum /: Momentum[a_][\[Nu]_] Momentum[a_][\[Nu]_] := Mass[a]^2*)
+Velocity /: Velocity[a_][\[Nu]_]^2 := 1
+
+Velocity[a_][\[Mu]_] /; MatchQ[Head[a],Times]&&a[[1]]==-1 := - Velocity[-a][\[Mu]]
+Velocity[a_][\[Mu]_] /; a < 0 := - Velocity[-a][\[Mu]]
 
 
 (* ::Subsection:: *)
@@ -245,27 +289,38 @@ Momentum[a_][\[Mu]_] /; a < 0 := - Momentum[-a][\[Mu]]
 (*Boxes*)
 
 
-ClearAll[FTraceBox]
-
-
 FTraceBox[a_,c__,b_] :=
     TemplateBox[{b,Sequence@@Riffle[{a,c,b},"\[CenterDot]"],Sequence@@Riffle[{c},","]}, "FTrace",
         DisplayFunction -> (RowBox[{TemplateSlotSequence[{2,4+2*Length[{c}]}]}]&),
         InterpretationFunction->(RowBox[{"FTrace","[",RowBox[{#2,",","{",TemplateSlotSequence[5+2*Length[{c}]],"}",",",#1}],"]"}]&)
         ]
+        
+FTraceBox[a_List] :=
+    TemplateBox[{Length[a],Sequence@@Riffle[ToBoxes/@a,"\[CenterDot]"],Sequence@@Riffle[ToBoxes/@a,","]}, "FTrace",
+        DisplayFunction -> (RowBox[{TemplateSlotSequence[{2,2*#1}]}]&),
+        InterpretationFunction->(RowBox[{"FTrace","[",RowBox[{"{",TemplateSlotSequence[2*#1+1],"}"}],"]"}]&)
+        ]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
 FTrace /: MakeBoxes[FTrace[a_,c_List,b_], StandardForm | TraditionalForm] := FTraceBox[ToBoxes[a],Sequence@@(ToBoxes/@c),ToBoxes[b]]
+FTrace /: MakeBoxes[FTrace[a_List], StandardForm | TraditionalForm] := FTraceBox[a]
 
 FTrace[a_Plus,c_List,b_]:=FTrace[#,c,b]&/@a
 FTrace[a_,c_List,b_Plus]:=FTrace[a,c,#]&/@b
 FTrace[a_,{c___,d_Plus,e___},b_]:=FTrace[a,{c,#,e},b]&/@d
 
+FTraceNotOrderedQ[{a_,b_}]:=If[MatchQ[a,b],Nothing,!OrderedQ[{a,b}]]
+
 FTrace[a_,c_List,b_]/;!OrderedQ[{a,b}]:=(-1)^Length[c]*FTrace[b,Reverse@c,a]
+FTrace[a_,c_List,a_]/;(If[MatchQ[#,{}],False,Part[#,1]]&@(FTraceNotOrderedQ/@Transpose[{c,Reverse@c}])):=(-1)^Length[c]*FTrace[a,Reverse@c,a]
+FTrace[list_List]/;(First@Ordering[list]!=1):=FTrace[Sequence@@RotateLeft[list,First@Ordering[list]-1]]
+
+FTrace[Times[x_,a__],c_,b_]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=x*FTrace[Times[a],c,b]
+FTrace[a_,c_,Times[x_,b__]]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=x*FTrace[a,c,Times[b]]
 
 
 (* ::Subsection:: *)
@@ -350,7 +405,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "dotee" -> DotProduct[EpsilonPol["\[SelectionPlaceholder]"],EpsilonPol["\[Placeholder]"]]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
@@ -363,6 +418,10 @@ DotProduct[a_Plus,b_]:=DotProduct[#,b]&/@a
 DotProduct[a_,b_Plus]:=DotProduct[a,#]&/@b
 
 (*DotProduct[Momentum[a_],Momentum[a_]] := Mass[a]^2*)
+DotProduct[Velocity[a_],Velocity[a_]] := 1
+
+DotProduct[Times[x_(*?NumericQ*),a__],b_]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=x*DotProduct[a,Times[b]]
+DotProduct[a_,Times[x_(*?NumericQ*),b__]]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=x*DotProduct[a,Times[b]]
 
 
 End[]
