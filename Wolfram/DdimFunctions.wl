@@ -108,7 +108,7 @@ Relabel[OptionsPattern[]][exp_, n_:0] :=
 	]
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*ToTrace*)
 
 
@@ -138,6 +138,8 @@ DdimVariables`FieldStr[x_][a_,b_]DdimVariables`FieldStr[y_][b_,c_]:>DdimVariable
 DdimVariables`FieldStr[x_][a_,c_]DdimVariables`FieldStr[y_][b_,c_]:>-DdimVariables`FTrace[DdimVariables`FieldStr[x],DdimVariables`FieldStr[y]][a,b],
 DdimVariables`FTrace[x__][a_,b_]DdimVariables`FieldStr[y_][b_,c_]:>DdimVariables`FTrace[x,DdimVariables`FieldStr[y]][a,c],
 DdimVariables`FTrace[x__][a_,c_]DdimVariables`FieldStr[y_][b_,c_]:>-DdimVariables`FTrace[x,DdimVariables`FieldStr[y]][a,b],
+DdimVariables`FTrace[x__][a_,b_]DdimVariables`FTrace[y__][b_,c_]:>DdimVariables`FTrace[x,y][a,c],
+DdimVariables`FTrace[x__][a_,c_]DdimVariables`FTrace[y__][b_,c_]:>(-1)^(Length[{y}])*DdimVariables`FTrace[x,Sequence@@Reverse@{y}][a,b],
 DdimVariables`FTrace[x__][a_,a_]:>DdimVariables`FTrace[{x}]
 }
 ]
@@ -192,6 +194,7 @@ SetMasses[masses_List]:=
 (
 Unprotect[DdimVariables`DotProduct];
 Set@@@Transpose[{(DdimVariables`DotProduct[DdimVariables`Momentum[#],DdimVariables`Momentum[#]]&/@masses),(DdimVariables`Mass[#]^2&/@masses)}];
+Set@@@Transpose[{(DdimVariables`DotProduct[DdimVariables`Velocity[#],DdimVariables`Velocity[#]]&/@masses),Table[1,Length@masses]}];
 Protect[DdimVariables`DotProduct];
 )
 

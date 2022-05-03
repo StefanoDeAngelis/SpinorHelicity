@@ -267,7 +267,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "vel" -> VelocityBox["\[SelectionPlaceholder]"]["\[Placeholder]"]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
@@ -275,7 +275,7 @@ Velocity /: MakeBoxes[Velocity[a_][\[Mu]_], StandardForm | TraditionalForm] := V
 Velocity /: MakeBoxes[Velocity[a_], StandardForm | TraditionalForm] := VelBox[ToBoxes[a]]
 
 (*Momentum /: Momentum[a_][\[Nu]_] Momentum[a_][\[Nu]_] := Mass[a]^2*)
-Velocity /: Velocity[a_][\[Nu]_]^2 := 1
+(*Velocity /: Velocity[a_][\[Nu]_]^2 := 1*)
 
 Velocity[a_][\[Mu]_] /; MatchQ[Head[a],Times]&&a[[1]]==-1 := - Velocity[-a][\[Mu]]
 Velocity[a_][\[Mu]_] /; a < 0 := - Velocity[-a][\[Mu]]
@@ -302,7 +302,7 @@ FTraceBox[a_List] :=
         ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
@@ -317,7 +317,7 @@ FTraceNotOrderedQ[{a_,b_}]:=If[MatchQ[a,b],Nothing,!OrderedQ[{a,b}]]
 
 FTrace[a_,c_List,b_]/;!OrderedQ[{a,b}]:=(-1)^Length[c]*FTrace[b,Reverse@c,a]
 FTrace[a_,c_List,a_]/;(If[MatchQ[#,{}],False,Part[#,1]]&@(FTraceNotOrderedQ/@Transpose[{c,Reverse@c}])):=(-1)^Length[c]*FTrace[a,Reverse@c,a]
-FTrace[list_List]/;(First@Ordering[list]!=1):=FTrace[Sequence@@RotateLeft[list,First@Ordering[list]-1]]
+FTrace[list_List]/;(First@Ordering[list]!=1):=FTrace[RotateLeft[list,First@Ordering[list]-1]]
 
 FTrace[Times[x_,a__],c_,b_]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=x*FTrace[Times[a],c,b]
 FTrace[a_,c_,Times[x_,b__]]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=x*FTrace[a,c,Times[b]]
@@ -405,7 +405,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "dotee" -> DotProduct[EpsilonPol["\[SelectionPlaceholder]"],EpsilonPol["\[Placeholder]"]]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
@@ -418,7 +418,7 @@ DotProduct[a_Plus,b_]:=DotProduct[#,b]&/@a
 DotProduct[a_,b_Plus]:=DotProduct[a,#]&/@b
 
 (*DotProduct[Momentum[a_],Momentum[a_]] := Mass[a]^2*)
-DotProduct[Velocity[a_],Velocity[a_]] := 1
+(*DotProduct[Velocity[a_],Velocity[a_]] := 1*)
 
 DotProduct[Times[x_(*?NumericQ*),a__],b_]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=x*DotProduct[a,Times[b]]
 DotProduct[a_,Times[x_(*?NumericQ*),b__]]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=x*DotProduct[a,Times[b]]
