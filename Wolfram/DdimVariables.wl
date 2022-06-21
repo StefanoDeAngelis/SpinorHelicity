@@ -267,7 +267,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "vel" -> VelocityBox["\[SelectionPlaceholder]"]["\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
@@ -420,8 +420,11 @@ DotProduct[a_,b_Plus]:=DotProduct[a,#]&/@b
 (*DotProduct[Momentum[a_],Momentum[a_]] := Mass[a]^2*)
 (*DotProduct[Velocity[a_],Velocity[a_]] := 1*)
 
-DotProduct[Times[x_(*?NumericQ*),a__],b_]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=x*DotProduct[a,Times[b]]
-DotProduct[a_,Times[x_(*?NumericQ*),b__]]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=x*DotProduct[a,Times[b]]
+DotProduct[Times[a_,b_,x___],c_]/;MatchQ[a,Momentum[_]|EpsilonPol[_]|Velocity[_]]&&MatchQ[b,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=$Failed
+DotProduct[a_,Times[b_,c_,x___]]/;MatchQ[b,Momentum[_]|EpsilonPol[_]|Velocity[_]]&&MatchQ[c,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=$Failed
+
+DotProduct[Times[x___,a_],b_]/;MatchQ[a,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=Times[x]*DotProduct[a,b]
+DotProduct[a_,Times[x___,b_]]/;MatchQ[b,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=Times[x]*DotProduct[a,b]
 
 
 End[]
