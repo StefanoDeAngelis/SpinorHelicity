@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-BeginPackage["DdimFunctions`", {"YoungSymm`","DdimVariables`"}]
+BeginPackage["DdimFunctions`", {"YoungSymm`"}]
 
 
 
@@ -46,7 +46,7 @@ Begin["`Private`"]
 
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Relabel Dummies*)
 
 
@@ -285,14 +285,14 @@ ClearMasses[] :=
 
 
 (*DDerivative[exp_,,p_?(MatchQ[#,Momentum[_][_]|Velocity[_][_]|EpsilonPol[_][_]]&)]:=If[Echo@FreeQ[exp,Echo@Head[p]],0]*)
-DDerivative[DotProduct[i_,j_],p_?(MatchQ[#,Momentum[_][_]|Velocity[_][_]|EpsilonPol[_][_]]&)]:=If[MatchQ[i,Head[p]],j[p[[1]]],0]+If[MatchQ[j,Head[p]],i[p[[1]]],0]
-DDerivative[Momentum[x_][a_],Momentum[x_][b_]]:=Metric[a,b]
-DDerivative[Velocity[x_][a_],Velocity[x_][b_]]:=Metric[a,b]
-DDerivative[EpsilonPol[x_][a_],EpsilonPol[x_][b_]]:=Metric[a,b]
-DDerivative[sum_Plus,p_?(MatchQ[#,Momentum[_][_]|Velocity[_][_]|EpsilonPol[_][_]]&)]:=Plus@@(DDerivative[#,p]&/@List@@sum)
-DDerivative[Times[a_,b_],p_?(MatchQ[#,Momentum[_][_]|Velocity[_][_]|EpsilonPol[_][_]]&)]:=DDerivative[a,p]*Times[b]+a*DDerivative[b,p]
-DDerivative[Power[a_,b_],p_?(MatchQ[#,Momentum[_][_]|Velocity[_][_]|EpsilonPol[_][_]]&)]:=b*Power[a,b-1]*DDerivative[a,p]
-DDerivative[exp_, p_ ? (MatchQ[#, Momentum[_][_] | Velocity[_][_] | EpsilonPol[_][_]]&)]:=0
+DDerivative[DdimVariables`DotProduct[i_,j_],p_?(MatchQ[#,DdimVariables`Momentum[_][_]|DdimVariables`Velocity[_][_]|DdimVariables`EpsilonPol[_][_]]&)]:=If[MatchQ[i,Head[p]],j[p[[1]]],0]+If[MatchQ[j,Head[p]],i[p[[1]]],0]
+DDerivative[DdimVariables`Momentum[x_][a_],DdimVariables`Momentum[x_][b_]]:=DdimVariables`Metric[a,b]
+DDerivative[DdimVariables`Velocity[x_][a_],DdimVariables`Velocity[x_][b_]]:=DdimVariables`Metric[a,b]
+DDerivative[DdimVariables`EpsilonPol[x_][a_],DdimVariables`EpsilonPol[x_][b_]]:=DdimVariables`Metric[a,b]
+DDerivative[sum_Plus,p_?(MatchQ[#,DdimVariables`Momentum[_][_]|DdimVariables`Velocity[_][_]|DdimVariables`EpsilonPol[_][_]]&)]:=Plus@@(DDerivative[#,p]&/@List@@sum)
+DDerivative[Times[a_,b_],p_?(MatchQ[#,DdimVariables`Momentum[_][_]|DdimVariables`Velocity[_][_]|DdimVariables`EpsilonPol[_][_]]&)]:=DDerivative[a,p]*Times[b]+a*DDerivative[b,p]
+DDerivative[Power[a_,b_],p_?(MatchQ[#,DdimVariables`Momentum[_][_]|DdimVariables`Velocity[_][_]|DdimVariables`EpsilonPol[_][_]]&)]:=b*Power[a,b-1]*DDerivative[a,p]
+DDerivative[exp_, p_ ? (MatchQ[#, DdimVariables`Momentum[_][_] | DdimVariables`Velocity[_][_] | DdimVariables`EpsilonPol[_][_]]&)]:=0
 (*DDerivative[exp_,,p_?(!MatchQ[#,Momentum[_][_]|Velocity[_][_]|EpsilonPol[_][_]]&)] define an error message*)
 
 
