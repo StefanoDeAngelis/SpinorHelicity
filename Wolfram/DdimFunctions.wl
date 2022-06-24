@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-BeginPackage["DdimFunctions`", {"YoungSymm`"}]
+BeginPackage["DdimFunctions`", {"YoungSymm`","DdimVariables`"}]
 
 
 
