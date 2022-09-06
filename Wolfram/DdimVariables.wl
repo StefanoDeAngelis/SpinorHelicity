@@ -211,11 +211,31 @@ MomentumBox[a_][\[Mu]_] :=
     TemplateBox[{a,\[Mu]}, "Momentum",
         DisplayFunction -> (SubsuperscriptBox["p",RowBox[{#1}],RowBox[{#2}]]&),
         InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#1}],"]","[",RowBox[{#2}],"]"}]&)]
+        
+MomentumBoxLetter[a_][\[Mu]_] :=
+	TemplateBox[{a,\[Mu]}, "Momentum",
+        DisplayFunction -> (SuperscriptBox[RowBox[{#1}],RowBox[{#2}]]&),
+        InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#1}],"]","[",RowBox[{#2}],"]"}]&)]
+        
+MomentumBoxLetterNumber[a_,b_,c_][\[Mu]_] :=
+	TemplateBox[{a,b,c,\[Mu]}, "Momentum",
+        DisplayFunction -> (SubsuperscriptBox[RowBox[{#1}],RowBox[{#2}],RowBox[{#4}]]&),
+        InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#3}],"]","[",RowBox[{#4}],"]"}]&)]
 
 MomBox[a_] :=
     TemplateBox[{a}, "Momentum",
         DisplayFunction -> (SubscriptBox["p",RowBox[{#1}]]&),
         InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#1}],"]"}]&)]
+
+MomBoxLetter[a_] :=
+	TemplateBox[{a}, "Momentum",
+        DisplayFunction -> (RowBox[{#1}]&),
+        InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#1}],"]"}]&)]
+        
+MomBoxLetterNumber[a_,b_,c_] :=
+	TemplateBox[{a,b,c}, "Momentum",
+        DisplayFunction -> (SubscriptBox[RowBox[{#1}],RowBox[{#2}]]&),
+        InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#3}],"]"}]&)]
 
 
 (* ::Subsubsection::Closed:: *)
@@ -230,14 +250,31 @@ SetOptions[EvaluationNotebook[],
 (*Properties*)
 
 
-Momentum /: MakeBoxes[Momentum[a_][\[Mu]_], StandardForm | TraditionalForm] := MomentumBox[ToBoxes[a]][ToBoxes[\[Mu]]]
-Momentum /: MakeBoxes[Momentum[a_], StandardForm | TraditionalForm] := MomBox[ToBoxes[a]]
-
-(*Momentum /: Momentum[a_][\[Nu]_] Momentum[a_][\[Nu]_] := Mass[a]^2*)
-Momentum /: Momentum[a_][\[Nu]_]^2 := DotProduct[Momentum[a],Momentum[a]]
+Momentum /: MakeBoxes[Momentum[a_][\[Mu]_], StandardForm | TraditionalForm] := 
+	If[LetterQ[StringPart[#,1]],
+		If[
+			StringLength[#]>1,
+			MomentumBoxLetterNumber[ToBoxes[ToExpression[StringPart[#,1]]],ToBoxes[ToExpression[StringDrop[#,1]]],ToBoxes[a]][ToBoxes[\[Mu]]],
+			MomentumBoxLetter[ToBoxes[a]][ToBoxes[\[Mu]]]
+		],
+		MomentumBox[ToBoxes[a]][ToBoxes[\[Mu]]]
+	]&@ToString[a]
+	
+Momentum /: MakeBoxes[Momentum[a_], StandardForm | TraditionalForm] := 
+	If[LetterQ[StringPart[#,1]],
+		If[
+			StringLength[#]>1,
+			MomBoxLetterNumber[ToBoxes[ToExpression[StringPart[#,1]]],ToBoxes[ToExpression[StringDrop[#,1]]],ToBoxes[a]],
+			MomBoxLetter[ToBoxes[a]]
+		],
+		MomBox[ToBoxes[a]]
+	]&@ToString[a]
 
 Momentum[a_][\[Mu]_] /; MatchQ[Head[a],Times]&&a[[1]]==-1 := - Momentum[-a][\[Mu]]
 Momentum[a_][\[Mu]_] /; a < 0 := - Momentum[-a][\[Mu]]
+
+(*Momentum /: Momentum[a_][\[Nu]_] Momentum[a_][\[Nu]_] := Mass[a]^2*)
+Momentum /: Momentum[a_][\[Nu]_]^2 := DotProduct[Momentum[a],Momentum[a]]
 
 
 (* ::Subsection:: *)
@@ -267,18 +304,19 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "vel" -> VelocityBox["\[SelectionPlaceholder]"]["\[Placeholder]"]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
 Velocity /: MakeBoxes[Velocity[a_][\[Mu]_], StandardForm | TraditionalForm] := VelocityBox[ToBoxes[a]][ToBoxes[\[Mu]]]
 Velocity /: MakeBoxes[Velocity[a_], StandardForm | TraditionalForm] := VelBox[ToBoxes[a]]
 
-(*Momentum /: Momentum[a_][\[Nu]_] Momentum[a_][\[Nu]_] := Mass[a]^2*)
-(*Velocity /: Velocity[a_][\[Nu]_]^2 := 1*)
-
 Velocity[a_][\[Mu]_] /; MatchQ[Head[a],Times]&&a[[1]]==-1 := - Velocity[-a][\[Mu]]
 Velocity[a_][\[Mu]_] /; a < 0 := - Velocity[-a][\[Mu]]
+
+(*Momentum /: Momentum[a_][\[Nu]_] Momentum[a_][\[Nu]_] := Mass[a]^2*)
+(*Velocity /: Velocity[a_][\[Nu]_]^2 := 1*)
+Velocity /: Velocity[a_][\[Nu]_]^2 := DotProduct[Velocity[a],Velocity[a]]
 
 
 (* ::Subsection:: *)
@@ -405,7 +443,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "dotee" -> DotProduct[EpsilonPol["\[SelectionPlaceholder]"],EpsilonPol["\[Placeholder]"]]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
