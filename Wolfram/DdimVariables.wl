@@ -22,12 +22,42 @@ Mass::usage = "..."
 Mandelstam::usage = "..."
 DotProduct::usage = "..."
 
+DD::usage = "..."
+
 
 (* ::Section:: *)
 (*Spinor Helicity Variables*)
 
 
 Begin["`Private`"]
+
+
+(* ::Subsection:: *)
+(*toLabel*)
+
+
+(* ::Subsubsection::Closed:: *)
+(*Boxes*)
+
+
+ToLabelBox[a_,b_,c_] :=
+    TemplateBox[{a,b,c},ToString[#3]&,
+        DisplayFunction -> (SubscriptBox[RowBox[{#1}],RowBox[{#2}]]&),
+        InterpretationFunction -> (RowBox[{#3}]&)]
+
+
+(* ::Subsubsection:: *)
+(*Properties*)
+
+
+ToLabel[a_]:=
+	If[
+		StringLength[#]>1
+			&&DigitQ[StringDrop[#,1]]
+			&&LetterQ[StringPart[#,1]],
+		ToLabelBox[StringPart[#,1],ToExpression[StringDrop[#,1]],ToBoxes[a]],
+		ToBoxes[a]
+	]&@ToString[a]
 
 
 (* ::Subsection:: *)
@@ -107,8 +137,8 @@ SetOptions[EvaluationNotebook[],
 (*Properties*)
 
 
-EpsilonPol /: MakeBoxes[EpsilonPol[a_][\[Mu]__], StandardForm | TraditionalForm] := EpsilonPolBox[ToBoxes[a]][Sequence@@(ToBoxes/@{\[Mu]})]
-EpsilonPol /: MakeBoxes[EpsilonPol[a_], StandardForm | TraditionalForm] := EpBox[ToBoxes[a]]
+EpsilonPol /: MakeBoxes[EpsilonPol[a_][\[Mu]__], StandardForm | TraditionalForm] := EpsilonPolBox[ToLabel[a]][Sequence@@(ToBoxes/@{\[Mu]})]
+EpsilonPol /: MakeBoxes[EpsilonPol[a_], StandardForm | TraditionalForm] := EpBox[ToLabel[a]]
 
 
 EpsilonPol[a_][\[Mu]__] /; \[Not]OrderedQ[{\[Mu]}] := EpsilonPol[a][Sequence@@Sort[{\[Mu]}]]
@@ -149,8 +179,8 @@ SetOptions[EvaluationNotebook[],
 (*Properties*)
 
 
-FieldStr /: MakeBoxes[FieldStr[a_][\[Mu]_,\[Nu]_], StandardForm | TraditionalForm] := FieldStrBox[ToBoxes[a]][ToBoxes[\[Mu]],ToBoxes[\[Nu]]]
-FieldStr /: MakeBoxes[FieldStr[a_], StandardForm | TraditionalForm] := FStrBox[ToBoxes[a]]
+FieldStr /: MakeBoxes[FieldStr[a_][\[Mu]_,\[Nu]_], StandardForm | TraditionalForm] := FieldStrBox[ToLabel[a]][ToBoxes[\[Mu]],ToBoxes[\[Nu]]]
+FieldStr /: MakeBoxes[FieldStr[a_], StandardForm | TraditionalForm] := FStrBox[ToLabel[a]]
 
 
 FieldStr[a_][\[Mu]_,\[Nu]_] /; \[Not]OrderedQ[{\[Mu],\[Nu]}] := - FieldStr[a][\[Nu],\[Mu]]
@@ -186,7 +216,7 @@ SetOptions[EvaluationNotebook[],
 (*Properties*)
 
 
-Riemann /: MakeBoxes[Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_], StandardForm | TraditionalForm] := RiemannBox[ToBoxes[a]][ToBoxes[\[Mu]],ToBoxes[\[Nu]],ToBoxes[\[Rho]],ToBoxes[\[Sigma]]]
+Riemann /: MakeBoxes[Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_], StandardForm | TraditionalForm] := RiemannBox[ToLabel[a]][ToBoxes[\[Mu]],ToBoxes[\[Nu]],ToBoxes[\[Rho]],ToBoxes[\[Sigma]]]
 
 
 Riemann[a_][\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_] /; \[Not]OrderedQ[{\[Mu],\[Nu]}] := - Riemann[a][\[Nu],\[Mu],\[Rho],\[Sigma]]
@@ -308,8 +338,8 @@ SetOptions[EvaluationNotebook[],
 (*Properties*)
 
 
-Velocity /: MakeBoxes[Velocity[a_][\[Mu]_], StandardForm | TraditionalForm] := VelocityBox[ToBoxes[a]][ToBoxes[\[Mu]]]
-Velocity /: MakeBoxes[Velocity[a_], StandardForm | TraditionalForm] := VelBox[ToBoxes[a]]
+Velocity /: MakeBoxes[Velocity[a_][\[Mu]_], StandardForm | TraditionalForm] := VelocityBox[ToLabel[a]][ToBoxes[\[Mu]]]
+Velocity /: MakeBoxes[Velocity[a_], StandardForm | TraditionalForm] := VelBox[ToLabel[a]]
 
 Velocity[a_][\[Mu]_] /; MatchQ[Head[a],Times]&&a[[1]]==-1 := - Velocity[-a][\[Mu]]
 Velocity[a_][\[Mu]_] /; a < 0 := - Velocity[-a][\[Mu]]
@@ -328,15 +358,15 @@ Velocity /: Velocity[a_][\[Nu]_]^2 := DotProduct[Velocity[a],Velocity[a]]
 
 
 FTraceBox[a_,c__,b_] :=
-    TemplateBox[{b,Sequence@@Riffle[{a,c,b},"\[CenterDot]"],Sequence@@Riffle[{c},","]}, "FTrace",
-        DisplayFunction -> (RowBox[{TemplateSlotSequence[{2,4+2*Length[{c}]}]}]&),
-        InterpretationFunction->(RowBox[{"FTrace","[",RowBox[{#2,",","{",TemplateSlotSequence[5+2*Length[{c}]],"}",",",#1}],"]"}]&)
+    TemplateBox[{a,b,c}, "FTrace",
+        DisplayFunction -> (RowBox[{#1,"\[CenterDot]",TemplateSlotSequence[3,"\[CenterDot]"],"\[CenterDot]",#2}]&),
+        InterpretationFunction->(RowBox[{"FTrace","[",RowBox[{#1,",","{",TemplateSlotSequence[3,","],"}",",",#2}],"]"}]&)
         ]
-        
+
 FTraceBox[a_List] :=
-    TemplateBox[{Length[a],Sequence@@Riffle[ToBoxes/@a,"\[CenterDot]"],Sequence@@Riffle[ToBoxes/@a,","]}, "FTrace",
-        DisplayFunction -> (RowBox[{TemplateSlotSequence[{2,2*#1}]}]&),
-        InterpretationFunction->(RowBox[{"FTrace","[",RowBox[{"{",TemplateSlotSequence[2*#1+1],"}"}],"]"}]&)
+    TemplateBox[{Sequence@@a}, "FTrace",
+        DisplayFunction -> (RowBox[{TemplateSlotSequence[1,"\[CenterDot]"]}]&),
+        InterpretationFunction->(RowBox[{"FTrace","[",RowBox[{"{",TemplateSlotSequence[1,","],"}"}],"]"}]&)
         ]
 
 
@@ -345,7 +375,7 @@ FTraceBox[a_List] :=
 
 
 FTrace /: MakeBoxes[FTrace[a_,c_List,b_], StandardForm | TraditionalForm] := FTraceBox[ToBoxes[a],Sequence@@(ToBoxes/@c),ToBoxes[b]]
-FTrace /: MakeBoxes[FTrace[a_List], StandardForm | TraditionalForm] := FTraceBox[a]
+FTrace /: MakeBoxes[FTrace[a_List], StandardForm | TraditionalForm] := FTraceBox[ToBoxes/@a]
 
 FTrace[a_Plus,c_List,b_]:=FTrace[#,c,b]&/@a
 FTrace[a_,c_List,b_Plus]:=FTrace[a,c,#]&/@b
@@ -380,7 +410,7 @@ MassBox[label_]:=
 (*Properties*)
 
 
-Mass /: MakeBoxes[Mass[a_], StandardForm | TraditionalForm] := MassBox[ToBoxes[a]]
+Mass /: MakeBoxes[Mass[a_], StandardForm | TraditionalForm] := MassBox[ToLabel[a]]
 
 
 (* ::Subsection:: *)
@@ -394,7 +424,7 @@ Mass /: MakeBoxes[Mass[a_], StandardForm | TraditionalForm] := MassBox[ToBoxes[a
 MandelstamBox[a__] :=
     TemplateBox[{a}, "Mandelstam",
         DisplayFunction -> (SubscriptBox["s",RowBox[{##}]]&),
-        InterpretationFunction -> (RowBox[{"Mandelstam","[",RowBox[{##}],"]"}]&)]
+        InterpretationFunction -> (RowBox[{"Mandelstam","[",RowBox[{TemplateSlotSequence[1,","]}],"]"}]&)]
 
 
 (* ::Subsubsection::Closed:: *)
@@ -427,6 +457,11 @@ DotProductBox[a_,b_] :=
     TemplateBox[{a,b}, "DotProduct",
         DisplayFunction -> (RowBox[{#1,"\[CenterDot]",#2}]&),
         InterpretationFunction -> (RowBox[{"DotProduct","[",RowBox[{#1,",",#2}],"]"}]&)]
+        
+DotProduct2Box[a_] :=
+    TemplateBox[{a}, "DotProduct",
+        DisplayFunction -> (SuperscriptBox[RowBox[{#1}],"2"]&),
+        InterpretationFunction -> (RowBox[{"DotProduct","[",RowBox[{#1,",",#1}],"]"}]&)]
 
 
 (* ::Subsubsection::Closed:: *)
@@ -447,6 +482,7 @@ SetOptions[EvaluationNotebook[],
 (*Properties*)
 
 
+DotProduct /: MakeBoxes[DotProduct[a_,a_], StandardForm | TraditionalForm] := DotProduct2Box[ToBoxes[a]]
 DotProduct /: MakeBoxes[DotProduct[a_,b_], StandardForm | TraditionalForm] := DotProductBox[ToBoxes[a],ToBoxes[b]]
 
 

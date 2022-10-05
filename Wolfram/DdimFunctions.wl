@@ -43,10 +43,10 @@ Begin["`Private`"]
 
 
 (*-Problem: e.g. latin indices after 26 give errors. We should define some sort of index mod 26 which adds a number to the letter after 26. {a,b...z,a1,b1,...z1,a2,...}*)
+(*-Feature: DDerivative with respect to a Momentum inside FieldStr  *)
 
 
-
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Relabel Dummies*)
 
 
