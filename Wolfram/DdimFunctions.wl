@@ -9,23 +9,19 @@ BeginPackage["DdimFunctions`", {"YoungSymm`"}]
 
 
 RelabelDummies::usage = "..."
-
 Relabel::usage = "..."
 
 FromDotIndices::usage = "..."
-
 ToTrace::usage = "..."
 
 SetMasses::usage = "..."
-
+FixMasses::usage = "..."
 ZeroMasses::usage = "..."
-
 ClearMasses::usage = "..."
 
 DDerivative::usage = "..."
 
 CombinePolarisations::usage = "..."
-
 DecombinePolarisations::usage = "..."
 
 
@@ -35,7 +31,6 @@ DecombinePolarisations::usage = "..."
 
 
 Begin["`Private`"]
-
 
 
 (* ::Text:: *)
@@ -240,12 +235,23 @@ SetMasses[masses_List] :=
 		Set @@@ Transpose[{(DdimVariables`DotProduct[DdimVariables`Momentum[
 			#], DdimVariables`Momentum[#]]& /@ masses), (DdimVariables`Mass[#] ^ 
 			2& /@ masses)}];
-		Set @@@ Transpose[{(DdimVariables`DotProduct[DdimVariables`Velocity[
-			#], DdimVariables`Velocity[#]]& /@ masses), Table[1, Length @ masses]
-			}];
 		Protect[DdimVariables`DotProduct];
 	)
 
+
+
+(* ::Subsection::Closed:: *)
+(*FixMasses*)
+
+
+FixMasses[particles_List,masses_List] /; Length[particles] == Length[masses] :=
+	(
+		Unprotect[DdimVariables`DotProduct];
+		Set @@@ Transpose[{(DdimVariables`DotProduct[DdimVariables`Momentum[
+			#], DdimVariables`Momentum[#]]& /@ particles), masses
+			}];
+		Protect[DdimVariables`DotProduct];
+	)
 
 
 (* ::Subsection::Closed:: *)
@@ -280,20 +286,19 @@ ClearMasses[] :=
 
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*DDerivative*)
 
 
-(*DDerivative[exp_,,p_?(MatchQ[#,Momentum[_][_]|Velocity[_][_]|EpsilonPol[_][_]]&)]:=If[Echo@FreeQ[exp,Echo@Head[p]],0]*)
-DDerivative[DdimVariables`DotProduct[i_,j_],p_?(MatchQ[#,DdimVariables`Momentum[_][_]|DdimVariables`Velocity[_][_]|DdimVariables`EpsilonPol[_][_]]&)]:=If[MatchQ[i,Head[p]],j[p[[1]]],0]+If[MatchQ[j,Head[p]],i[p[[1]]],0]
+(*DDerivative[exp_,,p_?(MatchQ[#,Momentum[_][_]|EpsilonPol[_][_]]&)]:=If[Echo@FreeQ[exp,Echo@Head[p]],0]*)
+DDerivative[DdimVariables`DotProduct[i_,j_],p_?(MatchQ[#,DdimVariables`Momentum[_][_]|DdimVariables`EpsilonPol[_][_]]&)]:=If[MatchQ[i,Head[p]],j[p[[1]]],0]+If[MatchQ[j,Head[p]],i[p[[1]]],0]
 DDerivative[DdimVariables`Momentum[x_][a_],DdimVariables`Momentum[x_][b_]]:=DdimVariables`Metric[a,b]
-DDerivative[DdimVariables`Velocity[x_][a_],DdimVariables`Velocity[x_][b_]]:=DdimVariables`Metric[a,b]
 DDerivative[DdimVariables`EpsilonPol[x_][a_],DdimVariables`EpsilonPol[x_][b_]]:=DdimVariables`Metric[a,b]
-DDerivative[sum_Plus,p_?(MatchQ[#,DdimVariables`Momentum[_][_]|DdimVariables`Velocity[_][_]|DdimVariables`EpsilonPol[_][_]]&)]:=Plus@@(DDerivative[#,p]&/@List@@sum)
-DDerivative[Times[a_,b_],p_?(MatchQ[#,DdimVariables`Momentum[_][_]|DdimVariables`Velocity[_][_]|DdimVariables`EpsilonPol[_][_]]&)]:=DDerivative[a,p]*Times[b]+a*DDerivative[b,p]
-DDerivative[Power[a_,b_],p_?(MatchQ[#,DdimVariables`Momentum[_][_]|DdimVariables`Velocity[_][_]|DdimVariables`EpsilonPol[_][_]]&)]:=b*Power[a,b-1]*DDerivative[a,p]
-DDerivative[exp_, p_ ? (MatchQ[#, DdimVariables`Momentum[_][_] | DdimVariables`Velocity[_][_] | DdimVariables`EpsilonPol[_][_]]&)]:=0
-(*DDerivative[exp_,,p_?(!MatchQ[#,Momentum[_][_]|Velocity[_][_]|EpsilonPol[_][_]]&)] define an error message*)
+DDerivative[sum_Plus,p_?(MatchQ[#,DdimVariables`Momentum[_][_]|DdimVariables`EpsilonPol[_][_]]&)]:=Plus@@(DDerivative[#,p]&/@List@@sum)
+DDerivative[Times[a_,b_],p_?(MatchQ[#,DdimVariables`Momentum[_][_]|DdimVariables`EpsilonPol[_][_]]&)]:=DDerivative[a,p]*Times[b]+a*DDerivative[b,p]
+DDerivative[Power[a_,b_],p_?(MatchQ[#,DdimVariables`Momentum[_][_]|DdimVariables`EpsilonPol[_][_]]&)]:=b*Power[a,b-1]*DDerivative[a,p]
+DDerivative[exp_, p_ ? (MatchQ[#, DdimVariables`Momentum[_][_]  | DdimVariables`EpsilonPol[_][_]]&)]:=0
+(*DDerivative[exp_,,p_?(!MatchQ[#,Momentum[_][_]|EpsilonPol[_][_]]&)] define an error message*)
 
 
 (* ::Subsection:: *)

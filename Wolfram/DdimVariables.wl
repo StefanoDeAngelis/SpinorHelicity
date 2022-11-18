@@ -13,7 +13,6 @@ EpsilonPol::usage = "..."
 FieldStr::usage = "..."
 Riemann::usage = "..."
 Momentum::usage = "..."
-Velocity::usage = "..."
 
 FTrace::usage = "..."
 
@@ -23,6 +22,7 @@ Mandelstam::usage = "..."
 DotProduct::usage = "..."
 
 DD::usage = "..."
+ToLabel::usage = "..."
 
 
 (* ::Section:: *)
@@ -40,10 +40,15 @@ Begin["`Private`"]
 (*Boxes*)
 
 
-ToLabelBox[a_,b_,c_] :=
-    TemplateBox[{a,b,c},ToString[#3]&,
+ToLabelBox[a_,b_] :=
+    TemplateBox[{a,b},"ToLabel",
         DisplayFunction -> (SubscriptBox[RowBox[{#1}],RowBox[{#2}]]&),
-        InterpretationFunction -> (RowBox[{#3}]&)]
+        InterpretationFunction -> (RowBox[{#1<>#2}]&)]
+        
+ToLabelBox[a_] :=
+    TemplateBox[{a},"ToLabel",
+        DisplayFunction -> (RowBox[{#}]&),
+        InterpretationFunction -> (RowBox[{#}]&)]
 
 
 (* ::Subsubsection::Closed:: *)
@@ -53,10 +58,10 @@ ToLabelBox[a_,b_,c_] :=
 ToLabel[a_]:=
 	If[
 		StringLength[#]>1
-			&&DigitQ[StringDrop[#,1]]
+			(*&&DigitQ[StringDrop[#,1]]*)
 			&&LetterQ[StringPart[#,1]],
-		ToLabelBox[StringPart[#,1],ToExpression[StringDrop[#,1]],ToBoxes[a]],
-		ToBoxes[a]
+		ToLabelBox[ToBoxes[ToExpression[StringPart[#,1]]],ToBoxes[ToExpression[StringDrop[#,1]]]],
+		ToLabelBox[ToBoxes[a]]
 	]&@ToString[a]
 
 
@@ -82,11 +87,13 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "metric" -> MetricBox["\[SelectionPlaceholder]","\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
 Metric /: MakeBoxes[Metric[\[Mu]_,\[Nu]_], StandardForm | TraditionalForm] := MetricBox[ToBoxes[\[Mu]],ToBoxes[\[Nu]]]
+
+DD /: MakeBoxes[DD,StandardForm | TraditionalForm] := TemplateBox[{"D"},"DD",DisplayFunction->(RowBox[{#}]&),InterpretationFunction->(RowBox[{"DD"}]&)]
 
 
 Metric[\[Mu]_,\[Nu]_] /; \[Not]OrderedQ[{\[Mu],\[Nu]}] := Metric[\[Nu],\[Mu]]
@@ -247,10 +254,10 @@ MomentumBoxLetter[a_][\[Mu]_] :=
         DisplayFunction -> (SuperscriptBox[RowBox[{#1}],RowBox[{#2}]]&),
         InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#1}],"]","[",RowBox[{#2}],"]"}]&)]
         
-MomentumBoxLetterNumber[a_,b_,c_][\[Mu]_] :=
-	TemplateBox[{a,b,c,\[Mu]}, "Momentum",
-        DisplayFunction -> (SubsuperscriptBox[RowBox[{#1}],RowBox[{#2}],RowBox[{#4}]]&),
-        InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#3}],"]","[",RowBox[{#4}],"]"}]&)]
+MomentumBoxLetterNumber[a_,b_][\[Mu]_] :=
+	TemplateBox[{a,b,\[Mu]}, "Momentum",
+        DisplayFunction -> (SubsuperscriptBox[RowBox[{#1}],RowBox[{#2}],RowBox[{#3}]]&),
+        InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#1<>#2}],"]","[",RowBox[{#3}],"]"}]&)]
 
 MomBox[a_] :=
     TemplateBox[{a}, "Momentum",
@@ -262,10 +269,10 @@ MomBoxLetter[a_] :=
         DisplayFunction -> (RowBox[{#1}]&),
         InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#1}],"]"}]&)]
         
-MomBoxLetterNumber[a_,b_,c_] :=
-	TemplateBox[{a,b,c}, "Momentum",
+MomBoxLetterNumber[a_,b_] :=
+	TemplateBox[{a,b}, "Momentum",
         DisplayFunction -> (SubscriptBox[RowBox[{#1}],RowBox[{#2}]]&),
-        InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#3}],"]"}]&)]
+        InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#1<>#2}],"]"}]&)]
 
 
 (* ::Subsubsection::Closed:: *)
@@ -276,15 +283,15 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "mom" -> MomentumBox["\[SelectionPlaceholder]"]["\[Placeholder]"]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
 Momentum /: MakeBoxes[Momentum[a_][\[Mu]_], StandardForm | TraditionalForm] := 
 	If[LetterQ[StringPart[#,1]],
 		If[
-			StringLength[#]>1,
-			MomentumBoxLetterNumber[ToBoxes[ToExpression[StringPart[#,1]]],ToBoxes[ToExpression[StringDrop[#,1]]],ToBoxes[a]][ToBoxes[\[Mu]]],
+			StringLength[#]>1(*&&DigitQ[StringDrop[#,1]]*),
+			MomentumBoxLetterNumber[ToBoxes[ToExpression[StringPart[#,1]]],ToBoxes[ToExpression[StringDrop[#,1]]]][ToBoxes[\[Mu]]],
 			MomentumBoxLetter[ToBoxes[a]][ToBoxes[\[Mu]]]
 		],
 		MomentumBox[ToBoxes[a]][ToBoxes[\[Mu]]]
@@ -293,8 +300,8 @@ Momentum /: MakeBoxes[Momentum[a_][\[Mu]_], StandardForm | TraditionalForm] :=
 Momentum /: MakeBoxes[Momentum[a_], StandardForm | TraditionalForm] := 
 	If[LetterQ[StringPart[#,1]],
 		If[
-			StringLength[#]>1,
-			MomBoxLetterNumber[ToBoxes[ToExpression[StringPart[#,1]]],ToBoxes[ToExpression[StringDrop[#,1]]],ToBoxes[a]],
+			StringLength[#]>1(*&&DigitQ[StringDrop[#,1]]*),
+			MomBoxLetterNumber[ToBoxes[ToExpression[StringPart[#,1]]],ToBoxes[ToExpression[StringDrop[#,1]]]],
 			MomBoxLetter[ToBoxes[a]]
 		],
 		MomBox[ToBoxes[a]]
@@ -303,50 +310,15 @@ Momentum /: MakeBoxes[Momentum[a_], StandardForm | TraditionalForm] :=
 Momentum[a_][\[Mu]_] /; MatchQ[Head[a],Times]&&a[[1]]==-1 := - Momentum[-a][\[Mu]]
 Momentum[a_][\[Mu]_] /; a < 0 := - Momentum[-a][\[Mu]]
 
+Momentum[x_Plus][\[Mu]_] := Plus@@(Momentum[#][\[Mu]]&/@(List@@x))
+
+Momentum[a_] /; MatchQ[Head[a],Times]&&a[[1]]==-1 := - Momentum[-a]
+Momentum[a_] /; a < 0 := - Momentum[-a]
+
+Momentum[x_Plus] := Plus@@(Momentum[#]&/@(List@@x))
+
 (*Momentum /: Momentum[a_][\[Nu]_] Momentum[a_][\[Nu]_] := Mass[a]^2*)
 Momentum /: Momentum[a_][\[Nu]_]^2 := DotProduct[Momentum[a],Momentum[a]]
-
-
-(* ::Subsection:: *)
-(*Velocity*)
-
-
-(* ::Subsubsection::Closed:: *)
-(*Boxes*)
-
-
-VelocityBox[a_][\[Mu]_] :=
-    TemplateBox[{a,\[Mu]}, "Velocity",
-        DisplayFunction -> (SubsuperscriptBox["v",RowBox[{#1}],RowBox[{#2}]]&),
-        InterpretationFunction -> (RowBox[{"Velocity","[",RowBox[{#1}],"]","[",RowBox[{#2}],"]"}]&)]
-
-VelBox[a_] :=
-    TemplateBox[{a}, "Velocity",
-        DisplayFunction -> (SubscriptBox["v",RowBox[{#1}]]&),
-        InterpretationFunction -> (RowBox[{"Velocity","[",RowBox[{#1}],"]"}]&)]
-
-
-(* ::Subsubsection::Closed:: *)
-(*Shortcuts*)
-
-
-SetOptions[EvaluationNotebook[],
-    InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "vel" -> VelocityBox["\[SelectionPlaceholder]"]["\[Placeholder]"]]]
-
-
-(* ::Subsubsection:: *)
-(*Properties*)
-
-
-Velocity /: MakeBoxes[Velocity[a_][\[Mu]_], StandardForm | TraditionalForm] := VelocityBox[ToLabel[a]][ToBoxes[\[Mu]]]
-Velocity /: MakeBoxes[Velocity[a_], StandardForm | TraditionalForm] := VelBox[ToLabel[a]]
-
-Velocity[a_][\[Mu]_] /; MatchQ[Head[a],Times]&&a[[1]]==-1 := - Velocity[-a][\[Mu]]
-Velocity[a_][\[Mu]_] /; a < 0 := - Velocity[-a][\[Mu]]
-
-(*Momentum /: Momentum[a_][\[Nu]_] Momentum[a_][\[Nu]_] := Mass[a]^2*)
-(*Velocity /: Velocity[a_][\[Nu]_]^2 := 1*)
-Velocity /: Velocity[a_][\[Nu]_]^2 := DotProduct[Velocity[a],Velocity[a]]
 
 
 (* ::Subsection:: *)
@@ -387,8 +359,8 @@ FTrace[a_,c_List,b_]/;!OrderedQ[{a,b}]:=(-1)^Length[c]*FTrace[b,Reverse@c,a]
 FTrace[a_,c_List,a_]/;(If[MatchQ[#,{}],False,Part[#,1]]&@(FTraceNotOrderedQ/@Transpose[{c,Reverse@c}])):=(-1)^Length[c]*FTrace[a,Reverse@c,a]
 FTrace[list_List]/;(First@Ordering[list]!=1):=FTrace[RotateLeft[list,First@Ordering[list]-1]]
 
-FTrace[Times[x_,a__],c_,b_]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=x*FTrace[Times[a],c,b]
-FTrace[a_,c_,Times[x_,b__]]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=x*FTrace[a,c,Times[b]]
+FTrace[Times[x_,a__],c_,b_]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]]:=x*FTrace[Times[a],c,b]
+FTrace[a_,c_,Times[x_,b__]]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]]:=x*FTrace[a,c,Times[b]]
 
 
 (* ::Subsection:: *)
@@ -492,13 +464,12 @@ DotProduct[a_Plus,b_]:=DotProduct[#,b]&/@a
 DotProduct[a_,b_Plus]:=DotProduct[a,#]&/@b
 
 (*DotProduct[Momentum[a_],Momentum[a_]] := Mass[a]^2*)
-(*DotProduct[Velocity[a_],Velocity[a_]] := 1*)
 
-DotProduct[Times[a_,b_,x___],c_]/;MatchQ[a,Momentum[_]|EpsilonPol[_]|Velocity[_]]&&MatchQ[b,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=$Failed
-DotProduct[a_,Times[b_,c_,x___]]/;MatchQ[b,Momentum[_]|EpsilonPol[_]|Velocity[_]]&&MatchQ[c,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=$Failed
+DotProduct[Times[a_,b_,x___],c_]/;MatchQ[a,Momentum[_]|EpsilonPol[_]]&&MatchQ[b,Momentum[_]|EpsilonPol[_]]:=$Failed
+DotProduct[a_,Times[b_,c_,x___]]/;MatchQ[b,Momentum[_]|EpsilonPol[_]]&&MatchQ[c,Momentum[_]|EpsilonPol[_]]:=$Failed
 
-DotProduct[Times[x___,a_],b_]/;MatchQ[a,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=Times[x]*DotProduct[a,b]
-DotProduct[a_,Times[x___,b_]]/;MatchQ[b,Momentum[_]|EpsilonPol[_]|Velocity[_]]:=Times[x]*DotProduct[a,b]
+DotProduct[Times[x___,a_],b_]/;MatchQ[a,Momentum[_]|EpsilonPol[_]]:=Times[x]*DotProduct[a,b]
+DotProduct[a_,Times[x___,b_]]/;MatchQ[b,Momentum[_]|EpsilonPol[_]]:=Times[x]*DotProduct[a,b]
 
 
 End[]
