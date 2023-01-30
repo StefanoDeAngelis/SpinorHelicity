@@ -93,7 +93,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "metric" -> MetricBox["\[SelectionPlaceholder]","\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
@@ -105,6 +105,8 @@ DD /: MakeBoxes[DD,StandardForm | TraditionalForm] := TemplateBox[{"D"},"DD",Dis
 Metric[\[Mu]_,\[Nu]_] /; \[Not]OrderedQ[{\[Mu],\[Nu]}] := Metric[\[Nu],\[Mu]]
 
 Metric[\[Mu]_,\[Mu]_] := DD;
+
+Metric /: Metric[\[Mu]_,\[Nu]_]^2 := DD;
 
 
 Metric /: Metric[\[Mu]_,\[Nu]_] Metric[\[Rho]_,\[Nu]_] := Metric[\[Mu],\[Rho]]
@@ -122,14 +124,14 @@ Metric /: Metric[\[Nu]_,\[Rho]_] EpsilonPol[a_,\[Mu]___,\[Nu]_,\[Sigma]___] := E
 (*Polarisation tensor*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Boxes*)
 
 
 EpsilonPolBox[a_,\[Mu]__] :=
     TemplateBox[{a,\[Mu]}, "EpsilonPol",
         DisplayFunction -> (SubsuperscriptBox["\[CurlyEpsilon]",RowBox[{#1}],RowBox[{##2}]]&),
-        InterpretationFunction -> (RowBox[{"EpsilonPol","[",RowBox[{#1}],"]","[",TemplateSlotSequence[2,","],"]"}]&)] (*The RowBox of ##2 gives a problem when we copy and paste the 
+        InterpretationFunction -> (RowBox[{"EpsilonPol","[",RowBox[{#1}],",",TemplateSlotSequence[2,","],"]"}]&)] (*The RowBox of ##2 gives a problem when we copy and paste the 
         EpsilonPol with two indices*)
 
 EpBox[a_] :=
@@ -138,7 +140,7 @@ EpBox[a_] :=
         InterpretationFunction -> (RowBox[{"EpsilonPol","[",RowBox[{#1}],"]"}]&)]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Shortcuts*)
 
 
@@ -165,14 +167,14 @@ EpsilonPol /: EpsilonPol[a_,\[Mu]__] EpsilonPol[a_,\[Nu]__] /; \[Not]MatchQ[Comp
 (*Field strength tensor*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Boxes*)
 
 
 FieldStrBox[a_,\[Mu]_,\[Nu]_] :=
     TemplateBox[{a,\[Mu],\[Nu]}, "FieldStr",
         DisplayFunction -> (SubsuperscriptBox["F",RowBox[{#1}],RowBox[{#2,#3}]]&),
-        InterpretationFunction -> (RowBox[{"FieldStr","[",RowBox[{#1}],"]","[",RowBox[{#2}],",",RowBox[{#3}],"]"}]&)]
+        InterpretationFunction -> (RowBox[{"FieldStr","[",RowBox[{#1}],",",RowBox[{#2}],",",RowBox[{#3}],"]"}]&)]
         
 FStrBox[a_] :=
     TemplateBox[{a}, "FieldStr",
@@ -180,7 +182,7 @@ FStrBox[a_] :=
         InterpretationFunction -> (RowBox[{"FieldStr","[",RowBox[{#1}],"]"}]&)]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Shortcuts*)
 
 
@@ -188,7 +190,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "fieldst" -> FieldStrBox["\[SelectionPlaceholder]","\[Placeholder]","\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
@@ -207,17 +209,17 @@ FieldStr /: FieldStr[a_,\[Mu]_,\[Nu]_] FieldStr[a_,\[Rho]_,\[Sigma]_] /; \[Not]D
 (*Riemann tensor*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Boxes*)
 
 
 RiemannBox[a_,\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_] :=
     TemplateBox[{a,\[Mu],\[Nu],\[Rho],\[Sigma]}, "Riemann",
         DisplayFunction -> (SubsuperscriptBox["R",RowBox[{#1}],RowBox[{#2,#3,#4,#5}]]&),
-        InterpretationFunction -> (RowBox[{"Riemann","[",RowBox[{#1}],"]","[",RowBox[{#2}],",",RowBox[{#3}],",",RowBox[{#4}],",",RowBox[{#5}],"]"}]&)]
+        InterpretationFunction -> (RowBox[{"Riemann","[",RowBox[{#1}],",",RowBox[{#2}],",",RowBox[{#3}],",",RowBox[{#4}],",",RowBox[{#5}],"]"}]&)]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Shortcuts*)
 
 
@@ -225,7 +227,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "riemann" -> RiemannBox["\[SelectionPlaceholder]","\[Placeholder]","\[Placeholder]","\[Placeholder]","\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
@@ -246,24 +248,24 @@ Riemann /: Riemann[a_,\[Mu]1_,\[Nu]1_,\[Rho]1_,\[Sigma]1_] Riemann[a_,\[Mu]2_,\[
 (*Momentum*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Boxes*)
 
 
 MomentumBox[a_,\[Mu]_] :=
     TemplateBox[{a,\[Mu]}, "Momentum",
         DisplayFunction -> (SubsuperscriptBox["p",RowBox[{#1}],RowBox[{#2}]]&),
-        InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#1}],"]","[",RowBox[{#2}],"]"}]&)]
+        InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#1}],",",RowBox[{#2}],"]"}]&)]
         
 MomentumBoxLetter[a_,\[Mu]_] :=
 	TemplateBox[{a,\[Mu]}, "Momentum",
         DisplayFunction -> (SuperscriptBox[RowBox[{#1}],RowBox[{#2}]]&),
-        InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#1}],"]","[",RowBox[{#2}],"]"}]&)]
+        InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#1}],",",RowBox[{#2}],"]"}]&)]
         
 MomentumBoxLetterNumber[a_,b_,\[Mu]_] :=
 	TemplateBox[{a,b,\[Mu]}, "Momentum",
         DisplayFunction -> (SubsuperscriptBox[RowBox[{#1}],RowBox[{#2}],RowBox[{#3}]]&),
-        InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#1<>#2}],"]","[",RowBox[{#3}],"]"}]&)]
+        InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#1<>#2}],",",RowBox[{#3}],"]"}]&)]
 
 MomBox[a_] :=
     TemplateBox[{a}, "Momentum",
@@ -281,7 +283,7 @@ MomBoxLetterNumber[a_,b_] :=
         InterpretationFunction -> (RowBox[{"Momentum","[",RowBox[{#1<>#2}],"]"}]&)]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Shortcuts*)
 
 
@@ -289,7 +291,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "mom" -> MomentumBox["\[SelectionPlaceholder]","\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 

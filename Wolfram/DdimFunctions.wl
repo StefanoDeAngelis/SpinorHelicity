@@ -39,6 +39,8 @@ Begin["`Private`"]
 (*-Problem: e.g. latin indices after 26 give errors. We should define some sort of index mod 26 which adds a number to the letter after 26. {a,b...z,a1,b1,...z1,a2,...}*)
 (*-Feature: DDerivative with respect to a Momentum inside FieldStr  *)
 
+(* Problem: FromDotIndices has to be rewritten to take into account the changes for the momenta and epsilon polarizations. An additional feature is needed for FTrace.*)
+
 
 (* ::Subsection::Closed:: *)
 (*Relabel Dummies*)
@@ -291,7 +293,7 @@ ClearMasses[] :=
 
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*DDerivative*)
 
 
