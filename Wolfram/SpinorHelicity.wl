@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-BeginPackage["SpinorHelicity`",{"HelicityVariables`","NumericalKinematics`"}]
+BeginPackage["SpinorHelicity`", {"HelicityVariables`", "NumericalKinematics`"}]
 
 
 (* ::Section:: *)
@@ -10,15 +10,23 @@ BeginPackage["SpinorHelicity`",{"HelicityVariables`","NumericalKinematics`"}]
 MassDimension::usage = "..."
 Helicity::usage = "..."
 Particles::usage = "..."
+
 ToSp::usage = "..."
 ToBracket::usage = "..."
 
 SpinorComponents::usage = "..."
+
 NEvaluate::usage = "..."
 
 
 (* ::Section:: *)
 (*Numerical Kinematics*)
+
+
+(*TODOs:
+	- define new (numerical) variables which stores the numerical evaluations of structures already encountered
+	- define a spin function (which takes into account the possibility of having SpinorDottedMV[$up,$up][p1,a1,J1]SpinorUndottedMV[$up,$down][p1,a2,J1])
+*)
 
 
 Begin["`Private`"]
@@ -38,11 +46,11 @@ MassDimension[exp_Times] := Plus @@ (MassDimension /@ List @@ exp)
 MassDimension[Power[expr_, expo_]] := expo * MassDimension[expr]
 
 MassDimension[exp_Plus] := Block[{dims = MassDimension /@ List @@ exp},
-	dims = DeleteDuplicates[dims]; If[Length[dims] > 1,
-		Message[MassDimension::hom, exp]
-		,
-		Return[dims[[1]]]
-	]
+    dims = DeleteDuplicates[dims]; If[Length[dims] > 1,
+        Message[MassDimension::hom, exp]
+        ,
+        Return[dims[[1]]]
+    ]
 ]
 
 MassDimension::hom = "`1` is not homogeneous in the mass dimension";
@@ -50,20 +58,20 @@ MassDimension::hom = "`1` is not homogeneous in the mass dimension";
 MassDimension[x_] := 0*)
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Spin*)
 
 
 (*Helicity[AML[a_, b_], label_] := If[a == label || b == label,
-	-1
-	,
-	0
+    -1
+    ,
+    0
 ];
 
 Helicity[SML[a_, b_], label_] := If[a == label || b == label,
-	1
-	,
-	0
+    1
+    ,
+    0
 ];
 
 (*Helicity[Sp[a__],label_]:=0;
@@ -73,11 +81,11 @@ Helicity[exp_Times, label_] := Plus @@ (Helicity[#, label]& /@ List @@ exp)
 Helicity[Power[expr_, expo_], label_] := expo * Helicity[expr, label]
 
 Helicity[exp_Plus, label_] := Block[{dims = Helicity[#, label]& /@ List @@ exp},
-	dims = DeleteDuplicates[dims]; If[Length[dims] > 1,
-		Message[Helicity::hom, exp, label]
-		,
-		Return[dims[[1]]]
-	]
+    dims = DeleteDuplicates[dims]; If[Length[dims] > 1,
+        Message[Helicity::hom, exp, label]
+        ,
+        Return[dims[[1]]]
+    ]
 ]
 Helicity::hom = "`1` is not homogeneous in the helicity weight of particle `2`";
 
@@ -91,7 +99,7 @@ Helicity[x_, label_] := 0*)
 (*Particles[exp_]:=Sort@DeleteDuplicates@Cases[{exp},HoldPattern[AML[x__]|Sp[x__]]:>Sequence@@{x},\[Infinity]]*)
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*ToSp and ToBracket*)
 
 
@@ -103,237 +111,186 @@ ToBracket[exp_] := ReplaceAll[ReplaceAll[exp, Sp[a__] /; (Length[{a}] > 2) :> Su
 (*Spin components*)
 
 
-SpinorComponents[exp_] :=
-	DeleteCases[
-		Flatten@
-			CoefficientList[#1,Flatten@Table[z[i, n], {i, #2}, {n, 2}]],
-		0
-	]&[
-		ReplaceRepeated[exp,SpinorMV[][i_]:>Sum[z[i, n]*SpinorMV[$up][i,n],{n, 2}]],
-		Sort@DeleteDuplicates@Cases[exp,SpinorMV[][i_]:>i,\[Infinity]]
-	]
+(*SpinorComponents[exp_] :=
+    DeleteCases[
+        Flatten@
+            CoefficientList[#1,Flatten@Table[z[i, n], {i, #2}, {n, 2}]],
+        0
+    ]&[
+        ReplaceRepeated[exp,SpinorMV[][i_]:>Sum[z[i, n]*SpinorMV[$up][i,n],{n, 2}]],
+        Sort@DeleteDuplicates@Cases[exp,SpinorMV[][i_]:>i,\[Infinity]]
+    ]*)
 
 
 (* ::Subsection:: *)
 (*NEvaluate*)
 
 
-Attributes[NEvaluate]={Listable};
+Attributes[NEvaluate] = {Listable};
 
 NEvaluate[exp_] :=
-	Block[{SpinorMV, AngleB, SquareB, AngleAngleChain, AngleSquareChain,
-		 SquareSquareChain, TraceChain, MassUntilde, MassTilde},
-		 
-		SpinorMV[$down][i_, 1] := -SpinorMV[$up][i, 2];
-		SpinorMV[$down][i_, 2] := SpinorMV[$up][i, 1];
-		
+	Block[{SpinorDottedMV, SpinorUndottedMV, AngleB, SquareB, AngleAngleChain,
+		 AngleSquareChain, SquareSquareChain, TraceChain, MassUntilde, MassTilde
+		},
+		SpinorDottedMV[$down][i_, 1] := -SpinorDottedMV[$up][i, 2];
+		SpinorDottedMV[$down][i_, 2] := SpinorDottedMV[$up][i, 1];
+		SpinorUndottedMV[$down][i_, 1] := -SpinorUndottedMV[$up][i, 2];
+		SpinorUndottedMV[$down][i_, 2] := SpinorUndottedMV[$up][i, 1];
 		AngleB[a_, -b_] := -AngleB[a, b];
 		AngleB[-a_, b_] := -AngleB[a, b];
 		SquareB[-a_, b_] := -SquareB[a, b];
 		SquareB[a_, -b_] := -SquareB[a, b];
-		
-		AngleB[SpinorML[i_], SpinorML[j_]] := NSpinorUndottedML[i] . NEpsilon[
-			-1] . NSpinorUndottedML[j];
-		AngleB[SpinorML[i_], SpinorMV[$up][j_, J_]] := NSpinorUndottedML[i]
-			 . NEpsilon[-1] . NSpinorUndottedMV[j, J];
-		AngleB[SpinorMV[$up][i_, I_], SpinorMV[$up][j_, J_]] := NSpinorUndottedMV[
-			i, I] . NEpsilon[-1] . NSpinorUndottedMV[j, J];
-			
-		SquareB[SpinorML[i_], SpinorML[j_]] := NSpinorDottedML[i] . NEpsilon[
-			] . NSpinorDottedML[j];
-		SquareB[SpinorML[i_], SpinorMV[$up][j_, J_]] := NSpinorDottedML[i] 
-			. NEpsilon[] . NSpinorDottedMV[j, J];
-		SquareB[SpinorMV[$up][i_, I_], SpinorMV[$up][j_, J_]] := NSpinorDottedMV[
-			i, I] . NEpsilon[] . NSpinorDottedMV[j, J];
-			
-		AngleAngleChain[SpinorML[i_], list_List, SpinorML[j_]] :=
+		AngleB[SpinorUndottedML[][i_], SpinorUndottedML[][j_]] := NSpinorUndottedML[i] . NEpsilon[-1] . NSpinorUndottedML[j];
+		AngleB[SpinorUndottedML[][i_], SpinorUndottedMV[$up][j_, J_]] := NSpinorUndottedML[i] . NEpsilon[-1] . NSpinorUndottedMV[j, J];
+		AngleB[SpinorUndottedMV[$up][i_, II_], SpinorUndottedMV[$up][j_, J_]] := NSpinorUndottedMV[i, II] . NEpsilon[-1] . NSpinorUndottedMV[j,J];
+		SquareB[SpinorDottedML[][i_], SpinorDottedML[][j_]] := NSpinorDottedML[i] . NEpsilon[] . NSpinorDottedML[j];
+		SquareB[SpinorDottedML[][i_], SpinorDottedMV[$up][j_, J_]] := NSpinorDottedML[i] . NEpsilon[] . NSpinorDottedMV[j, J];
+		SquareB[SpinorDottedMV[$up][i_, II_], SpinorDottedMV[$up][j_, J_]] := NSpinorDottedMV[i, II] . NEpsilon[] . NSpinorDottedMV[j, J];
+		AngleAngleChain[SpinorUndottedML[][i_], list_List, SpinorUndottedML[][j_]] :=
 			NSpinorUndottedML[i] .
 				Dot[
-					NEpsilon[-1]
-					,
+					NEpsilon[-1],
 					Sequence @@
 						Table[
 							If[OddQ[n],
-								NMomentum[list[[n]]]
-								,
-								NEpsilon[] . Transpose[NMomentum[list[[n]]]] . NEpsilon[-1]
-							]
-							,
+								NMomentum[list[[n,1]]],
+								NEpsilon[] . Transpose[NMomentum[list[[n,1]]]] . NEpsilon[-1]
+							],
 							{n, Length[list]}
 						]
 				] . NSpinorUndottedML[j];
-		AngleAngleChain[SpinorML[i_], list_List, SpinorMV[$up][j_, J_]] :=
+		AngleAngleChain[SpinorUndottedML[][i_], list_List, SpinorUndottedMV[$up][j_, J_]] :=
 			NSpinorUndottedML[i] .
 				Dot[
-					NEpsilon[-1]
-					,
+					NEpsilon[-1],
 					Sequence @@
 						Table[
 							If[OddQ[n],
-								NMomentum[list[[n]]]
-								,
-								NEpsilon[] . Transpose[NMomentum[list[[n]]]] . NEpsilon[-1]
-							]
-							,
+								NMomentum[list[[n,1]]],
+								NEpsilon[] . Transpose[NMomentum[list[[n,1]]]] . NEpsilon[-1]
+							],
 							{n, Length[list]}
 						]
 				] . NSpinorUndottedMV[j, J];
-		AngleAngleChain[SpinorMV[$up][i_, I_], list_List, SpinorMV[$up][j_,
-			 J_]] :=
-			NSpinorUndottedMV[i, I] .
+		AngleAngleChain[SpinorUndottedMV[$up][i_, II_], list_List, SpinorUndottedMV[$up][j_, J_]] :=
+			NSpinorUndottedMV[i, II] .
 				Dot[
-					NEpsilon[-1]
-					,
+					NEpsilon[-1],
 					Sequence @@
 						Table[
 							If[OddQ[n],
-								NMomentum[list[[n]]]
-								,
-								NEpsilon[] . Transpose[NMomentum[list[[n]]]] . NEpsilon[-1]
-							]
-							,
+								NMomentum[list[[n,1]]],
+								NEpsilon[] . Transpose[NMomentum[list[[n,1]]]] . NEpsilon[-1]
+							],
 							{n, Length[list]}
 						]
 				] . NSpinorUndottedMV[j, J];
-				
-		AngleSquareChain[SpinorML[i_], list_List, SpinorML[j_]] :=
+		AngleSquareChain[SpinorUndottedML[][i_], list_List, SpinorDottedML[][j_]] :=
 			NSpinorUndottedML[i] . NEpsilon[-1] .
 				Dot[
 					Sequence @@
 						Table[
 							If[OddQ[n],
-								NMomentum[list[[n]]]
-								,
-								NEpsilon[] . Transpose[NMomentum[list[[n]]]] . NEpsilon[-1]
-							]
-							,
+								NMomentum[list[[n,1]]],
+								NEpsilon[] . Transpose[NMomentum[list[[n,1]]]] . NEpsilon[-1]
+							],
 							{n, Length[list]}
-						]
-					,
+						],
 					NEpsilon[]
 				] . NSpinorDottedML[j];
-		AngleSquareChain[SpinorMV[$up][i_, I_], list_List, SpinorML[j_]] :=
-			
-			NSpinorUndottedMV[i, I] . NEpsilon[-1] .
+		AngleSquareChain[SpinorUndottedMV[$up][i_, II_], list_List, SpinorDottedML[][j_]] :=
+			NSpinorUndottedMV[i, II] . NEpsilon[-1] .
 				Dot[
 					Sequence @@
 						Table[
 							If[OddQ[n],
-								NMomentum[list[[n]]]
-								,
-								NEpsilon[] . Transpose[NMomentum[list[[n]]]] . NEpsilon[-1]
-							]
-							,
+								NMomentum[list[[n,1]]],
+								NEpsilon[] . Transpose[NMomentum[list[[n,1]]]] . NEpsilon[-1]
+							],
 							{n, Length[list]}
-						]
-					,
+						],
 					NEpsilon[]
 				] . NSpinorDottedML[j];
-		AngleSquareChain[SpinorML[i_], list_List, SpinorMV[$up][j_, J_]] :=
-			
+		AngleSquareChain[SpinorUndottedML[][i_], list_List, SpinorDottedMV[$up][j_, J_]] :=
 			NSpinorUndottedML[i] . NEpsilon[-1] .
 				Dot[
 					Sequence @@
 						Table[
 							If[OddQ[n],
-								NMomentum[list[[n]]]
-								,
-								NEpsilon[] . Transpose[NMomentum[list[[n]]]] . NEpsilon[-1]
-							]
-							,
+								NMomentum[list[[n,1]]],
+								NEpsilon[] . Transpose[NMomentum[list[[n,1]]]] . NEpsilon[-1]
+							],
 							{n, Length[list]}
-						]
-					,
+						],
 					NEpsilon[]
 				] . NSpinorDottedMV[j, J];
-		AngleSquareChain[SpinorMV[$up][i_, I_], list_List, SpinorMV[$up][j_,
-			 J_]] :=
-			NSpinorUndottedMV[i, I] . NEpsilon[-1] .
+		AngleSquareChain[SpinorUndottedMV[$up][i_, II_], list_List, SpinorDottedMV[$up][j_, J_]] :=
+			NSpinorUndottedMV[i, II] . NEpsilon[-1] .
 				Dot[
 					Sequence @@
 						Table[
 							If[OddQ[n],
-								NMomentum[list[[n]]]
-								,
-								NEpsilon[] . Transpose[NMomentum[list[[n]]]] . NEpsilon[-1]
-							]
-							,
+								NMomentum[list[[n,1]]],
+								NEpsilon[] . Transpose[NMomentum[list[[n,1]]]] . NEpsilon[-1]
+							],
 							{n, Length[list]}
-						]
-					,
+						],
 					NEpsilon[]
 				] . NSpinorDottedMV[j, J];
-				
-		SquareSquareChain[SpinorML[i_], list_List, SpinorML[j_]] :=
+		SquareSquareChain[SpinorDottedML[][i_], list_List, SpinorDottedML[][j_]] :=
 			NSpinorDottedML[i] .
 				Dot[
 					Sequence @@
 						Table[
 							If[OddQ[n],
-								NEpsilon[] . Transpose[NMomentum[list[[n]]]] . NEpsilon[-1]
-								,
-								NMomentum[list[[n]]]
-							]
-							,
+								NEpsilon[] . Transpose[NMomentum[list[[n,1]]]] . NEpsilon[-1],
+								NMomentum[list[[n,1]]]
+							],
 							{n, Length[list]}
-						]
-					,
+						],
 					NEpsilon[]
 				] . NSpinorDottedML[j];
-		SquareSquareChain[SpinorML[i_], list_List, SpinorMV[$up][j_, J_]] :=
-			
+		SquareSquareChain[SpinorDottedML[][i_], list_List, SpinorDottedMV[$up][j_, J_]] :=
 			NSpinorDottedML[i] .
 				Dot[
 					Sequence @@
 						Table[
 							If[OddQ[n],
-								NEpsilon[] . Transpose[NMomentum[list[[n]]]] . NEpsilon[-1]
-								,
-								NMomentum[list[[n]]]
-							]
-							,
+								NEpsilon[] . Transpose[NMomentum[list[[n,1]]]] . NEpsilon[-1],
+								NMomentum[list[[n,1]]]
+							],
 							{n, Length[list]}
-						]
-					,
+						],
 					NEpsilon[]
 				] . NSpinorDottedMV[j, J];
-		SquareSquareChain[SpinorMV[$up][i_, I_], list_List, SpinorMV[$up][j_,
-			 J_]] :=
-			NSpinorDottedMV[i, I] .
+		SquareSquareChain[SpinorDottedMV[$up][i_, II_], list_List, SpinorDottedMV[$up][j_, J_]] :=
+			NSpinorDottedMV[i, II] .
 				Dot[
 					Sequence @@
 						Table[
 							If[OddQ[n],
-								NEpsilon[] . Transpose[NMomentum[list[[n]]]] . NEpsilon[-1]
-								,
-								NMomentum[list[[n]]]
-							]
-							,
+								NEpsilon[] . Transpose[NMomentum[list[[n,1]]]] . NEpsilon[-1],
+								NMomentum[list[[n,1]]]
+							],
 							{n, Length[list]}
-						]
-					,
+						],
 					NEpsilon[]
 				] . NSpinorDottedMV[j, J];
-				
-		TraceChain[ list_List] :=
-				Tr[
-					Dot[
-						Sequence @@
-							Table[
-								If[OddQ[n],
-									NEpsilon[] . Transpose[NMomentum[list[[n]]]] . NEpsilon[-1],
-									NMomentum[list[[n]]]
-								]
-								,
-								{n, Length[list]}
-							]
-					]
-				];
-		
-		MassUntilde[i_] := -AngleB[SpinorMV[$up][i, 1], SpinorMV[$up][i, 2]
+		TraceChain[list_List] :=
+			Tr[
+				Dot[
+					Sequence @@
+						Table[
+							If[OddQ[n],
+								NEpsilon[] . Transpose[NMomentum[list[[n,1]]]] . NEpsilon[-1],
+								NMomentum[list[[n,1]]]
+							],
+							{n, Length[list]}
+						]
+				]
 			];
-		MassTilde[i_] := SquareB[SpinorMV[$up][i, 1], SpinorMV[$up][i, 2]];
-			
+		MassUntilde[i_] := -AngleB[SpinorUndottedMV[$up][i, 1], SpinorUndottedMV[$up][i, 2]];
+		MassTilde[i_] := SquareB[SpinorDottedMV[$up][i, 1], SpinorDottedMV[$up][i, 2]];
 		Return[exp]
 	]
 
@@ -349,7 +306,6 @@ End[]
 (*Attributes*)
 
 
-Protect@@Names["SpinorOperations`*"]
-
+Protect @@ Names["SpinorOperations`*"]
 
 EndPackage[]
