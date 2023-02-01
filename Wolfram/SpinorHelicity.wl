@@ -15,6 +15,9 @@ ToSp::usage = "..."
 ToBracket::usage = "..."
 
 SpinorComponents::usage = "..."
+z\[Zeta]::usage = "..."
+SpinorComponentSum::usage = "..."
+SingleComponent::usage = "..."
 
 NEvaluate::usage = "..."
 
@@ -58,7 +61,7 @@ MassDimension::hom = "`1` is not homogeneous in the mass dimension";
 MassDimension[x_] := 0*)
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Spin*)
 
 
@@ -107,22 +110,67 @@ Helicity[x_, label_] := 0*)
 ToBracket[exp_] := ReplaceAll[ReplaceAll[exp, Sp[a__] /; (Length[{a}] > 2) :> Sum[Sp[#[[i]], #[[j]]]& @ {a}, {i, Length[{a}]}, {j, i + 1, Length[{a}]}]], Sp[i_, j_] :> AML[i, j] SML[j, i]]*)
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Spin components*)
 
 
-(*SpinorComponents[exp_] :=
+Options[SpinorComponents]={Echos->False}
+
+SpinorComponents[exp_List,OptionsPattern[]]:=
+	If[
+		OptionValue[Echos],
+		Prepend[
+			SpinorComponents/@exp[[2;;]],
+			SpinorComponents[exp[[1]],Echos->True]
+		],
+		SpinorComponents/@exp
+	]
+
+SpinorComponents[exp_,OptionsPattern[]] :=
     DeleteCases[
         Flatten@
-            CoefficientList[#1,Flatten@Table[z[i, n], {i, #2}, {n, 2}]],
+            CoefficientList[#1,If[OptionValue[Echos],Echo[#],#]&@(Flatten@Table[z\[Zeta][a,I], {a, #2}, {I, 2}])],
         0
     ]&[
-        ReplaceRepeated[exp,SpinorMV[][i_]:>Sum[z[i, n]*SpinorMV[$up][i,n],{n, 2}]],
-        Sort@DeleteDuplicates@Cases[exp,SpinorMV[][i_]:>i,\[Infinity]]
-    ]*)
+        ReplaceRepeated[exp,{SpinorUndottedMV[][a_]:>Sum[SpinorUndottedMV[$up][a,I]z\[Zeta][a,I],{I,2}],SpinorDottedMV[][a_]:>Sum[SpinorDottedMV[$up][a,I]z\[Zeta][a,I],{I,2}]}],
+        Sort@DeleteDuplicates@Cases[exp,SpinorUndottedMV[][i_]|SpinorDottedMV[][i_]:>i,All]
+    ]
 
 
-(* ::Subsection:: *)
+(* ::Subsubsection::Closed:: *)
+(*z\[Zeta] variables*)
+
+
+z\[Zeta]Box[a_,I_] :=
+	TemplateBox[{a,I}, "z\[Zeta]",
+		DisplayFunction -> (SubscriptBox["z", RowBox[{RowBox[{#1}],",",RowBox[{#2}]}]]&),
+		InterpretationFunction -> (RowBox[{"z\[Zeta]","[", RowBox[{#1}],",",RowBox[{#2}],"]"}]&)
+	]
+
+z\[Zeta] /: MakeBoxes[z\[Zeta][a_,I_], StandardForm | TraditionalForm] := z\[Zeta]Box[ToBoxes[a],ToBoxes[I]]
+
+
+(* ::Subsubsection:: *)
+(*SpinorComponentSum*)
+
+
+Options[SpinorComponentSum]={SingleComponent->False}
+
+SetAttributes[SpinorComponentSum,Listable]
+
+SpinorComponentSum[exp_,OptionsPattern[]] := 
+	ReplaceRepeated[
+		exp,
+		#
+	]&@
+		If[
+			OptionValue[SingleComponent],
+			{SpinorUndottedMV[][a_]:>SpinorUndottedMV[$up][a,1],SpinorDottedMV[][a_]:>SpinorDottedMV[$up][a,1]},
+			{SpinorUndottedMV[][a_]:>Sum[SpinorUndottedMV[$up][a,I]z\[Zeta][a,I],{I,2}],SpinorDottedMV[][a_]:>Sum[SpinorDottedMV[$up][a,I]z\[Zeta][a,I],{I,2}]}
+		]
+
+
+(* ::Subsection::Closed:: *)
 (*NEvaluate*)
 
 
