@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-BeginPackage["DdimVariables`",{"DdimFunctions`"}]
+BeginPackage["DdimVariables`"]
 
 
 (* ::Section:: *)
@@ -97,7 +97,7 @@ SetOptions[EvaluationNotebook[],
 (*Properties*)
 
 
-Metric /: MakeBoxes[Metric[\[Mu]_,\[Nu]_], StandardForm | TraditionalForm] := MetricBox[ToBoxes[\[Mu]],ToBoxes[\[Nu]]]
+Metric /: MakeBoxes[Metric[\[Mu]_,\[Nu]_], StandardForm | TraditionalForm] := MetricBox[ToLabel[\[Mu]],ToLabel[\[Nu]]]
 
 DD /: MakeBoxes[DD,StandardForm | TraditionalForm] := TemplateBox[{"D"},"DD",DisplayFunction->(RowBox[{#}]&),InterpretationFunction->(RowBox[{"DD"}]&)]
 
@@ -148,11 +148,11 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "eps" -> EpsilonPolBox["\[SelectionPlaceholder]","\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
-EpsilonPol /: MakeBoxes[EpsilonPol[a_,\[Mu]__], StandardForm | TraditionalForm] := EpsilonPolBox[ToLabel[a],Sequence@@(ToBoxes/@{\[Mu]})]
+EpsilonPol /: MakeBoxes[EpsilonPol[a_,\[Mu]__], StandardForm | TraditionalForm] := EpsilonPolBox[ToLabel[a],Sequence@@(ToLabel/@{\[Mu]})]
 EpsilonPol /: MakeBoxes[EpsilonPol[a_], StandardForm | TraditionalForm] := EpBox[ToLabel[a]]
 
 
@@ -194,7 +194,7 @@ SetOptions[EvaluationNotebook[],
 (*Properties*)
 
 
-FieldStr /: MakeBoxes[FieldStr[a_,\[Mu]_,\[Nu]_], StandardForm | TraditionalForm] := FieldStrBox[ToLabel[a],ToBoxes[\[Mu]],ToBoxes[\[Nu]]]
+FieldStr /: MakeBoxes[FieldStr[a_,\[Mu]_,\[Nu]_], StandardForm | TraditionalForm] := FieldStrBox[ToLabel[a],ToLabel[\[Mu]],ToLabel[\[Nu]]]
 FieldStr /: MakeBoxes[FieldStr[a_], StandardForm | TraditionalForm] := FStrBox[ToLabel[a]]
 
 
@@ -231,7 +231,7 @@ SetOptions[EvaluationNotebook[],
 (*Properties*)
 
 
-Riemann /: MakeBoxes[Riemann[a_,\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_], StandardForm | TraditionalForm] := RiemannBox[ToLabel[a],ToBoxes[\[Mu]],ToBoxes[\[Nu]],ToBoxes[\[Rho]],ToBoxes[\[Sigma]]]
+Riemann /: MakeBoxes[Riemann[a_,\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_], StandardForm | TraditionalForm] := RiemannBox[ToLabel[a],ToLabel[\[Mu]],ToLabel[\[Nu]],ToLabel[\[Rho]],ToLabel[\[Sigma]]]
 
 
 Riemann[a_,\[Mu]_,\[Nu]_,\[Rho]_,\[Sigma]_] /; \[Not]OrderedQ[{\[Mu],\[Nu]}] := - Riemann[a,\[Nu],\[Mu],\[Rho],\[Sigma]]
@@ -299,10 +299,10 @@ Momentum /: MakeBoxes[Momentum[a_,\[Mu]_], StandardForm | TraditionalForm] :=
 	If[LetterQ[StringPart[#,1]],
 		If[
 			StringLength[#]>1(*&&DigitQ[StringDrop[#,1]]*),
-			MomentumBoxLetterNumber[ToBoxes[ToExpression[StringPart[#,1]]],ToBoxes[ToExpression[StringDrop[#,1]]],ToBoxes[\[Mu]]],
-			MomentumBoxLetter[ToBoxes[a],ToBoxes[\[Mu]]]
+			MomentumBoxLetterNumber[ToBoxes[ToExpression[StringPart[#,1]]],ToBoxes[ToExpression[StringDrop[#,1]]],ToLabel[\[Mu]]],
+			MomentumBoxLetter[ToBoxes[a],ToLabel[\[Mu]]]
 		],
-		MomentumBox[ToBoxes[a],ToBoxes[\[Mu]]]
+		MomentumBox[ToBoxes[a],ToLabel[\[Mu]]]
 	]&@ToString[a]
 	
 Momentum /: MakeBoxes[Momentum[a_], StandardForm | TraditionalForm] := 
@@ -418,7 +418,7 @@ SetOptions[EvaluationNotebook[],
 (*Properties*)
 
 
-Mandelstam /: MakeBoxes[Mandelstam[a__], StandardForm | TraditionalForm] := MandelstamBox[Sequence@@(ToBoxes/@{a})]
+Mandelstam /: MakeBoxes[Mandelstam[a__], StandardForm | TraditionalForm] := MandelstamBox[Sequence@@(ToLabel/@{a})]
 
 
 Mandelstam[a__]/;\[Not]OrderedQ[{a}]:=Mandelstam[Sequence@@Sort[{a}]]
