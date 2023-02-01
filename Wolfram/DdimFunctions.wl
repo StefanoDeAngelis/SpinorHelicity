@@ -293,12 +293,23 @@ ClearMasses[] :=
 
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
+(*DDerivative*)
+
+
+(* ::Subsubsection::Closed:: *)
+(*Auxiliary function: StripoffIndex*)
+
+
+StripoffIndex[p_]:=p[[;;1]]
+
+
+(* ::Subsubsection:: *)
 (*DDerivative*)
 
 
 (*DDerivative[exp_,,p_?(MatchQ[#,Momentum[_,_]|EpsilonPol[_,_]]&)]:=If[Echo@FreeQ[exp,Echo@Head[p]],0]*)
-DDerivative[DdimVariables`DotProduct[i_,j_],p_?(MatchQ[#,DdimVariables`Momentum[_,_]|DdimVariables`EpsilonPol[_,_]]&)]:=If[MatchQ[i,Head[p]],j[p[[1]]],0]+If[MatchQ[j,Head[p]],i[p[[1]]],0]
+DDerivative[DdimVariables`DotProduct[p1_,p2_],p_?(MatchQ[#,DdimVariables`Momentum[_,_]|DdimVariables`EpsilonPol[_,_]]&)]:=(If[MatchQ[p1,StripoffIndex[p]],Append[p2,p[[2]]],0]+If[MatchQ[p2,StripoffIndex[p]],Append[p1,p[[2]]],0])
 DDerivative[DdimVariables`Momentum[x_,a_],DdimVariables`Momentum[x_,b_]]:=DdimVariables`Metric[a,b]
 DDerivative[DdimVariables`EpsilonPol[x_,a_],DdimVariables`EpsilonPol[x_,b_]]:=DdimVariables`Metric[a,b]
 DDerivative[sum_Plus,p_?(MatchQ[#,DdimVariables`Momentum[_,_]|DdimVariables`EpsilonPol[_,_]]&)]:=Plus@@(DDerivative[#,p]&/@List@@sum)
