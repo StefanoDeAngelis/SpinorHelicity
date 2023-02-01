@@ -368,11 +368,11 @@ SpinorUndottedMV /: SpinorUndottedMV[pos1_, $up][i_, a_, II_] SpinorUndottedMV[
 	 pos2][a, b]
 
 SpinorUndottedMV /: SpinorUndottedMV[$up, pos_][l1_, a_, J_] SpinorUndottedML[
-	$down][l2_, a_] := -AngleB[SpinorUndottedML[l2], SpinorUndottedMV[pos
+	$down][l2_, a_] := -AngleB[SpinorUndottedML[][l2], SpinorUndottedMV[pos
 	][l1, J]];
 
 SpinorUndottedMV /: SpinorUndottedMV[$down, pos_][l1_, a_, J_] SpinorUndottedML[
-	$up][l2_, a_] := AngleB[SpinorUndottedML[l2], SpinorUndottedMV[pos][l1,
+	$up][l2_, a_] := AngleB[SpinorUndottedML[][l2], SpinorUndottedMV[pos][l1,
 	 J]];
 
 SpinorUndottedMV /: SpinorUndottedMV[$down, pos1_][l1_, a_, J_] SpinorUndottedMV[
@@ -385,7 +385,7 @@ SpinorDottedMV /: SpinorDottedMV[$up, pos_][l1_, a_, J_] SpinorDottedML[
 
 SpinorDottedMV /: SpinorDottedMV[$down, pos_][l1_, a_, J_] SpinorDottedML[
 	$up][l2_, a_] := -SquareB[SpinorDottedML[][l2], SpinorDottedMV[pos][l1,
-	 J]];
+	 J]]; 
 
 SpinorDottedMV /: SpinorDottedMV[$down, pos1_][l1_, a_, J_] SpinorDottedMV[
 	$up, pos2_][l2_, a_, KK_] := -SquareB[SpinorDottedMV[pos1][l1, J], SpinorDottedMV[
