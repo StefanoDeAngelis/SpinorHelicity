@@ -11,7 +11,7 @@ BeginPackage["DdimPackage`", {"YoungSymm`","DdimVariables`"}]
 RelabelDummies::usage = "..."
 Relabel::usage = "..."
 
-FromDotIndices::usage = "..."
+(*FromDotIndices::usage = "..."*)
 ToTrace::usage = "..."
 
 SetMasses::usage = "..."
@@ -131,7 +131,7 @@ Relabel[OptionsPattern[]][exp_, n_:0] :=
 
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*ToTrace*)
 
 
@@ -170,7 +170,7 @@ ToTrace[exp_] :=
 
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*From Dot To Indices*)
 
 
