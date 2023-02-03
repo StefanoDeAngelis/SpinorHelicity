@@ -123,8 +123,8 @@ Particles[exp_Times]:=Union[Sequence@@(Particles/@(List@@exp))]
 Particles[exp_Power]:=Particles[exp[[1]]]
 Particles[exp_]:=
 	Union[
-		Cases[exp,SpinorUndottedML[pos___][lab_,ind___]|SpinorDottedML[pos___][lab_,ind___]|SpinorUndottedMV[pos___][lab_,ind___]|SpinorDottedMV[pos___][lab_,ind___]:>lab,All],
-		Cases[exp,AngleAngleChain[a_,list_,b_]|SquareSquareChain[a_,list_,b_]|AngleSquareChain[a_,list_,b_]|TraceChain[list_]:>(Part[#,1]&/@list),All]
+		Cases[exp,SpinorUndottedML[pos___][lab_,ind___]|SpinorDottedML[pos___][lab_,ind___]|HoldPattern[SpinorUndottedMV[pos___][lab_,ind___]]|HoldPattern[SpinorDottedMV[pos___][lab_,ind___]]:>lab,All],
+		Cases[exp,AngleAngleChain[a_,list_,b_]|SquareSquareChain[a_,list_,b_]|AngleSquareChain[a_,list_,b_]|TraceChain[list_]:>Sequence@@(Part[#,1]&/@list),All]
 	]
 
 
@@ -230,7 +230,7 @@ SpinorComponents[exp_,OptionsPattern[]] :=
             CoefficientList[#1,If[OptionValue[Echos],Echo[#],#]&@(Flatten@Table[z\[Zeta][a,I], {a, #2}, {I, 2}])],
         0
     ]&[
-        ReplaceRepeated[exp,{SpinorUndottedMV[][a_]:>Sum[SpinorUndottedMV[$up][a,I]z\[Zeta][a,I],{I,2}],SpinorDottedMV[][a_]:>Sum[SpinorDottedMV[$up][a,I]z\[Zeta][a,I],{I,2}]}],
+        ReplaceRepeated[exp,{HoldPattern[SpinorUndottedMV[][a_]]:>Sum[SpinorUndottedMV[$up][a,I]z\[Zeta][a,I],{I,2}],HoldPattern[SpinorDottedMV[][a_]]:>Sum[SpinorDottedMV[$up][a,I]z\[Zeta][a,I],{I,2}]}],
         Sort@DeleteDuplicates@Cases[exp,SpinorUndottedMV[][i_]|SpinorDottedMV[][i_]:>i,All]
     ]
 
@@ -323,6 +323,8 @@ OpenTrace[TraceChain[list_List],n_Integer]:=
 		Product[SquareB[SpinorDottedMV[$down][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorDottedMV[$down][#[[Mod[i+1,Length[#]]]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[Mod[i+1,Length[#]]]]]],{i,2,Length@#,2}]
 	)&@
 		(Part[#,1]&/@list)
+		
+OpenTrace[exp_,n_]:=exp
 
 
 (* ::Subsubsection::Closed:: *)
@@ -355,7 +357,12 @@ UnboldSpinors[exp_,OptionsPattern[]]:=
 			particles=Particles[exp]
 		];
 		Do[
-			localexp=ReplaceRepeated[localexp(*exp, instead than localexp, just gives the last replacement in Do*),{SpinorUndottedMV[][a]:>SpinorUndottedMV[$up][a,ToExpression["\[CapitalPi]"<>ToString[i++]]],SpinorDottedMV[][a]:>SpinorDottedMV[$up][a,ToExpression["\[CapitalPi]"<>ToString[i++]]]}];
+			localexp=ReplaceRepeated[localexp(*exp, instead than localexp, just gives the last replacement in Do*),
+					{
+						SpinorUndottedMV[][a]:>SpinorUndottedMV[$up][a,ToExpression["\[CapitalPi]"<>ToString[i++]]],
+						SpinorDottedMV[][a]:>SpinorDottedMV[$up][a,ToExpression["\[CapitalPi]"<>ToString[i++]]]
+					}
+				];
 			tab=Append[tab,Table[ToExpression["\[CapitalPi]"<>ToString[k]],{k,j,i-1}]];
 			j=i,
 			{a,particles}
@@ -365,14 +372,14 @@ UnboldSpinors[exp_,OptionsPattern[]]:=
 	]
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*BoldSpinors*)
 
 
 Options[BoldSpinors]={SpinorSubset->False};
 
 BoldSpinors[exp_,OptionsPattern[]]:=
-	Block[{SpinorDottedMV,SpinorUndottedMV,localexp},
+	Block[{SpinorDottedMV,SpinorUndottedMV,localexp=ContractLittleGroup[exp]},
 		If[
 			ListQ[OptionValue[SpinorSubset]],
 			
@@ -382,7 +389,7 @@ BoldSpinors[exp_,OptionsPattern[]]:=
 			SpinorDottedMV[pos_][lab_,J_]:=SpinorDottedMV[][lab];
 			SpinorUndottedMV[pos_][lab_,J_]:=SpinorUndottedMV[][lab]
 		];
-		localexp=exp
+		localexp=localexp
 	]
 
 

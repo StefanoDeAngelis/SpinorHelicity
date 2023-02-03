@@ -310,7 +310,7 @@ SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
 	 SpinorDottedMVBox[$down, $down]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
@@ -388,7 +388,7 @@ SpinorUndottedMV /: SpinorUndottedMV[$down, pos_][l1_, a_, J_] SpinorUndottedML[
 
 SpinorUndottedMV /: SpinorUndottedMV[$down, pos1_][l1_, a_, J_] SpinorUndottedMV[
 	$up, pos2_][l2_, a_, KK_] := AngleB[SpinorUndottedMV[pos1][l1, J], SpinorUndottedMV[
-	pos2][l2, K]];
+	pos2][l2, KK]];
 
 SpinorDottedMV /: SpinorDottedMV[$up, pos_][l1_, a_, J_] SpinorDottedML[
 	$down][l2_, a_] := SquareB[SpinorDottedML[][l2], SpinorDottedMV[pos][
@@ -710,96 +710,52 @@ SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
 (*Properties*)
 
 
-EpsilonSpin[$up, $up] /: MakeBoxes[EpsilonSpin[$up, $up][a_, b_], StandardForm
-	 | TraditionalForm] := EpsilonSpinBox[$up, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b
-	]]
+EpsilonSpin[$up, $up] /: MakeBoxes[EpsilonSpin[$up, $up][a_, b_], StandardForm| TraditionalForm] := EpsilonSpinBox[$up, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
 
-EpsilonSpin[$down, $up] /: MakeBoxes[EpsilonSpin[$down, $up][a_, b_],
-	 StandardForm | TraditionalForm] := EpsilonSpinBox[$down, $up][DdimVariables`ToLabel[
-	a], DdimVariables`ToLabel[b]]
+EpsilonSpin[$down, $up] /: MakeBoxes[EpsilonSpin[$down, $up][a_, b_],StandardForm | TraditionalForm] := EpsilonSpinBox[$down, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
 
-EpsilonSpin[$down, $down] /: MakeBoxes[EpsilonSpin[$down, $down][a_, 
-	b_], StandardForm | TraditionalForm] := EpsilonSpinBox[$down, $down][
-	DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
+EpsilonSpin[$down, $down] /: MakeBoxes[EpsilonSpin[$down, $down][a_,b_], StandardForm | TraditionalForm] := EpsilonSpinBox[$down, $down][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
 
-EpsilonSpin /: EpsilonSpin[$up, $down][a_, b_] := EpsilonSpin[$down, 
-	$up][b, a]
+EpsilonSpin /: EpsilonSpin[$up, $down][a_, b_] := EpsilonSpin[$down, $up][b, a]
 
-EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $up][a_, b_] EpsilonSpin[
-	$down, pos4_][b_, c_]] := EpsilonSpin[pos1, pos4][a, c]
+EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $up][a_, b_] EpsilonSpin[$down, pos4_][b_, c_]] := EpsilonSpin[pos1, pos4][a, c]
 
-EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $down][a_, b_] EpsilonSpin[
-	$up, pos4_][b_, c_]] := EpsilonSpin[pos1, pos4][a, c]
+EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $down][a_, b_] EpsilonSpin[$up, pos4_][b_, c_]] := EpsilonSpin[pos1, pos4][a, c]
 
-EpsilonSpin /: HoldPattern[EpsilonSpin[$up, pos1_][b_, a_] EpsilonSpin[
-	$down, pos4_][b_, c_]] := If[MatchQ[pos1, $up], -1, 1] EpsilonSpin[pos1,
-	 pos4][a, c]
+EpsilonSpin /: HoldPattern[EpsilonSpin[$up, pos1_][b_, a_] EpsilonSpin[$down, pos4_][b_, c_]] := If[MatchQ[pos1, $up], -1, 1] EpsilonSpin[pos1, pos4][a, c]
 
-EpsilonSpin /: HoldPattern[EpsilonSpin[$down, pos1_][b_, a_] EpsilonSpin[
-	$up, pos4_][b_, c_]] := If[MatchQ[pos1, $down], -1, 1] EpsilonSpin[pos1,
-	 pos4][a, c]
+EpsilonSpin /: HoldPattern[EpsilonSpin[$down, pos1_][b_, a_] EpsilonSpin[$up, pos4_][b_, c_]] := If[MatchQ[pos1, $down], -1, 1] EpsilonSpin[pos1, pos4][a, c]
 
-EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $up][a_, b_] EpsilonSpin[
-	pos4_, $down][c_, b_]] := If[MatchQ[pos1, $up], -1, 1] EpsilonSpin[pos1,
-	 pos4][a, c]
+EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $up][a_, b_] EpsilonSpin[pos4_, $down][c_, b_]] := If[MatchQ[pos1, $up], -1, 1] EpsilonSpin[pos1, pos4][a, c]
 
-EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $down][a_, b_] EpsilonSpin[
-	pos4_, $up][c_, b_]] := If[MatchQ[pos1, $down], -1, 1] EpsilonSpin[pos1,
-	 pos4][a, c]
+EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $down][a_, b_] EpsilonSpin[pos4_, $up][c_, b_]] := If[MatchQ[pos1, $down], -1, 1] EpsilonSpin[pos1, pos4][a, c]
 
-EpsilonSpin[pos_, pos_][a_, b_] /; \[Not]OrderedQ[{a, b}] := -EpsilonSpin[
-	pos, pos][b, a]
+EpsilonSpin[pos_, pos_][a_, b_] /; \[Not]OrderedQ[{a, b}] := -EpsilonSpin[pos, pos][b, a]
 
 EpsilonSpin[$down, $up][a_, a_] := 2
 
-EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $up][II_, J_] SpinorDottedMV[
-	pos3_, $down][mom_, a_, J_]] := SpinorDottedMV[pos3, pos1][mom, a, II
-	]
+EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $up][II_, J_] SpinorDottedMV[pos3_, $down][mom_, a_, J_]] := SpinorDottedMV[pos3, pos1][mom, a, II]
+EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $down][II_, J_] SpinorDottedMV[pos3_, $up][mom_, a_, J_]] := SpinorDottedMV[pos3, pos1][mom, a, II]
+EpsilonSpin /: HoldPattern[EpsilonSpin[$up, pos1_][II_, J_] SpinorDottedMV[pos3_, $down][mom_, a_, II_]] := If[MatchQ[pos1, $up], -1, 1] SpinorDottedMV[pos3, pos1][mom, a, J]
+EpsilonSpin /: HoldPattern[EpsilonSpin[$down, pos1_][II_, J_] SpinorDottedMV[pos3_, $up][mom_, a_, II_]] := If[MatchQ[pos1, $down], -1, 1] SpinorDottedMV[pos3, pos1][mom, a, J]
 
-EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $down][II_, J_] SpinorDottedMV[
-	pos3_, $up][mom_, a_, J_]] := SpinorDottedMV[pos3, pos1][mom, a, II]
+EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $up][II_, J_] SpinorUndottedMV[pos3_, $down][mom_, a_, J_]] := SpinorUndottedMV[pos3, pos1][mom, a, II]
+EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $down][II_, J_] SpinorUndottedMV[pos3_, $up][mom_, a_, J_]] := SpinorUndottedMV[pos3, pos1][mom, a, II]
+EpsilonSpin /: HoldPattern[EpsilonSpin[$up, pos1_][II_, J_] SpinorUndottedMV[pos3_, $down][mom_, a_, II_]] := If[MatchQ[pos1, $up], -1, 1] SpinorUndottedMV[pos3, pos1][mom, a, J]
+EpsilonSpin /: HoldPattern[EpsilonSpin[$down, pos1_][II_, J_] SpinorUndottedMV[pos3_, $up][mom_, a_, II_]] := If[MatchQ[pos1, $down], -1, 1] SpinorUndottedMV[pos3, pos1][mom, a, J]
 
-EpsilonSpin /: HoldPattern[EpsilonSpin[$up, pos1_][II_, J_] SpinorDottedMV[
-	pos3_, $down][mom_, a_, II_]] := If[MatchQ[pos1, $up], -1, 1] SpinorDottedMV[
-	pos3, pos1][mom, a, J]
+EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $up][II_, J_] f_[x___, SpinorUndottedMV[$down][mom_, J_], y___]] := f[x, SpinorUndottedMV[pos1][mom, II], y]
+EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $down][II_, J_] f_[x___, SpinorUndottedMV[$up][mom_, J_], y___]] := f[x, SpinorUndottedMV[pos1][mom, II], y]
+EpsilonSpin /: HoldPattern[EpsilonSpin[$up, pos1_][II_, J_] f_[x___, SpinorUndottedMV[$down][mom_, II_], y___]] := If[MatchQ[pos1, $up], -1, 1] f[x, SpinorUndottedMV[pos1][mom, J], y]
+EpsilonSpin /: HoldPattern[EpsilonSpin[$down, pos1_][II_, J_] f_[x___, SpinorUndottedMV[$up][mom_, II_], y___]] := If[MatchQ[pos1, $down], -1, 1] f[x, SpinorUndottedMV[pos1][mom, J], y]
 
-EpsilonSpin /: HoldPattern[EpsilonSpin[$down, pos1_][II_, J_] SpinorDottedMV[
-	pos3_, $up][mom_, a_, II_]] := If[MatchQ[pos1, $down], -1, 1] SpinorDottedMV[
-	pos3, pos1][mom, a, J]
+EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $up][II_, J_] f_[x___, SpinorDottedMV[$down][mom_, J_], y___]] := f[x, SpinorDottedMV[pos1][mom, II], y]
+EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $down][II_, J_] f_[x___, SpinorDottedMV[$up][mom_, J_], y___]] := f[x, SpinorDottedMV[pos1][mom, II], y]
+EpsilonSpin /: HoldPattern[EpsilonSpin[$up, pos1_][II_, J_] f_[x___, SpinorDottedMV[$down][mom_, II_], y___]] := If[MatchQ[pos1, $up], -1, 1] f[x, SpinorDottedMV[pos1][mom, J], y]
+EpsilonSpin /: HoldPattern[EpsilonSpin[$down, pos1_][II_, J_] f_[x___, SpinorDottedMV[$up][mom_, II_], y___]] := If[MatchQ[pos1, $down], -1, 1] f[x, SpinorDottedMV[pos1][mom, J], y]
 
-EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $up][II_, J_] SpinorUndottedMV[
-	pos3_, $down][mom_, a_, J_]] := SpinorUndottedMV[pos3, pos1][mom, a, 
-	II]
-
-EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $down][II_, J_] SpinorUndottedMV[
-	pos3_, $up][mom_, a_, J_]] := SpinorUndottedMV[pos3, pos1][mom, a, II
-	]
-
-EpsilonSpin /: HoldPattern[EpsilonSpin[$up, pos1_][II_, J_] SpinorUndottedMV[
-	pos3_, $down][mom_, a_, II_]] := If[MatchQ[pos1, $up], -1, 1] SpinorUndottedMV[
-	pos3, pos1][mom, a, J]
-
-EpsilonSpin /: HoldPattern[EpsilonSpin[$down, pos1_][II_, J_] SpinorUndottedMV[
-	pos3_, $up][mom_, a_, II_]] := If[MatchQ[pos1, $down], -1, 1] SpinorUndottedMV[
-	pos3, pos1][mom, a, J]
-
-EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $up][II_, J_] f_[x___, 
-	SpinorMV[$down][mom_, J_], y___]] := f[x, SpinorMV[pos1][mom, II], y]
-
-EpsilonSpin /: HoldPattern[EpsilonSpin[pos1_, $down][II_, J_] f_[x___,
-	 SpinorMV[$up][mom_, J_], y___]] := f[x, SpinorMV[pos1][mom, II], y]
-
-EpsilonSpin /: HoldPattern[EpsilonSpin[$up, pos1_][II_, J_] f_[x___, 
-	SpinorMV[$down][mom_, II_], y___]] := If[MatchQ[pos1, $up], -1, 1] f[
-	x, SpinorMV[pos1][mom, J], y]
-
-EpsilonSpin /: HoldPattern[EpsilonSpin[$down, pos1_][II_, J_] f_[x___,
-	 SpinorMV[$up][mom_, II_], y___]] := If[MatchQ[pos1, $down], -1, 1] f[
-	x, SpinorMV[pos1][mom, J], y]
-
-    (*EpsilonSpin /: EpsilonSpin[pos1_,$up][II_,J_] SquareB[x___,SpinorMV[$down][mom_,J_],y___] :=SquareB[x,SpinorMV[pos1][mom,II],y]EpsilonSpin /: EpsilonSpin[pos1_,$down][II_,J_] SquareB[x___,SpinorMV[$up][mom_,J_],y___] :=SquareB[x,SpinorMV[pos1][mom,II],y]EpsilonSpin /: EpsilonSpin[$up,pos1_][II_,J_] SquareB[x___,SpinorMV[$down][mom_,II_],y___] :=If[MatchQ[pos1,$up],-1,1]SquareB[x,SpinorMV[pos1][mom,J],y]EpsilonSpin /: EpsilonSpin[$down,pos1_][II_,J_] SquareB[x___,SpinorMV[$up][mom_,II_],y___] :=If[MatchQ[pos1,$down],-1,1]SquareB[x,SpinorMV[pos1][mom,J],y]EpsilonSpin /: EpsilonSpin[pos1_,$up][II_,J_] AngleB[x___,SpinorMV[$down][mom_,J_],y___] :=AngleB[x,SpinorMV[pos1][mom,II],y]EpsilonSpin /: EpsilonSpin[pos1_,$down][II_,J_] AngleB[x___,SpinorMV[$up][mom_,J_],y___] :=AngleB[x,SpinorMV[pos1][mom,II],y]EpsilonSpin /: EpsilonSpin[$up,pos1_][II_,J_] AngleB[x___,SpinorMV[$down][mom_,II_],y___] :=If[MatchQ[pos1,$up],-1,1]AngleB[x,SpinorMV[pos1][mom,J],y]EpsilonSpin /: EpsilonSpin[$down,pos1_][II_,J_] AngleB[x___,SpinorMV[$up][mom_,II_],y___] :=If[MatchQ[pos1,$down],-1,1]AngleB[x,SpinorMV[pos1][mom,J],y]*)
-
-    (*EpsilonSpin /: EpsilonSpin[pos1_,$up][II_,J_] AngleAngleChain[x___,SpinorMV[$down][mom_,J_],y___] :=AngleAngleChain[x,SpinorMV[pos1][mom,II],y]EpsilonSpin /: EpsilonSpin[pos1_,$down][II_,J_] AngleAngleChain[x___,SpinorMV[$up][mom_,J_],y___] :=AngleAngleChain[x,SpinorMV[pos1][mom,II],y]EpsilonSpin /: EpsilonSpin[$up,pos1_][II_,J_] AngleAngleChain[x___,SpinorMV[$down][mom_,II_],y___] :=If[MatchQ[pos1,$up],-1,1]AngleAngleChain[x,SpinorMV[pos1][mom,J],y]EpsilonSpin /: EpsilonSpin[$down,pos1_][II_,J_] AngleAngleChain[x___,SpinorMV[$up][mom_,II_],y___] :=If[MatchQ[pos1,$down],-1,1]AngleAngleChain[x,SpinorMV[pos1][mom,J],y]EpsilonSpin /: EpsilonSpin[pos1_,$up][II_,J_] SquareSquareChain[x___,SpinorMV[$down][mom_,J_],y___] :=SquareSquareChain[x,SpinorMV[pos1][mom,II],y]EpsilonSpin /: EpsilonSpin[pos1_,$down][II_,J_] SquareSquareChain[x___,SpinorMV[$up][mom_,J_],y___] :=SquareSquareChain[x,SpinorMV[pos1][mom,II],y]EpsilonSpin /: EpsilonSpin[$up,pos1_][II_,J_] SquareSquareChain[x___,SpinorMV[$down][mom_,II_],y___] :=If[MatchQ[pos1,$up],-1,1]SquareSquareChain[x,SpinorMV[pos1][mom,J],y]EpsilonSpin /: EpsilonSpin[$down,pos1_][II_,J_] SquareSquareChain[x___,SpinorMV[$up][mom_,II_],y___] :=If[MatchQ[pos1,$down],-1,1]SquareSquareChain[x,SpinorMV[pos1][mom,J],y]EpsilonSpin /: EpsilonSpin[pos1_,$up][II_,J_] AngleSquareChain[x___,SpinorMV[$down][mom_,J_],y___] :=AngleSquareChain[x,SpinorMV[pos1][mom,II],y]EpsilonSpin /: EpsilonSpin[pos1_,$down][II_,J_] AngleSquareChain[x___,SpinorMV[$up][mom_,J_],y___] :=AngleSquareChain[x,SpinorMV[pos1][mom,II],y]EpsilonSpin /: EpsilonSpin[$up,pos1_][II_,J_] AngleSquareChain[x___,SpinorMV[$down][mom_,II_],y___] :=If[MatchQ[pos1,$up],-1,1]AngleSquareChain[x,SpinorMV[pos1][mom,J],y]EpsilonSpin /: EpsilonSpin[$down,pos1_][II_,J_] AngleSquareChain[x___,SpinorMV[$up][mom_,II_],y___] :=If[MatchQ[pos1,$down],-1,1]AngleSquareChain[x,SpinorMV[pos1][mom,J],y]*)
+EpsilonSpin /: EpsilonSpin[pos1_,po2_][II_,JJ_] SquareB[x___,SpinorDottedMV[pos3_][mom_,KK_],y___] /; MemberQ[{II,JJ},KK] := SquareB[x,(EpsilonSpin[pos1,po2][II,JJ] SpinorDottedMV[pos3][mom,KK]),y]
+EpsilonSpin /: EpsilonSpin[pos1_,po2_][II_,JJ_] AngleB[x___,SpinorUndottedMV[pos3_][mom_,KK_],y___] /; MemberQ[{II,JJ},KK] := AngleB[x,(EpsilonSpin[pos1,po2][II,JJ] SpinorUndottedMV[pos3][mom,KK]),y]
 
 
 (* ::Subsection:: *)
