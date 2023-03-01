@@ -291,8 +291,21 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "mom" -> MomentumBox["\[SelectionPlaceholder]","\[Placeholder]"]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
+
+
+Momentum[a_,\[Mu]_] /; MatchQ[Head[a],Times]&&a[[1]]==-1 := - Momentum[-a,\[Mu]]
+Momentum[a_,\[Mu]_] /; a < 0 := - Momentum[-a,\[Mu]]
+
+Momentum[x_Plus,\[Mu]_] := Plus@@(Momentum[#,\[Mu]]&/@(List@@x))
+
+Momentum[a_] /; MatchQ[Head[a],Times]&&NumericQ[a[[1]]] := a[[1]]Momentum[a[[2;;]]]
+Momentum[a_] /; a < 0 := - Momentum[-a]
+
+Momentum[x_Plus] := Plus@@(Momentum[#]&/@(List@@x))
+
+Momentum /: Momentum[a_,\[Nu]_]^2 := DotProduct[Momentum[a],Momentum[a]]
 
 
 Momentum /: MakeBoxes[Momentum[a_,\[Mu]_], StandardForm | TraditionalForm] := 
@@ -314,18 +327,6 @@ Momentum /: MakeBoxes[Momentum[a_], StandardForm | TraditionalForm] :=
 		],
 		MomBox[ToBoxes[a]]
 	]&@ToString[a]
-
-Momentum[a_,\[Mu]_] /; MatchQ[Head[a],Times]&&a[[1]]==-1 := - Momentum[-a,\[Mu]]
-Momentum[a_,\[Mu]_] /; a < 0 := - Momentum[-a,\[Mu]]
-
-Momentum[x_Plus,\[Mu]_] := Plus@@(Momentum[#,\[Mu]]&/@(List@@x))
-
-Momentum[a_] /; MatchQ[Head[a],Times]&&a[[1]]==-1 := - Momentum[-a]
-Momentum[a_] /; a < 0 := - Momentum[-a]
-
-Momentum[x_Plus] := Plus@@(Momentum[#]&/@(List@@x))
-
-Momentum /: Momentum[a_,\[Nu]_]^2 := DotProduct[Momentum[a],Momentum[a]]
 
 
 (* ::Subsection:: *)

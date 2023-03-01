@@ -310,7 +310,7 @@ SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
 	 SpinorDottedMVBox[$down, $down]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 

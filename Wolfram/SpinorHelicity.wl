@@ -1,6 +1,14 @@
 (* ::Package:: *)
 
-BeginPackage["SpinorHelicity`", {"HelicityVariables`","NumericalKinematics`","YoungSymm`","DdimVariables`"}]
+BeginPackage["SpinorHelicity`", {"HelicityVariables`","NumericalKinematics`","YoungSymm`","DdimPackage`","DdimVariables`"}]
+
+
+(* ::Section:: *)
+(*Conflicts with DdimPackage*)
+
+
+Unprotect[MassDimension];
+ClearAll[MassDimension];
 
 
 (* ::Section:: *)
@@ -9,7 +17,7 @@ BeginPackage["SpinorHelicity`", {"HelicityVariables`","NumericalKinematics`","Yo
 
 MassDimension::usage = "..."
 Helicity::usage = "..."
-Particles::usage = "..."
+Labels::usage = "..."
 
 ToSp::usage = "..."
 ToBracket::usage = "..."
@@ -23,6 +31,8 @@ OpenTraces::usage = "..."
 UnboldSpinors::usage = "..."
 BoldSpinors::usage = "..."
 SpinorSubset::usage = "..."
+LGPosition::usage = "..."
+LGSymmetric::usage = "..."
 
 (*z\[Zeta]::usage = "..."
 SpinorComponentSum::usage = "..."
@@ -54,30 +64,50 @@ NEvaluate::usage = "..."
 Begin["`Private`"]
 
 
-(* ::Subsection::Closed:: *)
-(*MassDimension*)
+(* ::Subsection:: *)
+(*MassDimension4D*)
 
 
-(*MassDimension[AML[a_, b_]] := 1;
-MassDimension[SML[a_, b_]] := 1;
-MassDimension[Sp[a__]] := 2;
+Attributes[MassDimension]={Listable};
+
+MassDimension[SpinorDottedML[___][__]] := 1/2;
+MassDimension[SpinorUndottedML[___][__]] := 1/2;
+MassDimension[SpinorDottedMV[___][__]] := 1/2;
+MassDimension[SpinorUndottedMV[___][__]] := 1/2;
+MassDimension[AngleB[a_,b_]] := 1;
+MassDimension[SquareB[a_,b_]] := 1;
+MassDimension[AngleAngleChain[a_,x_,b_]] := 1+Length[x];
+MassDimension[AngleSquareChain[a_,x_,b_]] := 1+Length[x];
+MassDimension[SquareSquareChain[a_,x_,b_]] := 1+Length[x];
+MassDimension[MassUntilde[_]] := 1;
+MassDimension[MassTilde[_]] := 1;
+
+MassDimension[FieldStr[__]]:=1
+MassDimension[Riemann[__]]:=2
+MassDimension[Momentum[___]]:=1
+MassDimension[FTrace[a_,x_,b_]]:=MassDimension[a]+MassDimension[b]+Length[x]
+MassDimension[Mass[_]]:=1
+MassDimension[Mandelstam[__]]:=2
+MassDimension[DotProduct[a_,b_]]:=MassDimension[a]+MassDimension[b]
 
 (*MassDimension[x_]/;NumberQ[x]:=0;*)
 MassDimension[exp_Times] := Plus @@ (MassDimension /@ List @@ exp)
 
 MassDimension[Power[expr_, expo_]] := expo * MassDimension[expr]
 
-MassDimension[exp_Plus] := Block[{dims = MassDimension /@ List @@ exp},
-    dims = DeleteDuplicates[dims]; If[Length[dims] > 1,
-        Message[MassDimension::hom, exp]
-        ,
-        Return[dims[[1]]]
-    ]
-]
+MassDimension[exp_Plus] := 
+	Block[{dims = MassDimension /@ (List @@ exp)},
+		dims = DeleteDuplicates[dims];
+		If[
+			Length[dims] > 1,
+			Message[MassDimension::hom, exp],
+			Return[dims[[1]]]
+		]
+	]
 
 MassDimension::hom = "`1` is not homogeneous in the mass dimension";
 
-MassDimension[x_] := 0*)
+MassDimension[x_] := 0
 
 
 (* ::Subsection::Closed:: *)
@@ -115,13 +145,13 @@ Helicity[x_, label_] := 0*)
 
 
 (* ::Subsection::Closed:: *)
-(*Particles*)
+(*Labels*)
 
 
-Particles[exp_Sum]:=Union[Sequence@@(Particles/@List@@exp)]
-Particles[exp_Times]:=Union[Sequence@@(Particles/@(List@@exp))]
-Particles[exp_Power]:=Particles[exp[[1]]]
-Particles[exp_]:=
+Labels[exp_Sum]:=Union[Sequence@@(Labels/@List@@exp)]
+Labels[exp_Times]:=Union[Sequence@@(Labels/@(List@@exp))]
+Labels[exp_Power]:=Labels[exp[[1]]]
+Labels[exp_]:=
 	Union[
 		Cases[exp,SpinorUndottedML[pos___][lab_,ind___]|SpinorDottedML[pos___][lab_,ind___]|HoldPattern[SpinorUndottedMV[pos___][lab_,ind___]]|HoldPattern[SpinorDottedMV[pos___][lab_,ind___]]:>lab,All],
 		Cases[exp,AngleAngleChain[a_,list_,b_]|SquareSquareChain[a_,list_,b_]|AngleSquareChain[a_,list_,b_]|TraceChain[list_]:>Sequence@@(Part[#,1]&/@list),All]
@@ -342,7 +372,7 @@ OpenTraces[exp_]:=exp
 (*UnboldSpinors*)
 
 
-Options[UnboldSpinors]={SpinorSubset->False};
+Options[UnboldSpinors]={SpinorSubset->False,LGPosition->$up,LGSymmetric->True};
 
 UnboldSpinors[exp_List,opts:OptionsPattern[]]:=UnboldSpinors[#,opts]&/@exp
 
@@ -354,13 +384,13 @@ UnboldSpinors[exp_,OptionsPattern[]]:=
 		If[
 			ListQ[OptionValue[SpinorSubset]],
 			particles=OptionValue[SpinorSubset],
-			particles=Particles[exp]
+			particles=Labels[exp]
 		];
 		Do[
 			localexp=ReplaceRepeated[localexp(*exp, instead than localexp, just gives the last replacement in Do*),
 					{
-						SpinorUndottedMV[][a]:>SpinorUndottedMV[$up][a,ToExpression["\[CapitalPi]"<>ToString[i++]]],
-						SpinorDottedMV[][a]:>SpinorDottedMV[$up][a,ToExpression["\[CapitalPi]"<>ToString[i++]]]
+						SpinorUndottedMV[][a]:>SpinorUndottedMV[OptionValue[LGPosition]][a,ToExpression["\[CapitalPi]"<>ToString[i++]]],
+						SpinorDottedMV[][a]:>SpinorDottedMV[OptionValue[LGPosition]][a,ToExpression["\[CapitalPi]"<>ToString[i++]]]
 					}
 				];
 			tab=Append[tab,Table[ToExpression["\[CapitalPi]"<>ToString[k]],{k,j,i-1}]];
@@ -368,11 +398,11 @@ UnboldSpinors[exp_,OptionsPattern[]]:=
 			{a,particles}
 		];
 		localexp=localexp/.DelayedTimes->Times;
-		localexp=MultipleSymmetrise[localexp,Sequence@@tab]
+		localexp=If[OptionValue[LGSymmetric],MultipleSymmetrise[localexp,Sequence@@tab],localexp]
 	]
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*BoldSpinors*)
 
 

@@ -8,6 +8,8 @@ BeginPackage["DdimPackage`", {"YoungSymm`","DdimVariables`"}]
 (*Messages*)
 
 
+MassDimension::usage = "..."
+
 RelabelDummies::usage = "..."
 Relabel::usage = "..."
 
@@ -43,6 +45,39 @@ Begin["`Private`"]
 (*-Feature: function which open FieldStr into Momentum and EpsilonPol*)
 
 (* Problem: FromDotIndices has to be rewritten to take into account the changes for the momenta and epsilon polarizations. An additional feature is needed for FTrace.*)
+
+
+(* ::Subsection:: *)
+(*MassDimension*)
+
+
+Attributes[MassDimension]={Listable};
+
+MassDimension[FieldStr[__]]:=1
+MassDimension[Riemann[__]]:=2
+MassDimension[Momentum[___]]:=1
+MassDimension[FTrace[a_,x_,b_]]:=MassDimension[a]+MassDimension[b]+Length[x]
+MassDimension[Mass[_]]:=1
+MassDimension[Mandelstam[__]]:=2
+MassDimension[DotProduct[a_,b_]]:=MassDimension[a]+MassDimension[b]
+
+MassDimension[exp_Times] := Plus @@ (MassDimension /@ List @@ exp)
+
+MassDimension[Power[expr_, expo_]] := expo * MassDimension[expr]
+
+MassDimension[exp_Plus] := 
+	Block[{dims = MassDimension /@ (List @@ exp)},
+		dims = DeleteDuplicates[dims];
+		If[
+			Length[dims] > 1,
+			Message[MassDimension::hom, exp],
+			Return[dims[[1]]]
+		]
+	]
+
+MassDimension::hom = "`1` is not homogeneous in the mass dimension";
+
+MassDimension[x_] := 0
 
 
 (* ::Subsection::Closed:: *)
@@ -170,7 +205,7 @@ ToTrace[exp_] :=
 
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*From Dot To Indices*)
 
 

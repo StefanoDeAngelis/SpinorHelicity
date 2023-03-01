@@ -46,7 +46,7 @@ Begin["`Private`"]
 (*Numerical variables*)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Boxes*)
 
 
@@ -201,7 +201,7 @@ GenerateKinematics[particles_?(MatchQ[Head[#],Integer|List]&),OptionsPattern[]]:
 			ret
 		},
 
-		ClearKinematics[];
+		(*ClearKinematics[];*)
 
 		twistors=MomentumTwistors[n,OptionValue[HighestNumber]];
 
@@ -329,8 +329,8 @@ massive
 
 If[\[Not]MatchQ[OptionValue[InternalTwistors],{}],
 x=DeleteCases[x,_?(\[Not]FreeQ[#,particles[[y]]]&)];
-twistors=Delete[Echo@twistors,y];
-duals=Delete[Echo@duals,y];
+twistors=Delete[twistors,y];
+duals=Delete[duals,y];
 massive=Delete[massive,y];
 ];
 
