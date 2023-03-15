@@ -291,7 +291,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "mom" -> MomentumBox["\[SelectionPlaceholder]","\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
@@ -350,7 +350,7 @@ FTraceBox[a_List] :=
         ]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
@@ -367,8 +367,8 @@ FTrace[a_,c_List,b_]/;!OrderedQ[{a,b}]:=(-1)^Length[c]*FTrace[b,Reverse@c,a]
 FTrace[a_,c_List,a_]/;(If[MatchQ[#,{}],False,Part[#,1]]&@(FTraceNotOrderedQ/@Transpose[{c,Reverse@c}])):=(-1)^Length[c]*FTrace[a,Reverse@c,a]
 FTrace[list_List]/;(First@Ordering[list]!=1):=FTrace[RotateLeft[list,First@Ordering[list]-1]]
 
-FTrace[Times[x_,a__],c_,b_]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]]:=x*FTrace[Times[a],c,b]
-FTrace[a_,c_,Times[x_,b__]]/;!MatchQ[x,Momentum[_]|EpsilonPol[_]]:=x*FTrace[a,c,Times[b]]
+FTrace[Times[x_,a__],c_,b_]/;MatchQ[Head[x],Momentum|EpsilonPol]:=Times[a]*FTrace[x,c,b]
+FTrace[a_,c_,Times[x_,b__]]/;MatchQ[Head[x],Momentum|EpsilonPol]:=Times[b]*FTrace[a,c,x]
 
 
 (* ::Subsection:: *)
