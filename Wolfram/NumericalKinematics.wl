@@ -96,13 +96,13 @@ NSpinorDottedMV /: MakeBoxes[NSpinorDottedMV[a_, b_], StandardForm | Traditional
 NMomentum /: MakeBoxes[NMomentum[a_], StandardForm | TraditionalForm] := NMomentumBox[ToBoxes[a]]
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Auxiliary functions*)
 
 
-MomentumTwistor[p_Integer, d_Integer:4] := RandomInteger[{0, p}, {d}]
+MomentumTwistor[p_Integer, d_Integer:4] := (*RandomInteger[{0, p}, {d}]*)RandomSample[Range[0,p],d]
 
-MomentumTwistors[n_Integer, p_Integer] := RandomInteger[{0, p}, {n, 4}]
+MomentumTwistors[n_Integer, p_Integer] := (*RandomInteger[{0, p}, {n, 4}]*)Table[MomentumTwistor[p],n]
 
 TwoBracket[twi1_List, twi2_List] := twi1[[1]] * twi2[[2]] - twi1[[2]] * twi2[[1]]
 
@@ -171,7 +171,7 @@ ClearKinematics[] :=
 
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Generate Kinematics*)
 
 

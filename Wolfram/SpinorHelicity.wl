@@ -166,7 +166,7 @@ Labels[exp_]:=
 ToBracket[exp_] := ReplaceAll[ReplaceAll[exp, Sp[a__] /; (Length[{a}] > 2) :> Sum[Sp[#[[i]], #[[j]]]& @ {a}, {i, Length[{a}]}, {j, i + 1, Length[{a}]}]], Sp[i_, j_] :> AML[i, j] SML[j, i]]*)
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*ContractLittleGroup*)
 
 
@@ -238,7 +238,7 @@ Block[{localexp,AngleB,SquareB,AngleAngleChain,SquareSquareChain,AngleSquareChai
 ]
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Spin components*)
 
 
@@ -278,13 +278,13 @@ SpinorComponents[exp_,OptionsPattern[]] :=
 z\[Zeta] /: MakeBoxes[z\[Zeta][a_,I_], StandardForm | TraditionalForm] := z\[Zeta]Box[ToBoxes[a],ToBoxes[I]]*)
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*SpinorComponent*)
 
 
 SetAttributes[SpinorComponent,Listable]
 
-SpinorComponent[exp_,OptionsPattern[]] :=
+SpinorComponent[exp_] :=
 	Block[{localexp,SpinorUndottedMV,SpinorDottedMV},
 		SpinorUndottedMV[][a_]:=SpinorUndottedMV[$up][a,1];
 		SpinorDottedMV[][a_]:=SpinorDottedMV[$up][a,1];
@@ -312,7 +312,7 @@ SpinorComponentSum[exp_,OptionsPattern[]] :=
 		]*)
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*OpenTraces*)
 
 
@@ -362,8 +362,8 @@ OpenTrace[exp_,n_]:=exp
 
 
 OpenTraces[exp_Plus]:=Plus@@(OpenTraces/@(List@@exp))
-OpenTraces[exp_Power]:=Block[{i=1},Times@@(OpenTrace[#,i++]&/@(ConstantArray[exp[[1]],exp[[2]]]))]
-OpenTraces[exp_Times]:=Block[{i=1},Times@@(OpenTrace[#,i++]&/@Flatten[ReplaceAll[List@@exp,Power[x_,y_]:>ConstantArray[x,y]]])]
+OpenTraces[exp_Power]/;exp[[2]]>=0:=Block[{i=1},Times@@(OpenTrace[#,i++]&/@(ConstantArray[exp[[1]],exp[[2]]]))]
+OpenTraces[exp_Times]:=Block[{i=1},Times@@(OpenTrace[#,i++]&/@Flatten[ReplaceAll[List@@exp,Power[x_,y_]/;y>=0:>ConstantArray[x,y]]])]
 OpenTraces[exp_?(MatchQ[Head[#],AngleAngleChain|SquareSquareChain|AngleSquareChain|TraceChain]&)]:=OpenTrace[exp,1]
 OpenTraces[exp_]:=exp
 

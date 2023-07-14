@@ -155,6 +155,17 @@ SpinorDottedML[] /: MakeBoxes[SpinorDottedML[][a_], StandardForm | TraditionalFo
 
 
 (* ::Text:: *)
+(*Crossing properties of spinors*)
+
+
+SpinorUndottedML /: SpinorUndottedML[pos___][Times[-1,l___],a___] := I SpinorUndottedML[pos][Times[l],a]
+SpinorDottedML /: SpinorDottedML[pos___][Times[-1,l___],a___] := I SpinorDottedML[pos][Times[l],a]
+
+(*SpinorUndottedML /: SpinorUndottedML[][Times[-1,l___]] := I SpinorUndottedML[][Times[l]]
+SpinorDottedML /: SpinorDottedML[][Times[-1,l___]] := I SpinorDottedML[][Times[l]]*)
+
+
+(* ::Text:: *)
 (*Automatic contractions into angle and square brackets:*)
 
 
@@ -310,7 +321,7 @@ SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
 	 SpinorDottedMVBox[$down, $down]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
@@ -371,11 +382,11 @@ SpinorDottedMV[] /: MakeBoxes[SpinorDottedMV[][a_], StandardForm | TraditionalFo
 	] := SpinorDottedMVBox[][DdimVariables`ToLabel[a]]
 
 SpinorDottedMV /: SpinorDottedMV[pos1_, $down][i_, a_, II_] SpinorDottedMV[
-	pos2_, $up][i_, b_, II_] := MassTilde[i] EpsilonLorentzDotted[pos1, pos2
+	pos2_, $up][i_, b_, II_]/;!NumericQ[II] := MassTilde[i] EpsilonLorentzDotted[pos1, pos2
 	][a, b]
 
 SpinorUndottedMV /: SpinorUndottedMV[pos1_, $up][i_, a_, II_] SpinorUndottedMV[
-	pos2_, $down][i_, b_, II_] := MassUntilde[i] EpsilonLorentzUndotted[pos1,
+	pos2_, $down][i_, b_, II_]/;!NumericQ[II] := MassUntilde[i] EpsilonLorentzUndotted[pos1,
 	 pos2][a, b]
 
 SpinorUndottedMV /: SpinorUndottedMV[$up, pos_][l1_, a_, J_] SpinorUndottedML[
@@ -403,6 +414,21 @@ SpinorDottedMV /: SpinorDottedMV[$down, pos1_][l1_, a_, J_] SpinorDottedMV[
 	pos2][l2, K]];
 
       (*SpinorUndottedMV[pos1_,pos2_][l1_Plus,a_,J_] := Plus @@ (SpinorUndottedML[pos1,pos2][#,a,J] &/@ (List@@l1))SpinorDottedMV[pos1_,pos2_][l1_Plus,a_,J_] := Plus @@ (SpinorDottedML[pos1,pos2][#,a,J] &/@ (List@@l1))SpinorMV[pos_][l_Plus,J_] := Plus @@ (SpinorML[pos][#,J] &/@ List@@l)*)
+
+
+(* ::Text:: *)
+(*Crossing properties of spinors:*)
+
+
+SpinorDottedMV /: SpinorDottedMV[pos1___,pos2_][Times[-1,l___],a___] := SpinorDottedMV[pos1,pos2/.{$down->$up,$up->$down}][Times[l],a]
+SpinorUndottedMV /: SpinorUndottedMV[pos1___,pos2_][Times[-1,l___],a___] := SpinorUndottedMV[pos1,pos2/.{$down->$up,$up->$down}][Times[l],a]
+
+(*SpinorUndottedML /: SpinorUndottedML[][Times[-1,l___]] := I SpinorUndottedML[][Times[l]]
+SpinorDottedML /: SpinorDottedML[][Times[-1,l___]] := I SpinorDottedML[][Times[l]]*)
+
+
+(* ::Text:: *)
+(*If a spinor is declared to be massless:*)
 
 
 SpinorDottedMV[pos1_,pos2_][lab_,ind1_,ind2_]/;MemberQ[$massless,lab]:=SpinorDottedML[pos1][lab,ind1]
@@ -976,6 +1002,8 @@ AngleAngleChain[d_, c_, Times[a_, b__]] /; \[Not]MatchQ[a, SpinorUndottedML[
 
 AngleAngleChain[a_, b_List, c_] /; \[Not]OrderedQ[{a, c}] := -AngleAngleChain[
 	c, Reverse @ b, a]
+	
+AngleAngleChain[a_,{A___,Times[x_,y__],B___},b_]/;NumericQ[x]:=x*AngleAngleChain[a,{A,Times[y],B},b]
 
 
 (* ::Subsection:: *)
@@ -1016,6 +1044,8 @@ SquareSquareChain[d_, c_, Times[a_, b__]] /; \[Not]MatchQ[a, SpinorDottedML[
 
 SquareSquareChain[a_, b_List, c_] /; \[Not]OrderedQ[{a, c}] := -SquareSquareChain[
 	c, Reverse @ b, a]
+	
+SquareSquareChain[a_,{A___,Times[x_,y__],B___},b_]/;NumericQ[x]:=x*SquareSquareChain[a,{A,Times[y],B},b]
 
 
 (* ::Subsection:: *)
@@ -1053,6 +1083,8 @@ AngleSquareChain[Times[a_, b__], c_List, d_] /; \[Not]MatchQ[a, SpinorUndottedML
 AngleSquareChain[d_, c_List, Times[a_, b__]] /; \[Not]MatchQ[a, SpinorDottedML[
 	][_] | SpinorDottedMV[_][_, _] | SpinorDottedMV[][_]] := a * AngleSquareChain[
 	d, c, Times[b]]
+	
+AngleSquareChain[a_,{A___,Times[x_,y__],B___},b_]/;NumericQ[x]:=x*AngleSquareChain[a,{A,Times[y],B},b]
 
 
 (* ::Subsection:: *)
@@ -1074,6 +1106,8 @@ TraceChainBox[c__] := TemplateBox[{c}, "TraceChain", DisplayFunction
 
 
 TraceChain /: MakeBoxes[TraceChain[c_List], StandardForm | TraditionalForm] := TraceChainBox[Sequence @@ (ToBoxes /@ c)]
+
+TraceChain[{A___,Times[x_,y__],B___}]/;NumericQ[x]:=x*TraceChain[{A,Times[y],B}]
 
 
 (* ::Subsection:: *)
