@@ -93,7 +93,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "metric" -> MetricBox["\[SelectionPlaceholder]","\[Placeholder]"]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
@@ -118,6 +118,12 @@ Metric /: Metric[\[Mu]_,\[Nu]_] Momentum[a_,\[Mu]_] := Momentum[a,\[Nu]]
 
 Metric /: Metric[\[Mu]_,\[Nu]_] EpsilonPol[a_,\[Rho]___,\[Nu]_,\[Sigma]___] := EpsilonPol[a,\[Rho],\[Mu],\[Sigma]]
 Metric /: Metric[\[Nu]_,\[Rho]_] EpsilonPol[a_,\[Mu]___,\[Nu]_,\[Sigma]___] := EpsilonPol[a,\[Mu],\[Rho],\[Sigma]]
+
+Metric /: Metric[\[Mu]_,\[Nu]_] FieldStr[a_,\[Rho]___,\[Nu]_,\[Sigma]___] := FieldStr[a,\[Rho],\[Mu],\[Sigma]]
+Metric /: Metric[\[Nu]_,\[Rho]_] FieldStr[a_,\[Mu]___,\[Nu]_,\[Sigma]___] := FieldStr[a,\[Mu],\[Rho],\[Sigma]]
+
+Metric /: Metric[\[Mu]_,\[Nu]_] Riemann[a_,\[Rho]___,\[Nu]_,\[Sigma]___] := Riemann[a,\[Rho],\[Mu],\[Sigma]]
+Metric /: Metric[\[Nu]_,\[Rho]_] Riemann[a_,\[Mu]___,\[Nu]_,\[Sigma]___] := Riemann[a,\[Mu],\[Rho],\[Sigma]]
 
 
 (* ::Subsection:: *)
@@ -366,6 +372,8 @@ FTraceNotOrderedQ[{a_,b_}]:=If[MatchQ[a,b],Nothing,!OrderedQ[{a,b}]]
 FTrace[a_,c_List,b_]/;!OrderedQ[{a,b}]:=(-1)^Length[c]*FTrace[b,Reverse@c,a]
 FTrace[a_,c_List,a_]/;(If[MatchQ[#,{}],False,Part[#,1]]&@(FTraceNotOrderedQ/@Transpose[{c,Reverse@c}])):=(-1)^Length[c]*FTrace[a,Reverse@c,a]
 FTrace[list_List]/;(First@Ordering[list]!=1):=FTrace[RotateLeft[list,First@Ordering[list]-1]]
+
+FTrace[a_,c_List,a_]/;Length[c]==1||MatchQ[Reverse[c],c]:=0
 
 FTrace[Times[x_,a__],c_,b_]/;MatchQ[Head[x],Momentum|EpsilonPol]:=Times[a]*FTrace[x,c,b]
 FTrace[a_,c_,Times[x_,b__]]/;MatchQ[Head[x],Momentum|EpsilonPol]:=Times[b]*FTrace[a,c,x]

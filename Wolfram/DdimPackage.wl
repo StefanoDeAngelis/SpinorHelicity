@@ -13,13 +13,16 @@ MassDimension::usage = "..."
 RelabelDummies::usage = "..."
 Relabel::usage = "..."
 
-(*FromDotIndices::usage = "..."*)
+ScalarProductsToIndices::usage = "..."
 ToTrace::usage = "..."
 
 SetMasses::usage = "..."
 FixMasses::usage = "..."
 ZeroMasses::usage = "..."
 ClearMasses::usage = "..."
+
+LorentzGauge::usage = "..."
+FixedScalarProducts::usage = "..."
 
 DDerivative::usage = "..."
 
@@ -43,11 +46,12 @@ Begin["`Private`"]
 (*-Feature: DDerivative with respect to a Momentum/EpsilonPol inside FieldStr and for FTraces*)
 (*-Feature: make ToTrace faster with UpValues instead of replacement rules*)
 (*-Feature: function which open FieldStr into Momentum and EpsilonPol*)
+(*-Feature: clear function for LorentzGauge and FixedScalarProducts*)
 
-(* Problem: FromDotIndices has to be rewritten to take into account the changes for the momenta and epsilon polarizations. An additional feature is needed for FTrace.*)
+(* Done! (Under debugging) FromDotIndices has to be rewritten to take into account the changes for the momenta and epsilon polarizations. An additional feature is needed for FTrace.*)
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*MassDimension*)
 
 
@@ -206,49 +210,64 @@ ToTrace[exp_] :=
 
 
 (* ::Subsection::Closed:: *)
-(*From Dot To Indices*)
+(*From Scalar Products To Indices*)
 
 
-(*Options[FromDotIndices] = {"Indices" -> "Greek"};
+Options[ScalarProductsToIndices] = {"Indices" -> "Greek"};
 
-FromDotIndices[OptionsPattern[]][exp_Plus, n_:0] := Plus @@ (FromDotIndices["Indices" -> OptionValue["Indices"]][#, n]& /@ (List @@ exp))
+ScalarProductsToIndices[OptionsPattern[]][exp_Plus, n_:0] := Plus @@ (ScalarProductsToIndices["Indices" -> OptionValue["Indices"]][#, n]& /@ (List @@ exp))
 
-FromDotIndices[OptionsPattern[]][exp_Times, n_:0] :=
-	Times@@
-		Module[{i = 1 + n},
-			i = i + Length @
-				Join[
-					Cases[
-						Numerator[exp],
-						HoldPattern[EpsilonPol[_,h__]] | HoldPattern[FieldStr[_,h__]] | HoldPattern[Riemann[_,h__]] :> h,
-						\[Infinity]
-					],
-					Cases[
-						Numerator[exp], 
-						HoldPattern[Momentum[_,h_]] :> h, 
-						\[Infinity]
-					]
-				];
-			If[
-				MatchQ[
-					#,
-					DotProduct[_, _]
-				],
+ScalarProductsToIndices[OptionsPattern[]][exp_Times, n_:0] :=
+	Block[{Momentum,EpsilonPol,FieldStr},
+		Momentum[a_][b_]:=Momentum[a,b];
+		EpsilonPol[a_][b_]:=EpsilonPol[a,b];
+		FieldStr[a_][b__]:=FieldStr[a,b];
+		Times@@
+			Module[{i = 1 + n, num = Numerator[exp]},
+				i = i + Length @
+					Join[
+						Cases[
+							num,
+							HoldPattern[EpsilonPol[_,h__]] | HoldPattern[FieldStr[_,h__]] | HoldPattern[Riemann[_,h__]] :> h,
+							\[Infinity]
+						],
+						Cases[
+							num, 
+							HoldPattern[Momentum[_,h_]] :> h, 
+							\[Infinity]
+						]
+					];
 				If[
-					OptionValue["Indices"] == "Greek",
-					#[[1]][ToExpression@FromCharacterCode[944 + i]] #[[2]][ToExpression @ FromCharacterCode[944 + (i++)]],
-					#[[1]][ToExpression @ FromCharacterCode[96 + i]] #[[2]][ToExpression @ FromCharacterCode[96 + (i++)]]
-				],
-				#
-			]&/@ 
-				(Flatten@
-					ReplaceAll[
-						List @@ Relabel["Indices" -> OptionValue["Indices"]][Numerator[exp], n],
-						Power[x_(*?(MatchQ[Head[#],DotProduct]&)*), y_] :> ConstantArray[x, y]
+					MatchQ[
+						#,
+						DotProduct[_, _]
+					],
+					If[
+						OptionValue["Indices"] == "Greek",
+						#[[1]][ToExpression@FromCharacterCode[944 + i]] #[[2]][ToExpression @ FromCharacterCode[944 + (i++)]],
+						#[[1]][ToExpression @ FromCharacterCode[96 + i]] #[[2]][ToExpression @ FromCharacterCode[96 + (i++)]]
+					],
+					If[
+						MatchQ[
+							#,
+							FTrace[_, _, _]
+						],
+						If[
+							OptionValue["Indices"] == "Greek",
+							#[[1]][ToExpression@FromCharacterCode[944 + i]] Product[fields[ToExpression@FromCharacterCode[944 + (i++)],ToExpression@FromCharacterCode[944 + i]],{fields,#[[2]]}]#[[3]][ToExpression @ FromCharacterCode[944 + (i++)]],
+							#[[1]][ToExpression@ FromCharacterCode[96 + i]] Product[fields[ToExpression@FromCharacterCode[96 + (i++)], ToExpression@FromCharacterCode[96 + i]], {fields,#[[2]]}]#[[3]][ToExpression @ FromCharacterCode[96 + (i++)]]
+						],
+						#
 					]
-				)
-			] / Denominator[exp]
-*)
+				]&/@ 
+					(Flatten@
+						ReplaceAll[
+							List @@ Relabel["Indices" -> OptionValue["Indices"]][num, n],
+							Power[x_(*?(MatchQ[Head[#],DotProduct]&)*), y_] :> ConstantArray[x, y]
+						]
+					)
+				] / Denominator[exp]
+	]
 
 
 (* ::Subsection::Closed:: *)
@@ -275,7 +294,11 @@ DecombinePolarisations[exp_] :=
 
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
+(*Masses*)
+
+
+(* ::Subsubsection::Closed:: *)
 (*SetMasses*)
 
 
@@ -287,8 +310,7 @@ SetMasses[masses_List] :=
 	)
 
 
-
-(* ::Subsection::Closed:: *)
+(* ::Subsubsection::Closed:: *)
 (*FixMasses*)
 
 
@@ -300,7 +322,7 @@ FixMasses[particles_List,masses_List] /; Length[particles] == Length[masses] :=
 	)
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsubsection::Closed:: *)
 (*ZeroMasses*)
 
 
@@ -313,13 +335,11 @@ ZeroMasses[masses_List] :=
 
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsubsection::Closed:: *)
 (*ClearMasses*)
 
 
-ClearDownValues[f_] :=
-	DownValues[f] = DeleteCases[DownValues[f], _ ? (FreeQ[First[#], Pattern
-		]&)]
+ClearDownValues[f_] := DownValues[f] = DeleteCases[DownValues[f], _ ? (FreeQ[First[#], Pattern]&)]
 
 ClearMasses[] :=
 	(
@@ -332,6 +352,43 @@ ClearMasses[] :=
 
 
 (* ::Subsection:: *)
+(*Fix scalar products*)
+
+
+(* ::Subsubsection::Closed:: *)
+(*Lorentz gauge*)
+
+
+LorentzGauge[bosons_List]:=
+	(
+		Unprotect[DotProduct,FTrace];
+		Table[
+			{
+				DotProduct[EpsilonPol[x], Momentum[x]]=0,
+				FTrace/:FTrace[EpsilonPol[x], {FieldStr[x],y___},z_]:=0,
+				FTrace/:FTrace[Momentum[x], {FieldStr[x],y___},z_]:=0,
+				FTrace/:FTrace[z_, {y___,FieldStr[x]},Momentum[x]]:=0,
+				FTrace/:FTrace[z_, {y___,FieldStr[x]},EpsilonPol[x]]:=0,
+				FTrace/:FTrace[z1_, {y1___,FieldStr[x],FieldStr[x],y2___},z2_]:=0
+			},
+			{x,bosons}];
+		Protect[DotProduct,FTrace];
+	)
+
+
+(* ::Subsubsection:: *)
+(*Fix scalar products*)
+
+
+FixedScalarProducts[rules__?(MatchQ[Head[#],Rule]&)]:=
+	(
+		Unprotect[DotProduct,FTrace];
+		Set@@@{rules};
+		Protect[DotProduct,FTrace];
+	)
+
+
+(* ::Subsection::Closed:: *)
 (*DDerivative*)
 
 
