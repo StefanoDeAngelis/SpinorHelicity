@@ -51,7 +51,7 @@ Begin["`Private`"]
 (* Done! (Under debugging) FromDotIndices has to be rewritten to take into account the changes for the momenta and epsilon polarizations. An additional feature is needed for FTrace.*)
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*MassDimension*)
 
 
@@ -61,6 +61,7 @@ MassDimension[FieldStr[__]]:=1
 MassDimension[Riemann[__]]:=2
 MassDimension[Momentum[___]]:=1
 MassDimension[FTrace[a_,x_,b_]]:=MassDimension[a]+MassDimension[b]+Length[x]
+MassDimension[FTrace[x_List]]:=Length[x]
 MassDimension[Mass[_]]:=1
 MassDimension[Mandelstam[__]]:=2
 MassDimension[DotProduct[a_,b_]]:=MassDimension[a]+MassDimension[b]
@@ -270,7 +271,7 @@ ScalarProductsToIndices[OptionsPattern[]][exp_Times, n_:0] :=
 	]
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Combine Polarisation Vectors*)
 
 
@@ -279,7 +280,8 @@ CombinePolarisations[exp_] :=
 		exp,
 		{
 			EpsilonPol[a_, \[Mu]_] EpsilonPol[a_,\[Nu]_] :> EpsilonPol[a, \[Mu], \[Nu]],
-			FieldStr[a_, \[Mu]_, \[Nu]_] FieldStr[a_, \[Rho]_, \[Sigma]_] :> Riemann[a, \[Mu], \[Nu], \[Rho], \[Sigma]]
+			FieldStr[a_, \[Mu]_, \[Nu]_] FieldStr[a_, \[Rho]_, \[Sigma]_] :> Riemann[a, \[Mu], \[Nu], \[Rho], \[Sigma]],
+			FieldStr[a_, \[Mu]_, \[Nu]_]^2 :> Riemann[a, \[Mu], \[Nu], \[Mu], \[Nu]]
 		}
 	]
 
@@ -376,7 +378,7 @@ LorentzGauge[bosons_List]:=
 	)
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Fix scalar products*)
 
 
