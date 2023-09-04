@@ -93,7 +93,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "metric" -> MetricBox["\[SelectionPlaceholder]","\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
@@ -365,7 +365,9 @@ FTrace /: MakeBoxes[FTrace[a_List], StandardForm | TraditionalForm] := FTraceBox
 
 FTrace[a_Plus,c_List,b_]:=FTrace[#,c,b]&/@a
 FTrace[a_,c_List,b_Plus]:=FTrace[a,c,#]&/@b
+
 FTrace[a_,{c___,d_Plus,e___},b_]:=FTrace[a,{c,#,e},b]&/@d
+FTrace[a_,{c___,d_*FieldStr[k_],e___},b_]:=d FTrace[a,{c,FieldStr[k],e},b]
 
 FTraceNotOrderedQ[{a_,b_}]:=If[MatchQ[a,b],Nothing,!OrderedQ[{a,b}]]
 
@@ -373,7 +375,7 @@ FTrace[a_,c_List,b_]/;!OrderedQ[{a,b}]:=(-1)^Length[c]*FTrace[b,Reverse@c,a]
 FTrace[a_,c_List,a_]/;(If[MatchQ[#,{}],False,Part[#,1]]&@(FTraceNotOrderedQ/@Transpose[{c,Reverse@c}])):=(-1)^Length[c]*FTrace[a,Reverse@c,a]
 FTrace[list_List]/;(First@Ordering[list]!=1):=FTrace[RotateLeft[list,First@Ordering[list]-1]]
 
-FTrace[a_,c_List,a_]/;Length[c]==1||MatchQ[Reverse[c],c]:=0
+FTrace[a_,c_List,a_]/;Length[c]==1||(OddQ@Length[c]&&MatchQ[Reverse[c],c]):=0
 
 FTrace[Times[x_,a__],c_,b_]/;MatchQ[Head[x],Momentum|EpsilonPol]:=Times[a]*FTrace[x,c,b]
 FTrace[a_,c_,Times[x_,b__]]/;MatchQ[Head[x],Momentum|EpsilonPol]:=Times[b]*FTrace[a,c,x]

@@ -3,7 +3,6 @@
 BeginPackage["DdimPackage`", {"YoungSymm`","DdimVariables`"}]
 
 
-
 (* ::Section:: *)
 (*Messages*)
 
@@ -51,7 +50,7 @@ Begin["`Private`"]
 (* Done! (Under debugging) FromDotIndices has to be rewritten to take into account the changes for the momenta and epsilon polarizations. An additional feature is needed for FTrace.*)
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*MassDimension*)
 
 
@@ -171,7 +170,7 @@ Relabel[OptionsPattern[]][exp_, n_:0] :=
 
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*ToTrace*)
 
 
@@ -191,19 +190,31 @@ ToTrace[exp_] :=
 			{
 				f_[x_,a_] FieldStr[y_,a_, b_] /; MatchQ[f, EpsilonPol | Momentum] :> FTrace[f[x], {FieldStr[y]}][b],
 				f_[x_,b_] FieldStr[y_,a_, b_] /; MatchQ[f, EpsilonPol| Momentum] :> -FTrace[f[x], {FieldStr[y]}][a],
+				
+				FieldStr[y_,a_, b_]^2 :> - FTrace[{FieldStr[y],FieldStr[y]}],
+				
 				FTrace[x_, y_][a_] FieldStr[z_,a_, b_] :> FTrace[x, Append[y, FieldStr[z]]][b],
 				FTrace[x_, y_][b_] FieldStr[z_,a_,b_] :> -FTrace[x, Append[y, FieldStr[z]]][a],
+				
 				f_[x_,a_] FTrace[y_, z_List][a_] /; MatchQ[f, EpsilonPol| Momentum] :> FTrace[y, z, f[x]],
-				FTrace[x_, z1_List][a_] FTrace[y_, z2_List][a_] :> (-1) ^ (Length[z2]) FTrace[x, Join[z1, Reverse @ z2], y]
+				
+				FTrace[x_, z1_List][a_] FTrace[y_, z2_List][a_] :> (-1) ^ (Length[z2]) FTrace[x, Join[z1, Reverse @ z2], y],
+				FTrace[x_, y_][a_]^2 :> (-1)^Length[y] FTrace[x,Join[y,Reverse@y],x]
 			}
 		],
 		{
 			FieldStr[x_,a_, b_] FieldStr[y_,b_, c_] :> FTrace[FieldStr[x], FieldStr[y]][a, c],
 			FieldStr[x_,a_, c_] FieldStr[y_,b_, c_] :> -FTrace[FieldStr[x], FieldStr[y]][a, b],
+			
 			FTrace[x__][a_, b_] FieldStr[y_][b_, c_] :> FTrace[x, FieldStr[y]][a, c],
 			FTrace[x__][a_, c_] FieldStr[y_][b_, c_] :> -FTrace[x, FieldStr[y]][a, b],
+			FTrace[x__][c_, a_] FieldStr[y_][b_, c_] :> FTrace[FieldStr[y], x][b, a],
+			FTrace[x__][c_, a_] FieldStr[y_][c_, b_] :> -FTrace[FieldStr[y], x][b, a],
+			
 			FTrace[x__][a_, b_] FTrace[y__][b_, c_] :> FTrace[x, y][a, c],
+			
 			FTrace[x__][a_, c_] FTrace[y__][b_, c_] :> (-1) ^ (Length[{y}]) *FTrace[x, Sequence @@ Reverse @ {y}][a, b],
+			
 			FTrace[x__][a_, a_] :> FTrace[{x}]
 		}
 	]
@@ -271,7 +282,7 @@ ScalarProductsToIndices[OptionsPattern[]][exp_Times, n_:0] :=
 	]
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Combine Polarisation Vectors*)
 
 
