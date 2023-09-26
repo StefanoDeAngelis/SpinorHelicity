@@ -318,7 +318,7 @@ Momentum /: MakeBoxes[Momentum[a_,\[Mu]_], StandardForm | TraditionalForm] :=
 	If[LetterQ[StringPart[#,1]],
 		If[
 			StringLength[#]>1(*&&DigitQ[StringDrop[#,1]]*),
-			MomentumBoxLetterNumber[ToBoxes[ToExpression[StringPart[#,1]]],ToBoxes[ToExpression[StringDrop[#,1]]],ToLabel[\[Mu]]],
+			MomentumBoxLetterNumber[ToBoxes[ToExpression[StringPart[#,1]]],ToBoxes[ToExpression[StringDrop[#,1]]](*in case we have 1v, for example, as substript, it will become v (1 x v = v) *),ToLabel[\[Mu]]],
 			MomentumBoxLetter[ToBoxes[a],ToLabel[\[Mu]]]
 		],
 		MomentumBox[ToBoxes[a],ToLabel[\[Mu]]]
@@ -368,6 +368,8 @@ FTrace[a_,c_List,b_Plus]:=FTrace[a,c,#]&/@b
 
 FTrace[a_,{c___,d_Plus,e___},b_]:=FTrace[a,{c,#,e},b]&/@d
 FTrace[a_,{c___,d_*FieldStr[k_],e___},b_]:=d FTrace[a,{c,FieldStr[k],e},b]
+
+FTrace[{c___,d_*FieldStr[k_],e___}]:=d FTrace[{c,FieldStr[k],e}]
 
 FTraceNotOrderedQ[{a_,b_}]:=If[MatchQ[a,b],Nothing,!OrderedQ[{a,b}]]
 

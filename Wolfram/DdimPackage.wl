@@ -170,7 +170,7 @@ Relabel[OptionsPattern[]][exp_, n_:0] :=
 
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*ToTrace*)
 
 
@@ -221,7 +221,7 @@ ToTrace[exp_] :=
 
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*From Scalar Products To Indices*)
 
 
@@ -273,9 +273,10 @@ ScalarProductsToIndices[OptionsPattern[]][exp_Times, n_:0] :=
 					]
 				]&/@ 
 					(Flatten@
-						ReplaceAll[
+						Replace[
 							List @@ Relabel["Indices" -> OptionValue["Indices"]][num, n],
-							Power[x_(*?(MatchQ[Head[#],DotProduct]&)*), y_] :> ConstantArray[x, y]
+							Power[x_(*?(MatchQ[Head[#],DotProduct]&)*), y_] :> ConstantArray[x, y] /; IntegerQ[y] && y>0,
+							{1}
 						]
 					)
 				] / Denominator[exp]
