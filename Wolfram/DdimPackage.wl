@@ -235,7 +235,7 @@ ScalarProductsToIndices[OptionsPattern[]][exp_Times, n_:0] :=
 		EpsilonPol[a_][b_]:=EpsilonPol[a,b];
 		FieldStr[a_][b__]:=FieldStr[a,b];
 		Times@@
-			Module[{i = 1 + n, num = Numerator[exp]},
+			Module[{i = 1 + n, j, num = Numerator[exp]},
 				i = i + Length @
 					Join[
 						Cases[
@@ -269,7 +269,25 @@ ScalarProductsToIndices[OptionsPattern[]][exp_Times, n_:0] :=
 							#[[1]][ToExpression@FromCharacterCode[944 + i]] Product[fields[ToExpression@FromCharacterCode[944 + (i++)],ToExpression@FromCharacterCode[944 + i]],{fields,#[[2]]}]#[[3]][ToExpression @ FromCharacterCode[944 + (i++)]],
 							#[[1]][ToExpression@ FromCharacterCode[96 + i]] Product[fields[ToExpression@FromCharacterCode[96 + (i++)], ToExpression@FromCharacterCode[96 + i]], {fields,#[[2]]}]#[[3]][ToExpression @ FromCharacterCode[96 + (i++)]]
 						],
+						If[
+							MatchQ[
+								#,
+								FTrace[_]
+							],
+							j=i;
+							If[
+								OptionValue["Indices"] == "Greek",
+								Product[fields[ToExpression@FromCharacterCode[944 + (i++)],ToExpression@FromCharacterCode[944 + i]],{fields,#[[1]]}],
+								Product[fields[ToExpression@FromCharacterCode[96 + (i++)], ToExpression@FromCharacterCode[96 + i]], {fields,#[[1]]}]
+							]*
+							If[
+								OptionValue["Indices"] == "Greek",
+								Metric[ToExpression@FromCharacterCode[944 + i],ToExpression@FromCharacterCode[944 + j]],
+								Metric[ToExpression@FromCharacterCode[96 + i],ToExpression@FromCharacterCode[96 + j]]
+							]
+							,
 						#
+						]
 					]
 				]&/@ 
 					(Flatten@
@@ -379,6 +397,7 @@ LorentzGauge[bosons_List]:=
 		Table[
 			{
 				DotProduct[EpsilonPol[x], Momentum[x]]=0,
+				DotProduct[EpsilonPol[-x], Momentum[x]]=0,
 				FTrace/:FTrace[EpsilonPol[x], {FieldStr[x],y___},z_]:=0,
 				FTrace/:FTrace[Momentum[x], {FieldStr[x],y___},z_]:=0,
 				FTrace/:FTrace[z_, {y___,FieldStr[x]},Momentum[x]]:=0,

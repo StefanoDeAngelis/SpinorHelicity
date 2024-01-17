@@ -93,7 +93,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "metric" -> MetricBox["\[SelectionPlaceholder]","\[Placeholder]"]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
@@ -109,7 +109,7 @@ Metric[\[Mu]_,\[Mu]_] := DD;
 Metric /: Metric[\[Mu]_,\[Nu]_]^2 := DD;
 
 
-Metric /: Metric[\[Mu]_,\[Nu]_] Metric[\[Rho]_,\[Nu]_] := Metric[\[Mu],\[Rho]]
+Metric /: Metric[\[Mu]_,\[Rho]_] Metric[\[Nu]_,\[Rho]_] := Metric[\[Mu],\[Nu]]
 Metric /: Metric[\[Mu]_,\[Nu]_] Metric[\[Nu]_,\[Rho]_] := Metric[\[Mu],\[Rho]]
 Metric /: Metric[\[Mu]_,\[Nu]_] Metric[\[Mu]_,\[Rho]_] := Metric[\[Nu],\[Rho]]
 
@@ -126,7 +126,7 @@ Metric /: Metric[\[Mu]_,\[Nu]_] Riemann[a_,\[Rho]___,\[Nu]_,\[Sigma]___] := Riem
 Metric /: Metric[\[Nu]_,\[Rho]_] Riemann[a_,\[Mu]___,\[Nu]_,\[Sigma]___] := Riemann[a,\[Mu],\[Rho],\[Sigma]]
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Polarisation tensor*)
 
 
@@ -154,7 +154,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "eps" -> EpsilonPolBox["\[SelectionPlaceholder]","\[Placeholder]"]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
@@ -356,7 +356,7 @@ FTraceBox[a_List] :=
         ]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
