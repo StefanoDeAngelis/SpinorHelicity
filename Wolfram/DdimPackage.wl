@@ -170,7 +170,7 @@ Relabel[OptionsPattern[]][exp_, n_:0] :=
 
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*ToTrace*)
 
 
@@ -206,10 +206,10 @@ ToTrace[exp_] :=
 			FieldStr[x_,a_, b_] FieldStr[y_,b_, c_] :> FTrace[FieldStr[x], FieldStr[y]][a, c],
 			FieldStr[x_,a_, c_] FieldStr[y_,b_, c_] :> -FTrace[FieldStr[x], FieldStr[y]][a, b],
 			
-			FTrace[x__][a_, b_] FieldStr[y_][b_, c_] :> FTrace[x, FieldStr[y]][a, c],
-			FTrace[x__][a_, c_] FieldStr[y_][b_, c_] :> -FTrace[x, FieldStr[y]][a, b],
-			FTrace[x__][c_, a_] FieldStr[y_][b_, c_] :> FTrace[FieldStr[y], x][b, a],
-			FTrace[x__][c_, a_] FieldStr[y_][c_, b_] :> -FTrace[FieldStr[y], x][b, a],
+			FTrace[x__][a_, b_] FieldStr[y_, b_, c_] :> FTrace[x, FieldStr[y]][a, c],
+			FTrace[x__][a_, c_] FieldStr[y_, b_, c_] :> -FTrace[x, FieldStr[y]][a, b],
+			FTrace[x__][c_, a_] FieldStr[y_, b_, c_] :> FTrace[FieldStr[y], x][b, a],
+			HoldPattern[FTrace[x__][c_, a_] FieldStr[y_, c_, b_]] :> -FTrace[FieldStr[y], x][b, a],
 			
 			FTrace[x__][a_, b_] FTrace[y__][b_, c_] :> FTrace[x, y][a, c],
 			
@@ -221,7 +221,7 @@ ToTrace[exp_] :=
 
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*From Scalar Products To Indices*)
 
 
