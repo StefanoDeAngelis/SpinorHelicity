@@ -133,3 +133,5 @@ dmypy.json
 ffield*
 *.nb
 spintensor.wl
+
+.DS_Store
