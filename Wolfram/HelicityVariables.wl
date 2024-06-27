@@ -131,7 +131,7 @@ SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[ Inpu
 SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[ InputAliases /. Options[EvaluationNotebook[], InputAliases], "sddm" -> SpinorDottedMLBox[$down]["\[SelectionPlaceholder]", "\[Placeholder]"]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 

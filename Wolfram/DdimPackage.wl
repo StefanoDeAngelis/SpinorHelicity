@@ -13,6 +13,7 @@ RelabelDummies::usage = "..."
 Relabel::usage = "..."
 
 ScalarProductsToIndices::usage = "..."
+(*ToScalarProducts::usage = "..."*)
 ToTrace::usage = "..."
 
 SetMasses::usage = "..."
@@ -127,7 +128,7 @@ RelabelDummies[OptionsPattern[]][exp_] :=
 
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*Relabel*)
 
 
@@ -141,7 +142,7 @@ Relabel[OptionsPattern[]][exp_, n_:0] :=
 			Join[
 				Cases[
 					exp,
-					HoldPattern[EpsilonPol[_,h__]] | HoldPattern[FieldStr[_,h__]] | HoldPattern[Riemann[_,h__]] :> h,
+					HoldPattern[EpsilonPol[_,h__]] | HoldPattern[FieldStr[_,h__]] | HoldPattern[Riemann[_,h__]] | HoldPattern[Metric[h__]] :> h,
 					\[Infinity]
 				],
 				Cases[
@@ -170,15 +171,32 @@ Relabel[OptionsPattern[]][exp_, n_:0] :=
 
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*ToTrace*)
 
 
-ToTrace[exp_Plus] :=
-	ToTrace /@ exp
+(*ToScalarProducts[exp_Plus] := ToScalarProducts /@ exp
 
-ToTrace[Times[a___, b_, c___]] /; MatchQ[b, Power[_, _ ? (# < 0&)]] :=
-	b * ToTrace[Times[a, c]]
+ToScalarProducts[exp_Times] /; !(Denominator[exp]==1) := ToScalarProducts[Numerator[exp]]/Denominator[exp]
+
+ToScalarProducts[exp_]:=
+	Block[
+		{local,Momentum,EpsilonPol},
+		
+		Momentum /: Momentum[x_,a_] Momentum[y_,a_] := DotProduct[Momentum[x],Momentum[y]];
+		Momentum /: Momentum[x_,a_] EpsilonPol[y_,a_] := DotProduct[Momentum[x],EpsilonPol[y]];
+		EpsilonPol /: EpsilonPol[x_,a_] EpsilonPol[y_,a_] := DotProduct[EpsilonPol[x],EpsilonPol[y]];
+		
+		local=DecombinePolarisations[exp];
+		
+		Return[local]
+	]*)
+
+
+ToTrace[exp_Plus] := ToTrace /@ exp
+
+(*ToTrace[Times[a___, b_, c___]] /; MatchQ[b, Power[_, _ ? (# < 0&)]] := b * ToTrace[Times[a, c]]*)
+ToTrace[exp_Times] /; !(Denominator[exp]==1) := ToTrace[Numerator[exp]]/Denominator[exp]
 
 ToTrace[exp_] :=
 	ReplaceRepeated[
@@ -230,24 +248,18 @@ Options[ScalarProductsToIndices] = {"Indices" -> "Greek"};
 ScalarProductsToIndices[OptionsPattern[]][exp_Plus, n_:0] := Plus @@ (ScalarProductsToIndices["Indices" -> OptionValue["Indices"]][#, n]& /@ (List @@ exp))
 
 ScalarProductsToIndices[OptionsPattern[]][exp_Times, n_:0] :=
-	Block[{Momentum,EpsilonPol,FieldStr},
+	Block[{Momentum,EpsilonPol,FieldStr,Riemann,Metric},
 		Momentum[a_][b_]:=Momentum[a,b];
 		EpsilonPol[a_][b_]:=EpsilonPol[a,b];
 		FieldStr[a_][b__]:=FieldStr[a,b];
+		Riemann[a_][b__]:=Riemann[a,b];
 		Times@@
 			Module[{i = 1 + n, j, num = Numerator[exp]},
 				i = i + Length @
-					Join[
-						Cases[
-							num,
-							HoldPattern[EpsilonPol[_,h__]] | HoldPattern[FieldStr[_,h__]] | HoldPattern[Riemann[_,h__]] :> h,
-							\[Infinity]
-						],
-						Cases[
-							num, 
-							HoldPattern[Momentum[_,h_]] :> h, 
-							\[Infinity]
-						]
+					Cases[
+						num,
+						Momentum[_,h__] | EpsilonPol[_,h__] | FieldStr[_,h__] | Riemann[_,h__] | Metric[h__] :> h,
+						\[Infinity]
 					];
 				If[
 					MatchQ[
@@ -326,7 +338,7 @@ DecombinePolarisations[exp_] :=
 
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Masses*)
 
 
