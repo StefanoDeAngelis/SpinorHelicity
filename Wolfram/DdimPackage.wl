@@ -128,7 +128,7 @@ RelabelDummies[OptionsPattern[]][exp_] :=
 
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Relabel*)
 
 
@@ -239,7 +239,7 @@ ToTrace[exp_] :=
 
 
 
-(* ::Subsection::Closed:: *)
+(* ::Subsection:: *)
 (*From Scalar Products To Indices*)
 
 
@@ -247,7 +247,7 @@ Options[ScalarProductsToIndices] = {"Indices" -> "Greek"};
 
 ScalarProductsToIndices[OptionsPattern[]][exp_Plus, n_:0] := Plus @@ (ScalarProductsToIndices["Indices" -> OptionValue["Indices"]][#, n]& /@ (List @@ exp))
 
-ScalarProductsToIndices[OptionsPattern[]][exp_Times, n_:0] :=
+ScalarProductsToIndices[OptionsPattern[]][exp_, n_:0] :=
 	Block[{Momentum,EpsilonPol,FieldStr,Riemann,Metric},
 		Momentum[a_][b_]:=Momentum[a,b];
 		EpsilonPol[a_][b_]:=EpsilonPol[a,b];
@@ -294,8 +294,8 @@ ScalarProductsToIndices[OptionsPattern[]][exp_Times, n_:0] :=
 							]*
 							If[
 								OptionValue["Indices"] == "Greek",
-								Metric[ToExpression@FromCharacterCode[944 + i],ToExpression@FromCharacterCode[944 + j]],
-								Metric[ToExpression@FromCharacterCode[96 + i],ToExpression@FromCharacterCode[96 + j]]
+								Metric[ToExpression@FromCharacterCode[944 + (i++)],ToExpression@FromCharacterCode[944 + j]],
+								Metric[ToExpression@FromCharacterCode[96 + (i++)],ToExpression@FromCharacterCode[96 + j]]
 							]
 							,
 						#
@@ -304,7 +304,7 @@ ScalarProductsToIndices[OptionsPattern[]][exp_Times, n_:0] :=
 				]&/@ 
 					(Flatten@
 						Replace[
-							List @@ Relabel["Indices" -> OptionValue["Indices"]][num, n],
+							If[Head[#] === Times, List @@ #, {#}] &@ Relabel["Indices" -> OptionValue["Indices"]][num, n],
 							Power[x_(*?(MatchQ[Head[#],DotProduct]&)*), y_] :> ConstantArray[x, y] /; IntegerQ[y] && y>0,
 							{1}
 						]
