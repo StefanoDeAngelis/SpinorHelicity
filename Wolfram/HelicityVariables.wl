@@ -131,7 +131,7 @@ SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[ Inpu
 SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[ InputAliases /. Options[EvaluationNotebook[], InputAliases], "sddm" -> SpinorDottedMLBox[$down]["\[SelectionPlaceholder]", "\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
@@ -292,128 +292,70 @@ SpinorDottedMVBox[][label_] :=
 
 SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "Suuu" -> SpinorUndottedMVBox[$up, $up]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "Suud" ->
-	 SpinorUndottedMVBox[$up, $down]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
+SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "Suud" -> SpinorUndottedMVBox[$up, $down]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "Sudu" ->
-	 SpinorUndottedMVBox[$down, $up]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
+SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "Sudu" -> SpinorUndottedMVBox[$down, $up]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "Sudd" ->
-	 SpinorUndottedMVBox[$down, $down]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
+SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "Sudd" -> SpinorUndottedMVBox[$down, $down]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "Sduu" ->
-	 SpinorDottedMVBox[$up, $up]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
+SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "Sduu" -> SpinorDottedMVBox[$up, $up]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "Sdud" ->
-	 SpinorDottedMVBox[$up, $down]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
+SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "Sdud" -> SpinorDottedMVBox[$up, $down]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "Sddu" ->
-	 SpinorDottedMVBox[$down, $up]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
+SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "Sddu" -> SpinorDottedMVBox[$down, $up]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "Sddd" ->
-	 SpinorDottedMVBox[$down, $down]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
+SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "Sddd" -> SpinorDottedMVBox[$down, $down]["\[SelectionPlaceholder]", "\[Placeholder]", "\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
-SpinorUndottedMV[$up, $up] /: MakeBoxes[SpinorUndottedMV[$up, $up][a_,
-	 b_, c_], StandardForm | TraditionalForm] := SpinorUndottedMVBox[$up,
-	 $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c]]
+SpinorUndottedMV[$up, $up] /: MakeBoxes[SpinorUndottedMV[$up, $up][a_, b_, c_], StandardForm | TraditionalForm] := SpinorUndottedMVBox[$up, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c]]
 
-SpinorUndottedMV[$up, $down] /: MakeBoxes[SpinorUndottedMV[$up, $down
-	][a_, b_, c_], StandardForm | TraditionalForm] := SpinorUndottedMVBox[
-	$up, $down][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c]]
+SpinorUndottedMV[$up, $down] /: MakeBoxes[SpinorUndottedMV[$up, $down][a_, b_, c_], StandardForm | TraditionalForm] := SpinorUndottedMVBox[$up, $down][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c]]
 
-SpinorUndottedMV[$down, $up] /: MakeBoxes[SpinorUndottedMV[$down, $up
-	][a_, b_, c_], StandardForm | TraditionalForm] := SpinorUndottedMVBox[
-	$down, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c]]
+SpinorUndottedMV[$down, $up] /: MakeBoxes[SpinorUndottedMV[$down, $up][a_, b_, c_], StandardForm | TraditionalForm] := SpinorUndottedMVBox[$down, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c]]
 
-SpinorUndottedMV[$down, $down] /: MakeBoxes[SpinorUndottedMV[$down, $down
-	][a_, b_, c_], StandardForm | TraditionalForm] := SpinorUndottedMVBox[
-	$down, $down][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c
-	]]
+SpinorUndottedMV[$down, $down] /: MakeBoxes[SpinorUndottedMV[$down, $down][a_, b_, c_], StandardForm | TraditionalForm] := SpinorUndottedMVBox[$down, $down][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c]]
 
-SpinorUndottedMV[$up] /: MakeBoxes[SpinorUndottedMV[$up][a_, J_], StandardForm
-	 | TraditionalForm] := SpinorUndottedMVBox[$up][DdimVariables`ToLabel[
-	a], DdimVariables`ToLabel[J]]
+SpinorUndottedMV[$up] /: MakeBoxes[SpinorUndottedMV[$up][a_, J_], StandardForm | TraditionalForm] := SpinorUndottedMVBox[$up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[J]]
 
-SpinorUndottedMV[$down] /: MakeBoxes[SpinorUndottedMV[$down][a_, J_],
-	 StandardForm | TraditionalForm] := SpinorUndottedMVBox[$down][DdimVariables`ToLabel[
-	a], DdimVariables`ToLabel[J]]
+SpinorUndottedMV[$down] /: MakeBoxes[SpinorUndottedMV[$down][a_, J_], StandardForm | TraditionalForm] := SpinorUndottedMVBox[$down][DdimVariables`ToLabel[a], DdimVariables`ToLabel[J]]
 
-SpinorUndottedMV[] /: MakeBoxes[SpinorUndottedMV[][a_], StandardForm 
-	| TraditionalForm] := SpinorUndottedMVBox[][DdimVariables`ToLabel[
-	a]]
+SpinorUndottedMV[] /: MakeBoxes[SpinorUndottedMV[][a_], StandardForm | TraditionalForm] := SpinorUndottedMVBox[][DdimVariables`ToLabel[a]]
 
-SpinorDottedMV[$up, $up] /: MakeBoxes[SpinorDottedMV[$up, $up][a_, b_,
-	 c_], StandardForm | TraditionalForm] := SpinorDottedMVBox[$up, $up][
-	DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c]]
+SpinorDottedMV[$up, $up] /: MakeBoxes[SpinorDottedMV[$up, $up][a_, b_, c_], StandardForm | TraditionalForm] := SpinorDottedMVBox[$up, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c]]
 
-SpinorDottedMV[$up, $down] /: MakeBoxes[SpinorDottedMV[$up, $down][a_,
-	 b_, c_], StandardForm | TraditionalForm] := SpinorDottedMVBox[$up, $down
-	][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c]]
+SpinorDottedMV[$up, $down] /: MakeBoxes[SpinorDottedMV[$up, $down][a_, b_, c_], StandardForm | TraditionalForm] := SpinorDottedMVBox[$up, $down][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c]]
 
-SpinorDottedMV[$down, $up] /: MakeBoxes[SpinorDottedMV[$down, $up][a_,
-	 b_, c_], StandardForm | TraditionalForm] := SpinorDottedMVBox[$down,
-	 $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c]]
+SpinorDottedMV[$down, $up] /: MakeBoxes[SpinorDottedMV[$down, $up][a_, b_, c_], StandardForm | TraditionalForm] := SpinorDottedMVBox[$down, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c]]
 
-SpinorDottedMV[$down, $down] /: MakeBoxes[SpinorDottedMV[$down, $down
-	][a_, b_, c_], StandardForm | TraditionalForm] := SpinorDottedMVBox[$down,
-	 $down][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c]]
+SpinorDottedMV[$down, $down] /: MakeBoxes[SpinorDottedMV[$down, $down][a_, b_, c_], StandardForm | TraditionalForm] := SpinorDottedMVBox[$down, $down][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b], DdimVariables`ToLabel[c]]
 
-SpinorDottedMV[$up] /: MakeBoxes[SpinorDottedMV[$up][a_, J_], StandardForm
-	 | TraditionalForm] := SpinorDottedMVBox[$up][DdimVariables`ToLabel[
-	a], DdimVariables`ToLabel[J]]
+SpinorDottedMV[$up] /: MakeBoxes[SpinorDottedMV[$up][a_, J_], StandardForm | TraditionalForm] := SpinorDottedMVBox[$up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[J]]
 
-SpinorDottedMV[$down] /: MakeBoxes[SpinorDottedMV[$down][a_, J_], StandardForm
-	 | TraditionalForm] := SpinorDottedMVBox[$down][DdimVariables`ToLabel[
-	a], DdimVariables`ToLabel[J]]
+SpinorDottedMV[$down] /: MakeBoxes[SpinorDottedMV[$down][a_, J_], StandardForm | TraditionalForm] := SpinorDottedMVBox[$down][DdimVariables`ToLabel[a], DdimVariables`ToLabel[J]]
 
-SpinorDottedMV[] /: MakeBoxes[SpinorDottedMV[][a_], StandardForm | TraditionalForm
-	] := SpinorDottedMVBox[][DdimVariables`ToLabel[a]]
+SpinorDottedMV[] /: MakeBoxes[SpinorDottedMV[][a_], StandardForm | TraditionalForm] := SpinorDottedMVBox[][DdimVariables`ToLabel[a]]
 
-SpinorDottedMV /: SpinorDottedMV[pos1_, $down][i_, a_, II_] SpinorDottedMV[
-	pos2_, $up][i_, b_, II_]/;!NumericQ[II] := MassTilde[i] EpsilonLorentzDotted[pos1, pos2
-	][a, b]
+SpinorDottedMV /: SpinorDottedMV[pos1_, $down][i_, a_, II_] SpinorDottedMV[pos2_, $up][i_, b_, II_]/;!NumericQ[II] := MassTilde[i] EpsilonLorentzDotted[pos1, pos2][a, b]
 
-SpinorUndottedMV /: SpinorUndottedMV[pos1_, $up][i_, a_, II_] SpinorUndottedMV[
-	pos2_, $down][i_, b_, II_]/;!NumericQ[II] := MassUntilde[i] EpsilonLorentzUndotted[pos1,
-	 pos2][a, b]
+SpinorUndottedMV /: SpinorUndottedMV[pos1_, $up][i_, a_, II_] SpinorUndottedMV[pos2_, $down][i_, b_, II_]/;!NumericQ[II] := MassUntilde[i] EpsilonLorentzUndotted[pos1, pos2][a, b]
 
-SpinorUndottedMV /: SpinorUndottedMV[$up, pos_][l1_, a_, J_] SpinorUndottedML[
-	$down][l2_, a_] := -AngleB[SpinorUndottedML[][l2], SpinorUndottedMV[pos
-	][l1, J]];
+SpinorUndottedMV /: SpinorUndottedMV[$up, pos_][l1_, a_, J_] SpinorUndottedML[$down][l2_, a_] := -AngleB[SpinorUndottedML[][l2], SpinorUndottedMV[pos][l1, J]];
 
-SpinorUndottedMV /: SpinorUndottedMV[$down, pos_][l1_, a_, J_] SpinorUndottedML[
-	$up][l2_, a_] := AngleB[SpinorUndottedML[][l2], SpinorUndottedMV[pos][l1,
-	 J]];
+SpinorUndottedMV /: SpinorUndottedMV[$down, pos_][l1_, a_, J_] SpinorUndottedML[$up][l2_, a_] := AngleB[SpinorUndottedML[][l2], SpinorUndottedMV[pos][l1, J]];
 
-SpinorUndottedMV /: SpinorUndottedMV[$down, pos1_][l1_, a_, J_] SpinorUndottedMV[
-	$up, pos2_][l2_, a_, KK_] := AngleB[SpinorUndottedMV[pos1][l1, J], SpinorUndottedMV[
-	pos2][l2, KK]];
+SpinorUndottedMV /: SpinorUndottedMV[$down, pos1_][l1_, a_, J_] SpinorUndottedMV[$up, pos2_][l2_, a_, KK_] := AngleB[SpinorUndottedMV[pos1][l1, J], SpinorUndottedMV[pos2][l2, KK]];
 
-SpinorDottedMV /: SpinorDottedMV[$up, pos_][l1_, a_, J_] SpinorDottedML[
-	$down][l2_, a_] := SquareB[SpinorDottedML[][l2], SpinorDottedMV[pos][
-	l1, J]];
+SpinorDottedMV /: SpinorDottedMV[$up, pos_][l1_, a_, J_] SpinorDottedML[$down][l2_, a_] := SquareB[SpinorDottedML[][l2], SpinorDottedMV[pos][l1, J]];
 
-SpinorDottedMV /: SpinorDottedMV[$down, pos_][l1_, a_, J_] SpinorDottedML[
-	$up][l2_, a_] := -SquareB[SpinorDottedML[][l2], SpinorDottedMV[pos][l1,
-	 J]]; 
+SpinorDottedMV /: SpinorDottedMV[$down, pos_][l1_, a_, J_] SpinorDottedML[$up][l2_, a_] := -SquareB[SpinorDottedML[][l2], SpinorDottedMV[pos][l1, J]]; 
 
-SpinorDottedMV /: SpinorDottedMV[$down, pos1_][l1_, a_, J_] SpinorDottedMV[
-	$up, pos2_][l2_, a_, KK_] := -SquareB[SpinorDottedMV[pos1][l1, J], SpinorDottedMV[
-	pos2][l2, K]];
+SpinorDottedMV /: SpinorDottedMV[$down, pos1_][l1_, a_, J_] SpinorDottedMV[$up, pos2_][l2_, a_, KK_] := -SquareB[SpinorDottedMV[pos1][l1, J], SpinorDottedMV[pos2][l2, KK]];
 
-      (*SpinorUndottedMV[pos1_,pos2_][l1_Plus,a_,J_] := Plus @@ (SpinorUndottedML[pos1,pos2][#,a,J] &/@ (List@@l1))SpinorDottedMV[pos1_,pos2_][l1_Plus,a_,J_] := Plus @@ (SpinorDottedML[pos1,pos2][#,a,J] &/@ (List@@l1))SpinorMV[pos_][l_Plus,J_] := Plus @@ (SpinorML[pos][#,J] &/@ List@@l)*)
+(*SpinorUndottedMV[pos1_,pos2_][l1_Plus,a_,J_] := Plus @@ (SpinorUndottedML[pos1,pos2][#,a,J] &/@ (List@@l1))SpinorDottedMV[pos1_,pos2_][l1_Plus,a_,J_] := Plus @@ (SpinorDottedML[pos1,pos2][#,a,J] &/@ (List@@l1))SpinorMV[pos_][l_Plus,J_] := Plus @@ (SpinorML[pos][#,J] &/@ List@@l)*)
 
 
 (* ::Text:: *)
@@ -448,66 +390,94 @@ SpinorUndottedMV[][lab_]/;MemberQ[$massless,lab]:=SpinorUndottedML[][lab]
 (*Boxes*)
 
 
-EpsilonLorentzUndottedBox[$up, $up][II_, J_] := TemplateBox[{II, J}, 
-	"EpsilonLorentzUndotted", DisplayFunction -> (SuperscriptBox["\[Epsilon]", RowBox[
-	{#1, #2}]]&), InterpretationFunction -> (RowBox[{"EpsilonLorentzUndotted[$up,$up]",
-	 "[", RowBox[{#1, ",", #2}], "]"}]&)]
+EpsilonLorentzUndottedBox[$up, $up][II_, J_] :=
+	TemplateBox[{II, J}, "EpsilonLorentzUndotted",
+		DisplayFunction -> (SuperscriptBox["\[Epsilon]", RowBox[{#1, #2}]]&), 
+		InterpretationFunction -> (RowBox[{"EpsilonLorentzUndotted[$up,$up]","[", RowBox[{#1, ",", #2}], "]"}]&)
+	]
 
-EpsilonLorentzUndottedBox[$down, $up][II_, J_] := TemplateBox[{II, J},
-	 "EpsilonLorentzUndotted", DisplayFunction -> (SubsuperscriptBox["\[Delta]",
-	 RowBox[{#1}], RowBox[{#2}]]&), InterpretationFunction -> (RowBox[{"EpsilonLorentzUndotted[$down,$up]",
-	 "[", RowBox[{#1, ",", #2}], "]"}]&)]
+EpsilonLorentzUndottedBox[$down, $up][II_, J_] := 
+	TemplateBox[{II, J}, "EpsilonLorentzUndotted", 
+		DisplayFunction -> (SubsuperscriptBox["\[Delta]", RowBox[{#1}], RowBox[{#2}]]&), 
+		InterpretationFunction -> (RowBox[{"EpsilonLorentzUndotted[$down,$up]","[", RowBox[{#1, ",", #2}], "]"}]&)
+	]
 
-EpsilonLorentzUndottedBox[$down, $down][II_, J_] := TemplateBox[{II, 
-	J}, "EpsilonLorentzUndotted", DisplayFunction -> (SubscriptBox["\[Epsilon]", RowBox[
-	{#1, #2}]]&), InterpretationFunction -> (RowBox[{"EpsilonLorentzUndotted[$down,$down]",
-	 "[", RowBox[{#1, ",", #2}], "]"}]&)]
+EpsilonLorentzUndottedBox[$down, $down][II_, J_] := 
+	TemplateBox[{II, J}, "EpsilonLorentzUndotted", 
+		DisplayFunction -> (SubscriptBox["\[Epsilon]", RowBox[{#1, #2}]]&), 
+		InterpretationFunction -> (RowBox[{"EpsilonLorentzUndotted[$down,$down]","[", RowBox[{#1, ",", #2}], "]"}]&)
+	]
 
-EpsilonLorentzDottedBox[$up, $up][II_, J_] := TemplateBox[{II, J}, "EpsilonLorentzDotted",
-	 DisplayFunction -> (SuperscriptBox["\[Epsilon]", RowBox[{OverscriptBox[#1, "."
-	], OverscriptBox[#2, "."]}]]&), InterpretationFunction -> (RowBox[{"EpsilonLorentzDotted[$up,$up]",
-	 "[", RowBox[{#1, ",", #2}], "]"}]&)]
+EpsilonLorentzDottedBox[$up, $up][II_, J_] := 
+	TemplateBox[{II, J}, "EpsilonLorentzDotted",
+		DisplayFunction -> (SuperscriptBox["\[Epsilon]", RowBox[{OverscriptBox[#1, "."], OverscriptBox[#2, "."]}]]&), 
+		InterpretationFunction -> (RowBox[{"EpsilonLorentzDotted[$up,$up]","[", RowBox[{#1, ",", #2}], "]"}]&)
+	]
 
-EpsilonLorentzDottedBox[$down, $up][II_, J_] := TemplateBox[{II, J}, 
-	"EpsilonLorentzDotted", DisplayFunction -> (SubsuperscriptBox["\[Delta]", OverscriptBox[
-	#1, "."], OverscriptBox[#2, "."]]&), InterpretationFunction -> (RowBox[
-	{"EpsilonLorentzDotted[$down,$up]", "[", RowBox[{#1, ",", #2}], "]"}]&
-	)]
+EpsilonLorentzDottedBox[$down, $up][II_, J_] := 
+	TemplateBox[{II, J}, "EpsilonLorentzDotted", 
+		DisplayFunction -> (SubsuperscriptBox["\[Delta]", OverscriptBox[#1, "."], OverscriptBox[#2, "."]]&),
+		InterpretationFunction -> (RowBox[{"EpsilonLorentzDotted[$down,$up]", "[", RowBox[{#1, ",", #2}], "]"}]&)
+	]
 
-EpsilonLorentzDottedBox[$down, $down][II_, J_] := TemplateBox[{II, J},
-	 "EpsilonLorentzDotted", DisplayFunction -> (SubscriptBox["\[Epsilon]", RowBox[
-	{OverscriptBox[#1, "."], OverscriptBox[#2, "."]}]]&), InterpretationFunction
-	 -> (RowBox[{"EpsilonLorentzDotted[$down,$down]", "[", RowBox[{#1, ",",
-	 #2}], "]"}]&)]
+EpsilonLorentzDottedBox[$down, $down][II_, J_] := 
+	TemplateBox[{II, J},"EpsilonLorentzDotted", 
+		DisplayFunction -> (SubscriptBox["\[Epsilon]", RowBox[{OverscriptBox[#1, "."], OverscriptBox[#2, "."]}]]&), 
+		InterpretationFunction -> (RowBox[{"EpsilonLorentzDotted[$down,$down]", "[", RowBox[{#1, ",",#2}], "]"}]&)
+	]
 
 
 (* ::Subsubsection::Closed:: *)
 (*Shortcuts*)
 
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "ELuuu" 
-	-> EpsilonLorentzUndottedBox[$up, $up]["\[SelectionPlaceholder]", "\[Placeholder]"]]]
+SetOptions[
+	EvaluationNotebook[],
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases],
+		"ELuuu" -> EpsilonLorentzUndottedBox[$up, $up]["\[SelectionPlaceholder]", "\[Placeholder]"]
+		]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "ELudu" 
-	-> EpsilonLorentzUndottedBox[$down, $up]["\[SelectionPlaceholder]", "\[Placeholder]"]]]
+SetOptions[
+	EvaluationNotebook[],
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases],
+		"ELudu" -> EpsilonLorentzUndottedBox[$down, $up]["\[SelectionPlaceholder]", "\[Placeholder]"]
+		]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "ELudd" 
-	-> EpsilonLorentzUndottedBox[$down, $down]["\[SelectionPlaceholder]", "\[Placeholder]"]]]
+SetOptions[
+	EvaluationNotebook[], 
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"ELudd" -> EpsilonLorentzUndottedBox[$down, $down]["\[SelectionPlaceholder]", "\[Placeholder]"]
+		]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "ELduu" 
-	-> EpsilonLorentzDottedBox[$up, $up]["\[SelectionPlaceholder]", "\[Placeholder]"]]]
+SetOptions[
+	EvaluationNotebook[], 
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"ELduu" -> EpsilonLorentzDottedBox[$up, $up]["\[SelectionPlaceholder]", "\[Placeholder]"]
+		]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "ELddu" 
-	-> EpsilonLorentzDottedBox[$down, $up]["\[SelectionPlaceholder]", "\[Placeholder]"]]]
+SetOptions[
+	EvaluationNotebook[], 
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases],
+		"ELddu" -> EpsilonLorentzDottedBox[$down, $up]["\[SelectionPlaceholder]", "\[Placeholder]"]
+		]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "ELddd" 
-	-> EpsilonLorentzDottedBox[$down, $down]["\[SelectionPlaceholder]", "\[Placeholder]"]]]
+SetOptions[
+	EvaluationNotebook[], 
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"ELddd" -> EpsilonLorentzDottedBox[$down, $down]["\[SelectionPlaceholder]", "\[Placeholder]"]
+		]
+]
 
 
 (* ::Subsubsection::Closed:: *)
@@ -518,64 +488,38 @@ SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
 (*Graphical properties:*)
 
 
-EpsilonLorentzUndotted[$up, $up] /: MakeBoxes[EpsilonLorentzUndotted[
-	$up, $up][a_, b_], StandardForm | TraditionalForm] := EpsilonLorentzUndottedBox[
-	$up, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
+EpsilonLorentzUndotted[$up, $up] /: MakeBoxes[EpsilonLorentzUndotted[$up, $up][a_, b_], StandardForm | TraditionalForm] := EpsilonLorentzUndottedBox[$up, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
 
-EpsilonLorentzUndotted[$down, $up] /: MakeBoxes[EpsilonLorentzUndotted[
-	$down, $up][a_, b_], StandardForm | TraditionalForm] := EpsilonLorentzUndottedBox[
-	$down, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
+EpsilonLorentzUndotted[$down, $up] /: MakeBoxes[EpsilonLorentzUndotted[$down, $up][a_, b_], StandardForm | TraditionalForm] := EpsilonLorentzUndottedBox[$down, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
 
-EpsilonLorentzUndotted[$down, $down] /: MakeBoxes[EpsilonLorentzUndotted[
-	$down, $down][a_, b_], StandardForm | TraditionalForm] := EpsilonLorentzUndottedBox[
-	$down, $down][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
+EpsilonLorentzUndotted[$down, $down] /: MakeBoxes[EpsilonLorentzUndotted[$down, $down][a_, b_], StandardForm | TraditionalForm] := EpsilonLorentzUndottedBox[$down, $down][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
 
-EpsilonLorentzDotted[$up, $up] /: MakeBoxes[EpsilonLorentzDotted[$up,
-	 $up][a_, b_], StandardForm | TraditionalForm] := EpsilonLorentzDottedBox[
-	$up, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
+EpsilonLorentzDotted[$up, $up] /: MakeBoxes[EpsilonLorentzDotted[$up, $up][a_, b_], StandardForm | TraditionalForm] := EpsilonLorentzDottedBox[$up, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
 
-EpsilonLorentzDotted[$down, $up] /: MakeBoxes[EpsilonLorentzDotted[$down,
-	 $up][a_, b_], StandardForm | TraditionalForm] := EpsilonLorentzDottedBox[
-	$down, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
+EpsilonLorentzDotted[$down, $up] /: MakeBoxes[EpsilonLorentzDotted[$down, $up][a_, b_], StandardForm | TraditionalForm] := EpsilonLorentzDottedBox[$down, $up][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
 
-EpsilonLorentzDotted[$down, $down] /: MakeBoxes[EpsilonLorentzDotted[
-	$down, $down][a_, b_], StandardForm | TraditionalForm] := EpsilonLorentzDottedBox[
-	$down, $down][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
+EpsilonLorentzDotted[$down, $down] /: MakeBoxes[EpsilonLorentzDotted[$down, $down][a_, b_], StandardForm | TraditionalForm] := EpsilonLorentzDottedBox[$down, $down][DdimVariables`ToLabel[a], DdimVariables`ToLabel[b]]
 
 
 (* ::Text:: *)
 (*Undotted Epsilon contractions:*)
 
 
-EpsilonLorentzUndotted /: EpsilonLorentzUndotted[$up, $down][a_, b_] := EpsilonLorentzUndotted[
-	$down, $up][b, a]
+EpsilonLorentzUndotted /: EpsilonLorentzUndotted[$up, $down][a_, b_] := EpsilonLorentzUndotted[$down, $up][b, a]
 
-EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $up
-	][a_, b_] EpsilonLorentzUndotted[$down, pos4_][b_, c_]] := EpsilonLorentzUndotted[
-	pos1, pos4][a, c]
+EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $up][a_, b_] EpsilonLorentzUndotted[$down, pos4_][b_, c_]] := EpsilonLorentzUndotted[pos1, pos4][a, c]
 
-EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $down
-	][a_, b_] EpsilonLorentzUndotted[$up, pos4_][b_, c_]] := EpsilonLorentzUndotted[
-	pos1, pos4][a, c]
+EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $down][a_, b_] EpsilonLorentzUndotted[$up, pos4_][b_, c_]] := EpsilonLorentzUndotted[pos1, pos4][a, c]
 
-EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[$up, pos1_
-	][b_, a_] EpsilonLorentzUndotted[$down, pos4_][b_, c_]] := If[MatchQ[
-	pos1, $up], -1, 1] EpsilonLorentzUndotted[pos1, pos4][a, c]
+EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[$up, pos1_][b_, a_] EpsilonLorentzUndotted[$down, pos4_][b_, c_]] := If[MatchQ[pos1, $up], -1, 1] EpsilonLorentzUndotted[pos1, pos4][a, c]
 
-EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[$down, pos1_
-	][b_, a_] EpsilonLorentzUndotted[$up, pos4_][b_, c_]] := If[MatchQ[pos1,
-	 $down], -1, 1] EpsilonLorentzUndotted[pos1, pos4][a, c]
+EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[$down, pos1_][b_, a_] EpsilonLorentzUndotted[$up, pos4_][b_, c_]] := If[MatchQ[pos1, $down], -1, 1] EpsilonLorentzUndotted[pos1, pos4][a, c]
 
-EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $up
-	][a_, b_] EpsilonLorentzUndotted[pos4_, $down][c_, b_]] := If[MatchQ[
-	pos1, $up], -1, 1] EpsilonLorentzUndotted[pos1, pos4][a, c]
+EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $up][a_, b_] EpsilonLorentzUndotted[pos4_, $down][c_, b_]] := If[MatchQ[pos1, $up], -1, 1] EpsilonLorentzUndotted[pos1, pos4][a, c]
 
-EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $down
-	][a_, b_] EpsilonLorentzUndotted[pos4_, $up][c_, b_]] := If[MatchQ[pos1,
-	 $down], -1, 1] EpsilonLorentzUndotted[pos1, pos4][a, c]
+EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $down][a_, b_] EpsilonLorentzUndotted[pos4_, $up][c_, b_]] := If[MatchQ[pos1, $down], -1, 1] EpsilonLorentzUndotted[pos1, pos4][a, c]
 
-EpsilonLorentzUndotted[pos_, pos_][a_, b_] /; \[Not]OrderedQ[{a, b}] := -EpsilonLorentzUndotted[
-	pos, pos][b, a]
+EpsilonLorentzUndotted[pos_, pos_][a_, b_] /; \[Not]OrderedQ[{a, b}] := -EpsilonLorentzUndotted[pos, pos][b, a]
 
 EpsilonLorentzUndotted[$down, $up][a_, a_] := 2
 
@@ -584,35 +528,21 @@ EpsilonLorentzUndotted[$down, $up][a_, a_] := 2
 (*Dotted Epsilon contractions:*)
 
 
-EpsilonLorentzDotted /: EpsilonLorentzDotted[$up, $down][a_, b_] := EpsilonLorentzDotted[
-	$down, $up][b, a]
+EpsilonLorentzDotted /: EpsilonLorentzDotted[$up, $down][a_, b_] := EpsilonLorentzDotted[$down, $up][b, a]
 
-EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $up][
-	a_, b_] EpsilonLorentzDotted[$down, pos4_][b_, c_]] := EpsilonLorentzDotted[
-	pos1, pos4][a, c]
+EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $up][a_, b_] EpsilonLorentzDotted[$down, pos4_][b_, c_]] := EpsilonLorentzDotted[pos1, pos4][a, c]
 
-EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $down
-	][a_, b_] EpsilonLorentzDotted[$up, pos4_][b_, c_]] := EpsilonLorentzDotted[
-	pos1, pos4][a, c]
+EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $down][a_, b_] EpsilonLorentzDotted[$up, pos4_][b_, c_]] := EpsilonLorentzDotted[pos1, pos4][a, c]
 
-EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[$up, pos1_][
-	b_, a_] EpsilonLorentzDotted[$down, pos4_][b_, c_]] := If[MatchQ[pos1,
-	 $up], -1, 1] EpsilonLorentzDotted[pos1, pos4][a, c]
+EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[$up, pos1_][b_, a_] EpsilonLorentzDotted[$down, pos4_][b_, c_]] := If[MatchQ[pos1, $up], -1, 1] EpsilonLorentzDotted[pos1, pos4][a, c]
 
-EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[$down, pos1_
-	][b_, a_] EpsilonLorentzDotted[$up, pos4_][b_, c_]] := If[MatchQ[pos1,
-	 $down], -1, 1] EpsilonLorentzDotted[pos1, pos4][a, c]
+EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[$down, pos1_][b_, a_] EpsilonLorentzDotted[$up, pos4_][b_, c_]] := If[MatchQ[pos1, $down], -1, 1] EpsilonLorentzDotted[pos1, pos4][a, c]
 
-EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $up][
-	a_, b_] EpsilonLorentzDotted[pos4_, $down][c_, b_]] := If[MatchQ[pos1,
-	 $up], -1, 1] EpsilonLorentzDotted[pos1, pos4][a, c]
+EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $up][a_, b_] EpsilonLorentzDotted[pos4_, $down][c_, b_]] := If[MatchQ[pos1, $up], -1, 1] EpsilonLorentzDotted[pos1, pos4][a, c]
 
-EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $down
-	][a_, b_] EpsilonLorentzDotted[pos4_, $up][c_, b_]] := If[MatchQ[pos1,
-	 $down], -1, 1] EpsilonLorentzDotted[pos1, pos4][a, c]
+EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $down][a_, b_] EpsilonLorentzDotted[pos4_, $up][c_, b_]] := If[MatchQ[pos1, $down], -1, 1] EpsilonLorentzDotted[pos1, pos4][a, c]
 
-EpsilonLorentzDotted[pos_, pos_][a_, b_] /; \[Not]OrderedQ[{a, b}] := -EpsilonLorentzDotted[
-	pos, pos][b, a]
+EpsilonLorentzDotted[pos_, pos_][a_, b_] /; \[Not]OrderedQ[{a, b}] := -EpsilonLorentzDotted[pos, pos][b, a]
 
 EpsilonLorentzDotted[$down, $up][a_, a_] := 2
 
@@ -621,74 +551,42 @@ EpsilonLorentzDotted[$down, $up][a_, a_] := 2
 (*Raise/lower Dotted indices:*)
 
 
-EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $up][
-	a_, b_] SpinorDottedMV[$down, pos3_][mom_, b_, J_]] := SpinorDottedMV[
-	pos1, pos3][mom, a, J]
+EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $up][a_, b_] SpinorDottedMV[$down, pos3_][mom_, b_, J_]] := SpinorDottedMV[pos1, pos3][mom, a, J]
 
-EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $down
-	][a_, b_] SpinorDottedMV[$up, pos3_][mom_, b_, J_]] := SpinorDottedMV[
-	pos1, pos3][mom, a, J]
+EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $down][a_, b_] SpinorDottedMV[$up, pos3_][mom_, b_, J_]] := SpinorDottedMV[pos1, pos3][mom, a, J]
 
-EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[$up, pos1_][
-	a_, b_] SpinorDottedMV[$down, pos3_][mom_, a_, II_]] := If[MatchQ[pos1,
-	 $up], -1, 1] SpinorDottedMV[pos1, pos3][mom, b, II]
+EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[$up, pos1_][a_, b_] SpinorDottedMV[$down, pos3_][mom_, a_, II_]] := If[MatchQ[pos1, $up], -1, 1] SpinorDottedMV[pos1, pos3][mom, b, II]
 
-EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[$down, pos1_
-	][a_, b_] SpinorDottedMV[$up, pos3_][mom_, a_, II_]] := If[MatchQ[pos1,
-	 $down], -1, 1] SpinorDottedMV[pos1, pos3][mom, b, II]
+EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[$down, pos1_][a_, b_] SpinorDottedMV[$up, pos3_][mom_, a_, II_]] := If[MatchQ[pos1, $down], -1, 1] SpinorDottedMV[pos1, pos3][mom, b, II]
 
-EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $up
-	][a_, b_] SpinorUndottedMV[$down, pos3_][mom_, b_, J_]] := SpinorUndottedMV[
-	pos1, pos3][mom, a, J]
+EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $up][a_, b_] SpinorUndottedMV[$down, pos3_][mom_, b_, J_]] := SpinorUndottedMV[pos1, pos3][mom, a, J]
 
-EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $down
-	][a_, b_] SpinorUndottedMV[$up, pos3_][mom_, b_, J_]] := SpinorUndottedMV[
-	pos1, pos3][mom, a, J]
+EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $down][a_, b_] SpinorUndottedMV[$up, pos3_][mom_, b_, J_]] := SpinorUndottedMV[pos1, pos3][mom, a, J]
 
-EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[$up, pos1_
-	][a_, b_] SpinorUndottedMV[$down, pos3_][mom_, a_, II_]] := If[MatchQ[
-	pos1, $up], -1, 1] SpinorUndottedMV[pos1, pos3][mom, b, II]
+EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[$up, pos1_][a_, b_] SpinorUndottedMV[$down, pos3_][mom_, a_, II_]] := If[MatchQ[pos1, $up], -1, 1] SpinorUndottedMV[pos1, pos3][mom, b, II]
 
-EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[$down, pos1_
-	][a_, b_] SpinorUndottedMV[$up, pos3_][mom_, a_, II_]] := If[MatchQ[pos1,
-	 $down], -1, 1] SpinorUndottedMV[pos1, pos3][mom, b, II]
+EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[$down, pos1_][a_, b_] SpinorUndottedMV[$up, pos3_][mom_, a_, II_]] := If[MatchQ[pos1, $down], -1, 1] SpinorUndottedMV[pos1, pos3][mom, b, II]
 
 
 (* ::Text:: *)
 (*Raise/lower Undotted indices:*)
 
 
-EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $up][
-	a_, b_] SpinorDottedML[$down][mom_, b_]] := SpinorDottedML[pos1][mom,
-	 a]
+EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $up][a_, b_] SpinorDottedML[$down][mom_, b_]] := SpinorDottedML[pos1][mom, a]
 
-EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $down
-	][a_, b_] SpinorDottedML[$up][mom_, b_]] := SpinorDottedML[pos1][mom,
-	 a]
+EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[pos1_, $down][a_, b_] SpinorDottedML[$up][mom_, b_]] := SpinorDottedML[pos1][mom, a]
 
-EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[$up, pos1_][
-	a_, b_] SpinorDottedML[$down][mom_, a_]] := If[MatchQ[pos1, $up], -1,
-	 1] SpinorDottedML[pos1][mom, b]
+EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[$up, pos1_][a_, b_] SpinorDottedML[$down][mom_, a_]] := If[MatchQ[pos1, $up], -1, 1] SpinorDottedML[pos1][mom, b]
 
-EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[$down, pos1_
-	][a_, b_] SpinorDottedML[$up][mom_, a_]] := If[MatchQ[pos1, $down], -
-	1, 1] SpinorDottedML[pos1][mom, b]
+EpsilonLorentzDotted /: HoldPattern[EpsilonLorentzDotted[$down, pos1_][a_, b_] SpinorDottedML[$up][mom_, a_]] := If[MatchQ[pos1, $down], -1, 1] SpinorDottedML[pos1][mom, b]
 
-EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $up
-	][a_, b_] SpinorUndottedML[$down][mom_, b_]] := SpinorUndottedML[pos1
-	][mom, a]
+EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $up][a_, b_] SpinorUndottedML[$down][mom_, b_]] := SpinorUndottedML[pos1][mom, a]
 
-EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $down
-	][a_, b_] SpinorUndottedML[$up][mom_, b_]] := SpinorUndottedML[pos1][
-	mom, a]
+EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[pos1_, $down][a_, b_] SpinorUndottedML[$up][mom_, b_]] := SpinorUndottedML[pos1][mom, a]
 
-EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[$up, pos1_
-	][a_, b_] SpinorUndottedML[$down][mom_, a_]] := If[MatchQ[pos1, $up],
-	 -1, 1] SpinorUndottedML[pos1][mom, b]
+EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[$up, pos1_][a_, b_] SpinorUndottedML[$down][mom_, a_]] := If[MatchQ[pos1, $up], -1, 1] SpinorUndottedML[pos1][mom, b]
 
-EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[$down, pos1_
-	][a_, b_] SpinorUndottedML[$up][mom_, a_]] := If[MatchQ[pos1, $down],
-	 -1, 1] SpinorUndottedML[pos1][mom, b]
+EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[$down, pos1_][a_, b_] SpinorUndottedML[$up][mom_, a_]] := If[MatchQ[pos1, $down], -1, 1] SpinorUndottedML[pos1][mom, b]
 
 
 (* ::Subsection:: *)
@@ -699,37 +597,55 @@ EpsilonLorentzUndotted /: HoldPattern[EpsilonLorentzUndotted[$down, pos1_
 (*Boxes*)
 
 
-EpsilonSpinBox[$up, $up][II_, J_] := TemplateBox[{II, J}, "EpsilonSpin",
-	 DisplayFunction -> (SuperscriptBox["\[Epsilon]", RowBox[{#1, #2}]]&), InterpretationFunction
-	 -> (RowBox[{"EpsilonSpin[$up,$up]", "[", RowBox[{#1, ",", #2}], "]"}
-	]&)]
+EpsilonSpinBox[$up, $up][II_, J_] := 
+	TemplateBox[
+		{II, J}, "EpsilonSpin",
+		DisplayFunction -> (SuperscriptBox["\[Epsilon]", RowBox[{#1, #2}]]&),
+		InterpretationFunction -> (RowBox[{"EpsilonSpin[$up,$up]", "[", RowBox[{#1, ",", #2}], "]"}]&)
+	]
 
-EpsilonSpinBox[$down, $up][II_, J_] := TemplateBox[{II, J}, "EpsilonSpin",
-	 DisplayFunction -> (SubsuperscriptBox["\[Delta]", RowBox[{#1}], RowBox[{#2}
-	]]&), InterpretationFunction -> (RowBox[{"EpsilonSpin[$down,$up]", "[",
-	 RowBox[{#1, ",", #2}], "]"}]&)]
+EpsilonSpinBox[$down, $up][II_, J_] :=
+	TemplateBox[
+		{II, J}, "EpsilonSpin",
+		DisplayFunction -> (SubsuperscriptBox["\[Delta]", RowBox[{#1}], RowBox[{#2}]]&),
+		InterpretationFunction -> (RowBox[{"EpsilonSpin[$down,$up]", "[",RowBox[{#1, ",", #2}], "]"}]&)
+	]
 
-EpsilonSpinBox[$down, $down][II_, J_] := TemplateBox[{II, J}, "EpsilonSpin",
-	 DisplayFunction -> (SubscriptBox["\[Epsilon]", RowBox[{#1, #2}]]&), InterpretationFunction
-	 -> (RowBox[{"EpsilonSpin[$down,$down]", "[", RowBox[{#1, ",", #2}], 
-	"]"}]&)]
+EpsilonSpinBox[$down, $down][II_, J_] := 
+	TemplateBox[
+		{II, J}, "EpsilonSpin",
+		DisplayFunction -> (SubscriptBox["\[Epsilon]", RowBox[{#1, #2}]]&),
+		InterpretationFunction-> (RowBox[{"EpsilonSpin[$down,$down]", "[", RowBox[{#1, ",", #2}], "]"}]&)
+	]
 
 
 (* ::Subsubsection::Closed:: *)
 (*Shortcuts*)
 
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "ESuu" ->
-	 EpsilonSpinBox[$up, $up]["\[SelectionPlaceholder]", "\[Placeholder]"]]]
+SetOptions[
+	EvaluationNotebook[], 
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"ESuu" -> EpsilonSpinBox[$up, $up]["\[SelectionPlaceholder]", "\[Placeholder]"]
+		]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "ESdu" ->
-	 EpsilonSpinBox[$down, $up]["\[SelectionPlaceholder]", "\[Placeholder]"]]]
+SetOptions[
+	EvaluationNotebook[], 
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"ESdu" -> EpsilonSpinBox[$down, $up]["\[SelectionPlaceholder]", "\[Placeholder]"]
+		]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "ESdd" ->
-	 EpsilonSpinBox[$down, $down]["\[SelectionPlaceholder]", "\[Placeholder]"]]]
+SetOptions[
+	EvaluationNotebook[], 
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"ESdd" -> EpsilonSpinBox[$down, $down]["\[SelectionPlaceholder]", "\[Placeholder]"]
+		]
+]
 
 
 (* ::Subsubsection::Closed:: *)
@@ -792,83 +708,94 @@ EpsilonSpin /: EpsilonSpin[pos1_,po2_][II_,JJ_] AngleB[x___,SpinorUndottedMV[pos
 (*Boxes*)
 
 
-AngleBracketBox[a_, b_] := TemplateBox[{a, b}, "AngleB", DisplayFunction
-	 -> (RowBox[{"\[LeftAngleBracket]", RowBox[{#1, "\[MediumSpace]", #2}], "\[RightAngleBracket]"}]&), InterpretationFunction
-	 -> (RowBox[{"AngleB", "[", RowBox[{#1, ",", #2}], "]"}]&)]
+AngleBracketBox[a_, b_] := 
+	TemplateBox[
+		{a, b}, "AngleB", 
+		DisplayFunction -> (RowBox[{"\[LeftAngleBracket]", RowBox[{#1, "\[MediumSpace]", #2}], "\[RightAngleBracket]"}]&), 
+		InterpretationFunction -> (RowBox[{"AngleB", "[", RowBox[{#1, ",", #2}], "]"}]&)
+	]
 
 
 (* ::Subsubsection::Closed:: *)
 (*Shortcuts*)
 
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "abmm" ->
-	 AngleBracketBox[SpinorUndottedMLBox[]["\[SelectionPlaceholder]"], SpinorUndottedMLBox[]["\[Placeholder]"
-	]]]]
+SetOptions[
+	EvaluationNotebook[],
+		InputAliases -> DeleteDuplicates @ Append[
+			InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+			"abmm" -> AngleBracketBox[SpinorUndottedMLBox[]["\[SelectionPlaceholder]"], SpinorUndottedMLBox[]["\[Placeholder]"]]
+			]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "abmMu" 
-	-> AngleBracketBox[SpinorUndottedMLBox[]["\[SelectionPlaceholder]"], SpinorUndottedMVBox[$up
-	]["\[Placeholder]", "\[Placeholder]"]]]]
+SetOptions[
+	EvaluationNotebook[], 
+	InputAliases -> DeleteDuplicates @ Append[
+			InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+			"abmMu" -> AngleBracketBox[SpinorUndottedMLBox[]["\[SelectionPlaceholder]"], SpinorUndottedMVBox[$up]["\[Placeholder]", "\[Placeholder]"]]
+			]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "abmMd" 
-	-> AngleBracketBox[SpinorUndottedMLBox[]["\[SelectionPlaceholder]"], SpinorUndottedMVBox[$down
-	]["\[Placeholder]", "\[Placeholder]"]]]]
+SetOptions[
+	EvaluationNotebook[], 
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"abmMd" -> AngleBracketBox[SpinorUndottedMLBox[]["\[SelectionPlaceholder]"], SpinorUndottedMVBox[$down]["\[Placeholder]", "\[Placeholder]"]]
+		]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "abMuMu"
-	 -> AngleBracketBox[SpinorUndottedMVBox[$up]["\[SelectionPlaceholder]", "\[Placeholder]"], SpinorUndottedMVBox[
-	$up]["\[Placeholder]", "\[Placeholder]"]]]]
+SetOptions[
+	EvaluationNotebook[],
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"abMuMu" -> AngleBracketBox[SpinorUndottedMVBox[$up]["\[SelectionPlaceholder]", "\[Placeholder]"], SpinorUndottedMVBox[$up]["\[Placeholder]", "\[Placeholder]"]]
+		]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "abMdMu"
-	 -> AngleBracketBox[SpinorUndottedMVBox[$down]["\[SelectionPlaceholder]", "\[Placeholder]"], SpinorUndottedMVBox[
-	$up]["\[Placeholder]", "\[Placeholder]"]]]]
+SetOptions[
+	EvaluationNotebook[], 
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"abMdMu" -> AngleBracketBox[SpinorUndottedMVBox[$down]["\[SelectionPlaceholder]", "\[Placeholder]"], SpinorUndottedMVBox[$up]["\[Placeholder]", "\[Placeholder]"]]
+		]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "abMdMd"
-	 -> AngleBracketBox[SpinorUndottedMVBox[$down]["\[SelectionPlaceholder]", "\[Placeholder]"], SpinorUndottedMVBox[
-	$down]["\[Placeholder]", "\[Placeholder]"]]]]
+SetOptions[
+	EvaluationNotebook[],
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"abMdMd" -> AngleBracketBox[SpinorUndottedMVBox[$down]["\[SelectionPlaceholder]", "\[Placeholder]"], SpinorUndottedMVBox[$down]["\[Placeholder]", "\[Placeholder]"]]
+		]
+]
 
 
 (* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
-AngleB /: MakeBoxes[AngleB[a_, b_], StandardForm | TraditionalForm] := AngleBracketBox[
-	ToBoxes[a], ToBoxes[b]]
+AngleB /: MakeBoxes[AngleB[a_, b_], StandardForm | TraditionalForm] := AngleBracketBox[ToBoxes[a], ToBoxes[b]]
 
 AngleB[a_, b_Plus] := Plus @@ (AngleB[a, #]& /@ (List @@ b))
 
 AngleB[a_Plus, b_] := Plus @@ (AngleB[#, b]& /@ (List @@ a))
 
-AngleB[Times[a_, b__], c_] /; \[Not]MatchQ[a, SpinorUndottedML[][_] | SpinorUndottedMV[
-	_][_, _] | SpinorUndottedMV[][_]] := a * AngleB[Times[b], c]
+AngleB[Times[a_, b__], c_] /; \[Not]MatchQ[a, SpinorUndottedML[][_] | SpinorUndottedMV[_][_, _] | SpinorUndottedMV[][_]] := a * AngleB[Times[b], c]
 
-AngleB[c_, Times[a_, b__]] /; \[Not]MatchQ[a, SpinorUndottedML[][_] | SpinorUndottedMV[
-	_][_, _] | SpinorUndottedMV[][_]] := a * AngleB[c, Times[b]]
+AngleB[c_, Times[a_, b__]] /; \[Not]MatchQ[a, SpinorUndottedML[][_] | SpinorUndottedMV[_][_, _] | SpinorUndottedMV[][_]] := a * AngleB[c, Times[b]]
 
-AngleB /: HoldPattern[AngleB[a_, SpinorUndottedMV[$up][i_, II_]] AngleB[
-	b_, SpinorUndottedMV[$down][i_, II_]]] := MassUntilde[i] AngleB[a, b]
+AngleB /: HoldPattern[AngleB[a_, SpinorUndottedMV[$up][i_, II_]] AngleB[b_, SpinorUndottedMV[$down][i_, II_]]] := MassUntilde[i] AngleB[a, b]
 
-AngleB /: HoldPattern[AngleB[SpinorUndottedMV[$up][i_, II_], a_] AngleB[
-	b_, SpinorUndottedMV[$down][i_, II_]]] := -MassUntilde[i] AngleB[a, b
-	]
+AngleB /: HoldPattern[AngleB[SpinorUndottedMV[$up][i_, II_], a_] AngleB[b_, SpinorUndottedMV[$down][i_, II_]]] := -MassUntilde[i] AngleB[a, b]
 
-AngleB /: HoldPattern[AngleB[a_, SpinorUndottedMV[$up][i_, II_]] AngleB[
-	SpinorUndottedMV[$down][i_, II_], b_]] := -MassUntilde[i] AngleB[a, b
-	]
+AngleB /: HoldPattern[AngleB[a_, SpinorUndottedMV[$up][i_, II_]] AngleB[SpinorUndottedMV[$down][i_, II_], b_]] := -MassUntilde[i] AngleB[a, b]
 
-AngleB /: HoldPattern[AngleB[SpinorUndottedMV[$up][i_, II_], a_] AngleB[
-	SpinorUndottedMV[$down][i_, II_], b_]] := MassUntilde[i] AngleB[a, b]
+AngleB /: HoldPattern[AngleB[SpinorUndottedMV[$up][i_, II_], a_] AngleB[SpinorUndottedMV[$down][i_, II_], b_]] := MassUntilde[i] AngleB[a, b]
 
 AngleB[a_, b_] /; (a == b) := 0
 
 AngleB[a_, b_] /; \[Not]OrderedQ[{a, b}] := -AngleB[b, a]
 
-AngleB[SpinorUndottedMV[pos1_][a_, II_], SpinorUndottedMV[pos2_][a_, 
-	J_]] := EpsilonSpin[pos1, pos2][II, J] * MassUntilde[a]
+AngleB[SpinorUndottedMV[pos1_][a_, II_], SpinorUndottedMV[pos2_][a_, J_]] := EpsilonSpin[pos1, pos2][II, J] * MassUntilde[a]
 
 AngleB[a_Plus, b_] := Plus @@ (AngleB[#, b]& /@ List @@ a)
 
@@ -883,81 +810,94 @@ AngleB[a_, b_Plus] := Plus @@ (AngleB[a, #]& /@ List @@ b)
 (*Boxes*)
 
 
-SquareBracketBox[a_, b_] := TemplateBox[{a, b}, "SquareB", DisplayFunction
-	 -> (RowBox[{"[", RowBox[{#1, "\[MediumSpace]", #2}], "]"}]&), InterpretationFunction
-	 -> (RowBox[{"SquareB", "[", RowBox[{#1, ",", #2}], "]"}]&)]
+SquareBracketBox[a_, b_] := 
+	TemplateBox[
+		{a, b}, "SquareB", 
+		DisplayFunction -> (RowBox[{"[", RowBox[{#1, "\[MediumSpace]", #2}], "]"}]&), 
+		InterpretationFunction -> (RowBox[{"SquareB", "[", RowBox[{#1, ",", #2}], "]"}]&)
+	]
 
 
 (* ::Subsubsection::Closed:: *)
 (*Shortcuts*)
 
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "sbmm" ->
-	 SquareBracketBox[SpinorDottedMLBox[]["\[SelectionPlaceholder]"], SpinorDottedMLBox[]["\[Placeholder]"]]
-	]]
+SetOptions[
+	EvaluationNotebook[], 
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"sbmm" -> SquareBracketBox[SpinorDottedMLBox[]["\[SelectionPlaceholder]"], SpinorDottedMLBox[]["\[Placeholder]"]]
+		]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "sbmMu" 
-	-> SquareBracketBox[SpinorDottedMLBox[]["\[SelectionPlaceholder]"], SpinorDottedMVBox[$up][
-	"\[Placeholder]", "\[Placeholder]"]]]]
+SetOptions[
+	EvaluationNotebook[], 
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"sbmMu" -> SquareBracketBox[SpinorDottedMLBox[]["\[SelectionPlaceholder]"], SpinorDottedMVBox[$up]["\[Placeholder]", "\[Placeholder]"]]
+		]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "sbmMd" 
-	-> SquareBracketBox[SpinorDottedMLBox[]["\[SelectionPlaceholder]"], SpinorDottedMVBox[$down
-	]["\[Placeholder]", "\[Placeholder]"]]]]
+SetOptions[
+	EvaluationNotebook[],
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"sbmMd" -> SquareBracketBox[SpinorDottedMLBox[]["\[SelectionPlaceholder]"], SpinorDottedMVBox[$down]["\[Placeholder]", "\[Placeholder]"]]
+		]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "sbMuMu"
-	 -> SquareBracketBox[SpinorDottedMVBox[$up]["\[SelectionPlaceholder]", "\[Placeholder]"], SpinorDottedMVBox[
-	$up]["\[Placeholder]", "\[Placeholder]"]]]]
+SetOptions[
+	EvaluationNotebook[],
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"sbMuMu" -> SquareBracketBox[SpinorDottedMVBox[$up]["\[SelectionPlaceholder]", "\[Placeholder]"], SpinorDottedMVBox[$up]["\[Placeholder]", "\[Placeholder]"]]
+		]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "sbMdMu"
-	 -> SquareBracketBox[SpinorDottedMVBox[$down]["\[SelectionPlaceholder]", "\[Placeholder]"], SpinorDottedMVBox[
-	$up]["\[Placeholder]", "\[Placeholder]"]]]]
+SetOptions[
+	EvaluationNotebook[],
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"sbMdMu" -> SquareBracketBox[SpinorDottedMVBox[$down]["\[SelectionPlaceholder]", "\[Placeholder]"], SpinorDottedMVBox[$up]["\[Placeholder]", "\[Placeholder]"]]
+		]
+]
 
-SetOptions[EvaluationNotebook[], InputAliases -> DeleteDuplicates @ Append[
-	InputAliases /. Options[EvaluationNotebook[], InputAliases], "sbMdMd"
-	 -> SquareBracketBox[SpinorDottedMVBox[$down]["\[SelectionPlaceholder]", "\[Placeholder]"], SpinorDottedMVBox[
-	$down]["\[Placeholder]", "\[Placeholder]"]]]]
+SetOptions[
+	EvaluationNotebook[], 
+	InputAliases -> DeleteDuplicates @ Append[
+		InputAliases /. Options[EvaluationNotebook[], InputAliases], 
+		"sbMdMd" -> SquareBracketBox[SpinorDottedMVBox[$down]["\[SelectionPlaceholder]", "\[Placeholder]"], SpinorDottedMVBox[$down]["\[Placeholder]", "\[Placeholder]"]]
+		]
+]
 
 
 (* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
-SquareB /: MakeBoxes[SquareB[a_, b_], StandardForm | TraditionalForm] := SquareBracketBox[
-	ToBoxes[a], ToBoxes[b]]
+SquareB /: MakeBoxes[SquareB[a_, b_], StandardForm | TraditionalForm] := SquareBracketBox[ToBoxes[a], ToBoxes[b]]
 
 SquareB[a_, b_Plus] := Plus @@ (SquareB[a, #]& /@ (List @@ b))
 
 SquareB[a_Plus, b_] := Plus @@ (SquareB[#, b]& /@ (List @@ a))
 
-SquareB[Times[a_, b__], c_] /; \[Not]MatchQ[a, SpinorDottedML[][_] | SpinorDottedMV[
-	_][_, _] | SpinorDottedMV[][_]] := a * SquareB[Times[b], c]
+SquareB[Times[a_, b__], c_] /; \[Not]MatchQ[a, SpinorDottedML[][_] | SpinorDottedMV[_][_, _] | SpinorDottedMV[][_]] := a * SquareB[Times[b], c]
 
-SquareB[c_, Times[a_, b__]] /; \[Not]MatchQ[a, SpinorDottedML[][_] | SpinorDottedMV[
-	_][_, _] | SpinorDottedMV[][_]] := a * SquareB[c, Times[b]]
+SquareB[c_, Times[a_, b__]] /; \[Not]MatchQ[a, SpinorDottedML[][_] | SpinorDottedMV[_][_, _] | SpinorDottedMV[][_]] := a * SquareB[c, Times[b]]
 
-SquareB /: HoldPattern[SquareB[a_, SpinorDottedMV[$up][i_, II_]] SquareB[
-	b_, SpinorDottedMV[$down][i_, II_]]] := MassTilde[i] SquareB[a, b]
+SquareB /: HoldPattern[SquareB[a_, SpinorDottedMV[$up][i_, II_]] SquareB[b_, SpinorDottedMV[$down][i_, II_]]] := MassTilde[i] SquareB[a, b]
 
-SquareB /: HoldPattern[SquareB[SpinorDottedMV[$up][i_, II_], a_] SquareB[
-	b_, SpinorDottedMV[$down][i_, II_]]] := -MassTilde[i] SquareB[a, b]
+SquareB /: HoldPattern[SquareB[SpinorDottedMV[$up][i_, II_], a_] SquareB[b_, SpinorDottedMV[$down][i_, II_]]] := -MassTilde[i] SquareB[a, b]
 
-SquareB /: HoldPattern[SquareB[a_, SpinorDottedMV[$up][i_, II_]] SquareB[
-	SpinorDottedMV[$down][i_, II_], b_]] := -MassTilde[i] SquareB[a, b]
+SquareB /: HoldPattern[SquareB[a_, SpinorDottedMV[$up][i_, II_]] SquareB[SpinorDottedMV[$down][i_, II_], b_]] := -MassTilde[i] SquareB[a, b]
 
-SquareB /: HoldPattern[SquareB[SpinorDottedMV[$up][i_, II_], a_] SquareB[
-	SpinorDottedMV[$down][i_, II_], b_]] := MassTilde[i] SquareB[a, b]
+SquareB /: HoldPattern[SquareB[SpinorDottedMV[$up][i_, II_], a_] SquareB[SpinorDottedMV[$down][i_, II_], b_]] := MassTilde[i] SquareB[a, b]
 
 SquareB[a_, b_] /; (a == b) := 0
 
 SquareB[a_, b_] /; \[Not]OrderedQ[{a, b}] := -SquareB[b, a]
 
-SquareB[SpinorDottedMV[pos1_][a_, II_], SpinorDottedMV[pos2_][a_, J_]
-	] := EpsilonSpin[pos1, pos2][II, J] * MassTilde[a]
+SquareB[SpinorDottedMV[pos1_][a_, II_], SpinorDottedMV[pos2_][a_, J_]] := EpsilonSpin[pos1, pos2][II, J] * MassTilde[a]
 
 SquareB[a_Plus, b_] := Plus @@ (SquareB[#, b]& /@ List @@ a)
 
@@ -972,36 +912,29 @@ SquareB[a_, b_Plus] := Plus @@ (SquareB[a, #]& /@ List @@ b)
 (*Boxes*)
 
 
-AngleAngleChainBox[a_, b_, c__] := TemplateBox[{a, b, c}, "AngleAngleChain",
-	 DisplayFunction -> (RowBox[{"\[LeftAngleBracket]", #1, "|", ##3, "|", #2, "\[RightAngleBracket]"}]&), InterpretationFunction
-	 -> (RowBox[{"AngleAngleChain", "[", RowBox[{#1, ",", "{", TemplateSlotSequence[
-	3, ","], "}", ",", #2}], "]"}]&)]
+AngleAngleChainBox[a_, b_, c__] := 
+	TemplateBox[
+		{a, b, c}, "AngleAngleChain",
+		DisplayFunction -> (RowBox[{"\[LeftAngleBracket]", #1, "|", ##3, "|", #2, "\[RightAngleBracket]"}]&), 
+		InterpretationFunction -> (RowBox[{"AngleAngleChain", "[", RowBox[{#1, ",", "{", TemplateSlotSequence[3, ","], "}", ",", #2}], "]"}]&)
+	]
 
 
 (* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
-AngleAngleChain /: MakeBoxes[AngleAngleChain[a_, c_List, b_], StandardForm
-	 | TraditionalForm] := AngleAngleChainBox[ToBoxes[a], ToBoxes[b], Sequence
-	 @@ (ToBoxes /@ c)]
+AngleAngleChain /: MakeBoxes[AngleAngleChain[a_, c_List, b_], StandardForm | TraditionalForm] := AngleAngleChainBox[ToBoxes[a], ToBoxes[b], Sequence @@ (ToBoxes /@ c)]
 
-AngleAngleChain[a_, c_List, b_Plus] := Plus @@ (AngleAngleChain[a, c,
-	 #]& /@ (List @@ b))
+AngleAngleChain[a_, c_List, b_Plus] := Plus @@ (AngleAngleChain[a, c, #]& /@ (List @@ b))
 
-AngleAngleChain[a_Plus, c_List, b_] := Plus @@ (AngleAngleChain[#, c,
-	 b]& /@ (List @@ a))
+AngleAngleChain[a_Plus, c_List, b_] := Plus @@ (AngleAngleChain[#, c, b]& /@ (List @@ a))
 
-AngleAngleChain[Times[a_, b__], c_List, d_] /; \[Not]MatchQ[a, SpinorUndottedML[
-	][_] | SpinorUndottedMV[_][_, _] | SpinorUndottedMV[][_]] := a * AngleAngleChain[
-	Times[b], c, d]
+AngleAngleChain[Times[a_, b__], c_List, d_] /; \[Not]MatchQ[a, SpinorUndottedML[][_] | SpinorUndottedMV[_][_, _] | SpinorUndottedMV[][_]] := a * AngleAngleChain[Times[b], c, d]
 
-AngleAngleChain[d_, c_, Times[a_, b__]] /; \[Not]MatchQ[a, SpinorUndottedML[
-	][_] | SpinorUndottedMV[_][_, _] | SpinorUndottedMV[][_]] := a * AngleAngleChain[
-	d, c, Times[b]]
+AngleAngleChain[d_, c_, Times[a_, b__]] /; \[Not]MatchQ[a, SpinorUndottedML[][_] | SpinorUndottedMV[_][_, _] | SpinorUndottedMV[][_]] := a * AngleAngleChain[d, c, Times[b]]
 
-AngleAngleChain[a_, b_List, c_] /; \[Not]OrderedQ[{a, c}] := -AngleAngleChain[
-	c, Reverse @ b, a]
+AngleAngleChain[a_, b_List, c_] /; \[Not]OrderedQ[{a, c}] := -AngleAngleChain[c, Reverse @ b, a]
 	
 AngleAngleChain[a_,{A___,Times[x_,y__],B___},b_]/;NumericQ[x]:=x*AngleAngleChain[a,{A,Times[y],B},b]
 
@@ -1014,36 +947,29 @@ AngleAngleChain[a_,{A___,Times[x_,y__],B___},b_]/;NumericQ[x]:=x*AngleAngleChain
 (*Boxes*)
 
 
-SquareSquareChainBox[a_, b_, c__] := TemplateBox[{a, b, c}, "SquareSquareChain",
-	 DisplayFunction -> (RowBox[{"[", #1, "|", ##3, "|", #2, "]"}]&), InterpretationFunction
-	 -> (RowBox[{"SquareSquareChain", "[", RowBox[{#1, ",", "{", TemplateSlotSequence[
-	3, ","], "}", ",", #2}], "]"}]&)]
+SquareSquareChainBox[a_, b_, c__] := 
+	TemplateBox[
+		{a, b, c}, "SquareSquareChain", 
+		DisplayFunction -> (RowBox[{"[", #1, "|", ##3, "|", #2, "]"}]&), 
+		InterpretationFunction -> (RowBox[{"SquareSquareChain", "[", RowBox[{#1, ",", "{", TemplateSlotSequence[3, ","], "}", ",", #2}], "]"}]&)
+	]
 
 
 (* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
-SquareSquareChain /: MakeBoxes[SquareSquareChain[a_, c_List, b_], StandardForm
-	 | TraditionalForm] := SquareSquareChainBox[ToBoxes[a], ToBoxes[b], Sequence
-	 @@ (ToBoxes /@ c)]
+SquareSquareChain /: MakeBoxes[SquareSquareChain[a_, c_List, b_], StandardForm | TraditionalForm] := SquareSquareChainBox[ToBoxes[a], ToBoxes[b], Sequence @@ (ToBoxes /@ c)]
 
-SquareSquareChain[a_, c_List, b_Plus] := Plus @@ (SquareSquareChain[a,
-	 c, #]& /@ (List @@ b))
+SquareSquareChain[a_, c_List, b_Plus] := Plus @@ (SquareSquareChain[a, c, #]& /@ (List @@ b))
 
-SquareSquareChain[a_Plus, c_List, b_] := Plus @@ (SquareSquareChain[#,
-	 c, b]& /@ (List @@ a))
+SquareSquareChain[a_Plus, c_List, b_] := Plus @@ (SquareSquareChain[#, c, b]& /@ (List @@ a))
 
-SquareSquareChain[Times[a_, b__], c_List, d_] /; \[Not]MatchQ[a, SpinorDottedML[
-	][_] | SpinorDottedMV[_][_, _] | SpinorDottedMV[][_]] := a * SquareSquareChain[
-	Times[b], c, d]
+SquareSquareChain[Times[a_, b__], c_List, d_] /; \[Not]MatchQ[a, SpinorDottedML[][_] | SpinorDottedMV[_][_, _] | SpinorDottedMV[][_]] := a * SquareSquareChain[Times[b], c, d]
 
-SquareSquareChain[d_, c_, Times[a_, b__]] /; \[Not]MatchQ[a, SpinorDottedML[
-	][_] | SpinorDottedMV[_][_, _] | SpinorDottedMV[][_]] := a * SquareSquareChain[
-	d, c, Times[b]]
+SquareSquareChain[d_, c_, Times[a_, b__]] /; \[Not]MatchQ[a, SpinorDottedML[][_] | SpinorDottedMV[_][_, _] | SpinorDottedMV[][_]] := a * SquareSquareChain[d, c, Times[b]]
 
-SquareSquareChain[a_, b_List, c_] /; \[Not]OrderedQ[{a, c}] := -SquareSquareChain[
-	c, Reverse @ b, a]
+SquareSquareChain[a_, b_List, c_] /; \[Not]OrderedQ[{a, c}] := -SquareSquareChain[c, Reverse @ b, a]
 	
 SquareSquareChain[a_,{A___,Times[x_,y__],B___},b_]/;NumericQ[x]:=x*SquareSquareChain[a,{A,Times[y],B},b]
 
@@ -1056,33 +982,27 @@ SquareSquareChain[a_,{A___,Times[x_,y__],B___},b_]/;NumericQ[x]:=x*SquareSquareC
 (*Boxes*)
 
 
-AngleSquareChainBox[a_, b_, c__] := TemplateBox[{a, b, c}, "AngleSquareChain",
-	 DisplayFunction -> (RowBox[{"\[LeftAngleBracket]", #1, "|", ##3, "|", #2, "]"}]&), InterpretationFunction
-	 -> (RowBox[{"AngleSquareChain", "[", RowBox[{#1, ",", "{", TemplateSlotSequence[
-	3, ","], "}", ",", #2}], "]"}]&)]
+AngleSquareChainBox[a_, b_, c__] := 
+	TemplateBox[
+		{a, b, c}, "AngleSquareChain",
+		DisplayFunction -> (RowBox[{"\[LeftAngleBracket]", #1, "|", ##3, "|", #2, "]"}]&), 
+		InterpretationFunction -> (RowBox[{"AngleSquareChain", "[", RowBox[{#1, ",", "{", TemplateSlotSequence[3, ","], "}", ",", #2}], "]"}]&)
+	]
 
 
 (* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
-AngleSquareChain /: MakeBoxes[AngleSquareChain[a_, c_List, b_], StandardForm
-	 | TraditionalForm] := AngleSquareChainBox[ToBoxes[a], ToBoxes[b], Sequence
-	 @@ (ToBoxes /@ c)]
+AngleSquareChain /: MakeBoxes[AngleSquareChain[a_, c_List, b_], StandardForm | TraditionalForm] := AngleSquareChainBox[ToBoxes[a], ToBoxes[b], Sequence @@ (ToBoxes /@ c)]
 
-AngleSquareChain[a_, c_List, b_Plus] := Plus @@ (AngleSquareChain[a, 
-	c, #]& /@ (List @@ b))
+AngleSquareChain[a_, c_List, b_Plus] := Plus @@ (AngleSquareChain[a, c, #]& /@ (List @@ b))
 
-AngleSquareChain[a_Plus, c_List, b_] := Plus @@ (AngleSquareChain[#, 
-	c, b]& /@ (List @@ a))
+AngleSquareChain[a_Plus, c_List, b_] := Plus @@ (AngleSquareChain[#, c, b]& /@ (List @@ a))
 
-AngleSquareChain[Times[a_, b__], c_List, d_] /; \[Not]MatchQ[a, SpinorUndottedML[
-	][_] | SpinorUndottedMV[_][_, _] | SpinorUndottedMV[][_]] := a * AngleSquareChain[
-	Times[b], c, d]
+AngleSquareChain[Times[a_, b__], c_List, d_] /; \[Not]MatchQ[a, SpinorUndottedML[][_] | SpinorUndottedMV[_][_, _] | SpinorUndottedMV[][_]] := a * AngleSquareChain[Times[b], c, d]
 
-AngleSquareChain[d_, c_List, Times[a_, b__]] /; \[Not]MatchQ[a, SpinorDottedML[
-	][_] | SpinorDottedMV[_][_, _] | SpinorDottedMV[][_]] := a * AngleSquareChain[
-	d, c, Times[b]]
+AngleSquareChain[d_, c_List, Times[a_, b__]] /; \[Not]MatchQ[a, SpinorDottedML[][_] | SpinorDottedMV[_][_, _] | SpinorDottedMV[][_]] := a * AngleSquareChain[d, c, Times[b]]
 	
 AngleSquareChain[a_,{A___,Times[x_,y__],B___},b_]/;NumericQ[x]:=x*AngleSquareChain[a,{A,Times[y],B},b]
 
@@ -1095,10 +1015,12 @@ AngleSquareChain[a_,{A___,Times[x_,y__],B___},b_]/;NumericQ[x]:=x*AngleSquareCha
 (*Boxes*)
 
 
-TraceChainBox[c__] := TemplateBox[{c}, "TraceChain", DisplayFunction 
-	-> (RowBox[{SubscriptBox["Tr", "-"], ##}]&), InterpretationFunction ->
-	 (RowBox[{"TraceChain", "[", RowBox[{"{", TemplateSlotSequence[1, ","
-	], "}"}], "]"}]&)]
+TraceChainBox[c__] := 
+	TemplateBox[
+		{c}, "TraceChain",
+		DisplayFunction -> (RowBox[{SubscriptBox["Tr", "-"], ##}]&), 
+		InterpretationFunction -> (RowBox[{"TraceChain", "[", RowBox[{"{", TemplateSlotSequence[1, ","], "}"}], "]"}]&)
+	]
 
 
 (* ::Subsubsection::Closed:: *)

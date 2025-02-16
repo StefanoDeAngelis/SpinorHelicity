@@ -59,6 +59,9 @@ NEvaluate::usage = "..."
 	- define a box for the SpinorDerivative and a new object on which the derivative get stuck (possible also the commutation of the derivatives and derivatives with more than one argument)
 	- spins and massdimension functions should check homogeneity
 *)
+(*
+	- UnboldSpinors presents two main problems, which should both be fixed by adding an Expand function at the beginning, possibly checking if there is a Plus at some level (for example, nested with a Times)
+*)
 
 
 Begin["`Private`"]
