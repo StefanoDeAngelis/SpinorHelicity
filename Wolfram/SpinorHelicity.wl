@@ -217,7 +217,7 @@ Block[{localexp,AngleB,SquareB,AngleAngleChain,SquareSquareChain,AngleSquareChai
 	AngleAngleChain /: HoldPattern[AngleAngleChain[SpinorUndottedMV[$down][i_, II_], list1_List, a_] AngleAngleChain[SpinorUndottedMV[$up][i_, II_], list2_List, b_]] := -MassUntilde[i] AngleAngleChain[a, Join[Reverse @ list1, list2], b];
 	AngleAngleChain /: HoldPattern[AngleAngleChain[a_, list1_List, SpinorUndottedMV[$down][i_, II_]] AngleAngleChain[b_, list2_List, SpinorUndottedMV[$up][i_, II_]]] := -MassUntilde[i] AngleAngleChain[a, Join[list1, Reverse @ list2], b];
 	AngleAngleChain /: HoldPattern[AngleAngleChain[a_, list1_List, SpinorUndottedMV[pos1_][i_, II_]] AngleAngleChain[SpinorUndottedMV[pos2_][i_, II_], list2_List, b_]] /; \[Not]MatchQ[pos1, pos2] := If[MatchQ[pos1, $down], 1, -1] MassUntilde[i] AngleAngleChain[a, Join[list1, list2], b];
-	(*AngleAngleChain /: AngleAngleChain[SpinorMV[$up][II_,II_],list_List,SpinorMV[$down][II_,II_]] := -MassUntilde[i]TraceChain[RotateRight@list]*);
+	(*AngleAngleChain /: AngleAngleChain[SpinorMV[$up][II_,II_],list_List,SpinorMV[$down][II_,II_]] := -MassUntilde[i]TraceChain[RotateRight@list];*)
 	AngleAngleChain /: HoldPattern[AngleAngleChain[SpinorUndottedMV[$down][i_, II_], list_List, SpinorUndottedMV[$up][i_, II_]]] := -MassUntilde[i] TraceChain[RotateRight @ list];
 	
 	SquareSquareChain /: HoldPattern[SquareSquareChain[a_, list1_List, SpinorDottedMV[pos1_][i_, II_]] AngleSquareChain[SpinorUndottedMV[pos2_][i_, II_], list2_List, b_]] /; \[Not]MatchQ[pos1, pos2] := If[MatchQ[pos1, $down], 1, -1] * SquareSquareChain[a, Join[list1, Prepend[list2, Momentum[i]]], b];
@@ -227,7 +227,7 @@ Block[{localexp,AngleB,SquareB,AngleAngleChain,SquareSquareChain,AngleSquareChai
 	SquareSquareChain /: HoldPattern[SquareSquareChain[SpinorDottedMV[$down][i_, II_], list1_List, a_] SquareSquareChain[SpinorDottedMV[$up][i_, II_], list2_List, b_]] := MassTilde[i] SquareSquareChain[a, Join[Reverse @ list1, list2], b];
 	SquareSquareChain /: HoldPattern[SquareSquareChain[a_, list1_List, SpinorDottedMV[$down][i_, II_]] SquareSquareChain[b_, list2_List, SpinorDottedMV[$up][i_, II_]]] := MassTilde[i] SquareSquareChain[a, Join[list1, Reverse @ list2], b];
 	SquareSquareChain /: HoldPattern[SquareSquareChain[a_, list1_List, SpinorDottedMV[pos1_][i_, II_]] SquareSquareChain[SpinorDottedMV[pos2_][i_, II_], list2_List, b_]] /; \[Not]MatchQ[pos1, pos2] := If[MatchQ[pos1, $down], -1, 1] MassTilde[i] SquareSquareChain[a, Join[list1, list2], b];
-	(*SquareSquareChain /: SquareSquareChain[SpinorMV[$up][II_,II_],list_List,SpinorMV[$down][II_,II_]] := -MassTilde[i]TraceChain[list]*);
+	(*SquareSquareChain /: SquareSquareChain[SpinorMV[$up][II_,II_],list_List,SpinorMV[$down][II_,II_]] := -MassTilde[i]TraceChain[list];*)
 	SquareSquareChain /: HoldPattern[SquareSquareChain[SpinorDottedMV[$down][i_, II_], list_List, SpinorDottedMV[$up][i_, II_]]] := +MassTilde[i] TraceChain[list];
 	
 	AngleSquareChain /: HoldPattern[AngleSquareChain[SpinorUndottedMV[$down][i_, II_], list1_List, a_] AngleSquareChain[SpinorUndottedMV[$up][i_, II_], list2_List, b_]] := MassUntilde[i] SquareSquareChain[a, Join[Reverse @ list1, list2], b];
@@ -325,34 +325,34 @@ SpinorComponentSum[exp_,OptionsPattern[]] :=
 
 OpenTrace[AngleAngleChain[a_,list_List,b_],n_Integer]:=
 	(
-		AngleB[a,SpinorUndottedMV[$up][#[[1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>"1"]]]
-		Product[AngleB[SpinorUndottedMV[$up][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorUndottedMV[$up][#[[i+1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i+1]]]],{i,2,Length@#-1,2}]
-		Product[SquareB[SpinorDottedMV[$down][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorDottedMV[$down][#[[i+1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i+1]]]],{i,1,Length@#-1,2}]
+		AngleB[a,SpinorUndottedMV[$up][#[[1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>"1"]]]*
+		Product[AngleB[SpinorUndottedMV[$up][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorUndottedMV[$up][#[[i+1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i+1]]]],{i,2,Length@#-1,2}]*
+		Product[SquareB[SpinorDottedMV[$down][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorDottedMV[$down][#[[i+1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i+1]]]],{i,1,Length@#-1,2}]*
 		AngleB[SpinorUndottedMV[$up][#[[-1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[Length[#]]]],b]
 	)&@
 		(Part[#,1]&/@list)
 
 OpenTrace[SquareSquareChain[a_,list_List,b_],n_Integer]:=
 	(
-		SquareB[a,SpinorDottedMV[$down][#[[1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>"1"]]]
-		Product[SquareB[SpinorDottedMV[$down][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorDottedMV[$down][#[[i+1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i+1]]]],{i,2,Length@#-1,2}]
-		Product[AngleB[SpinorUndottedMV[$up][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorUndottedMV[$up][#[[i+1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i+1]]]],{i,1,Length@#-1,2}]
+		SquareB[a,SpinorDottedMV[$down][#[[1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>"1"]]]*
+		Product[SquareB[SpinorDottedMV[$down][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorDottedMV[$down][#[[i+1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i+1]]]],{i,2,Length@#-1,2}]*
+		Product[AngleB[SpinorUndottedMV[$up][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorUndottedMV[$up][#[[i+1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i+1]]]],{i,1,Length@#-1,2}]*
 		SquareB[SpinorDottedMV[$down][#[[-1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[Length[#]]]],b]
 	)&@
 		(Part[#,1]&/@list)
 		
 OpenTrace[AngleSquareChain[a_,list_List,b_],n_Integer]:=
 	(
-		AngleB[a,SpinorUndottedMV[$up][#[[1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>"1"]]]
-		Product[SquareB[SpinorDottedMV[$down][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorDottedMV[$down][#[[i+1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i+1]]]],{i,1,Length@#-1,2}]
-		Product[AngleB[SpinorUndottedMV[$up][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorUndottedMV[$up][#[[i+1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i+1]]]],{i,2,Length@#-1,2}]
+		AngleB[a,SpinorUndottedMV[$up][#[[1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>"1"]]]*
+		Product[SquareB[SpinorDottedMV[$down][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorDottedMV[$down][#[[i+1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i+1]]]],{i,1,Length@#-1,2}]*
+		Product[AngleB[SpinorUndottedMV[$up][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorUndottedMV[$up][#[[i+1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i+1]]]],{i,2,Length@#-1,2}]*
 		SquareB[SpinorDottedMV[$down][#[[-1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[Length[#]]]],b]
 	)&@
 		(Part[#,1]&/@list)
 
 OpenTrace[TraceChain[list_List],n_Integer]:=
 	(
-		Product[AngleB[SpinorUndottedMV[$up][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorUndottedMV[$up][#[[i+1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i+1]]]],{i,1,Length@#-1,2}]
+		Product[AngleB[SpinorUndottedMV[$up][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorUndottedMV[$up][#[[i+1]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i+1]]]],{i,1,Length@#-1,2}]*
 		Product[SquareB[SpinorDottedMV[$down][#[[i]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[i]]],SpinorDottedMV[$down][#[[Mod[i+1,Length[#]]]],ToExpression["\[CurlyCapitalUpsilon]"<>ToString[n]<>ToString[Mod[i+1,Length[#]]]]]],{i,2,Length@#,2}]
 	)&@
 		(Part[#,1]&/@list)
@@ -371,7 +371,7 @@ OpenTraces[exp_?(MatchQ[Head[#],AngleAngleChain|SquareSquareChain|AngleSquareCha
 OpenTraces[exp_]:=exp
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*UnboldSpinors*)
 
 
@@ -422,7 +422,7 @@ BoldSpinors[exp_,OptionsPattern[]]:=
 			SpinorDottedMV[pos_][lab_,J_]:=SpinorDottedMV[][lab];
 			SpinorUndottedMV[pos_][lab_,J_]:=SpinorUndottedMV[][lab]
 		];
-		localexp=localexp
+		localexp(*=localexp*)
 	]
 
 
