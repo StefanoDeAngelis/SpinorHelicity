@@ -29,6 +29,8 @@ DDerivative::usage = "..."
 CombinePolarisations::usage = "..."
 DecombinePolarisations::usage = "..."
 
+DecomposeFTraces::usage = "..."
+
 
 (* ::Section:: *)
 (*D-dimensional Functions*)
@@ -239,7 +241,7 @@ ToTrace[exp_] :=
 
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*From Scalar Products To Indices*)
 
 
@@ -395,7 +397,7 @@ ClearMasses[] :=
 
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*Fix scalar products*)
 
 
@@ -433,7 +435,7 @@ FixedScalarProducts[rules__?(MatchQ[Head[#],Rule]&)]:=
 	)
 
 
-(* ::Subsection:: *)
+(* ::Subsection::Closed:: *)
 (*DDerivative*)
 
 
@@ -444,7 +446,7 @@ FixedScalarProducts[rules__?(MatchQ[Head[#],Rule]&)]:=
 StripoffIndex[p_]:=p[[;;1]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*DDerivative*)
 
 
@@ -455,8 +457,47 @@ DDerivative[EpsilonPol[x_,a_],EpsilonPol[x_,b_]]:=Metric[a,b]
 DDerivative[sum_Plus,p_?(MatchQ[#,Momentum[_,_]|EpsilonPol[_,_]]&)]:=Plus@@(DDerivative[#,p]&/@List@@sum)
 DDerivative[Times[a_,b_],p_?(MatchQ[#,Momentum[_,_]|EpsilonPol[_,_]]&)]:=DDerivative[a,p]*Times[b]+a*DDerivative[b,p]
 DDerivative[Power[a_,b_],p_?(MatchQ[#,Momentum[_,_]|EpsilonPol[_,_]]&)]:=b*Power[a,b-1]*DDerivative[a,p]+Log[a]*Power[a,b]*DDerivative[b,p]
+DDerivative[Log[a_],p_?(MatchQ[#,Momentum[_,_]|EpsilonPol[_,_]]&)]:=1/a*DDerivative[a,p]
+DDerivative[Sin[a_],p_?(MatchQ[#,Momentum[_,_]|EpsilonPol[_,_]]&)]:=Cos[a]*DDerivative[a,p]
+DDerivative[Cos[a_],p_?(MatchQ[#,Momentum[_,_]|EpsilonPol[_,_]]&)]:=-Sin[a]*DDerivative[a,p]
 DDerivative[exp_, p_ ? (MatchQ[#, Momentum[_,_]  | EpsilonPol[_,_]]&)]:=0
 (*DDerivative[exp_,,p_?(!MatchQ[#,Momentum[_,_]|EpsilonPol[_,_]]&)] define an error message*)
+
+
+(* ::Subsection:: *)
+(*DecomposeFTraces*)
+
+
+DecomposeFTraces[exp_]:=(*function pasted from the notebook Stefano/gravity/leading_order/tree_decomposition.nb*)
+	Block[{FTrace,localexp=exp},
+
+		FTrace[{FieldStr[k1_],z__}]:=-FTrace[Momentum[k1],{z},EpsilonPol[k1]]+FTrace[EpsilonPol[k1],{z},Momentum[k1]];
+		
+		(*FTrace[{z__,FieldStr[k1_]}]:=FTrace[Momentum[k1],{z},EpsilonPol[k1]]-FTrace[EpsilonPol[k1],{z},Momentum[k1]];*)
+	
+		FTrace[x_,{FieldStr[k1_]},y_]:=DotProduct[x,Momentum[k1]]DotProduct[y,EpsilonPol[k1]]-DotProduct[x,EpsilonPol[k1]]DotProduct[y,Momentum[k1]];
+		FTrace[x_,{FieldStr[k1_],z__},y_]:=DotProduct[x,Momentum[k1]] FTrace[EpsilonPol[k1],{z},y]-DotProduct[x,EpsilonPol[k1]]FTrace[Momentum[k1],{z},y];
+		(*FTrace[x_,{z__,FieldStr[k1_]},y_]:=-FTrace[x,{z},EpsilonPol[k1]]DotProduct[Momentum[k1],y]+FTrace[x,{z},Momentum[k1]]DotProduct[EpsilonPol[k1],y];*)
+		
+		Return[localexp]
+	]
+	
+DecomposeFTraces[exp_,list_]:=
+	Block[{FTrace,localexp=exp},
+
+		FTrace[{z1__,FieldStr[k1_]}]/;MemberQ[list,k1]:=-FTrace[Momentum[k1],{z1},EpsilonPol[k1]]+FTrace[EpsilonPol[k1],{z1},Momentum[k1]];
+		FTrace[{FieldStr[k1_],z2__}]/;MemberQ[list,k1]:=-FTrace[Momentum[k1],{z2},EpsilonPol[k1]]+FTrace[EpsilonPol[k1],{z2},Momentum[k1]];
+		FTrace[{z1___,FieldStr[k1_],z2___}]/;MemberQ[list,k1]:=-FTrace[Momentum[k1],{z2,z1},EpsilonPol[k1]]+FTrace[EpsilonPol[k1],{z2,z1},Momentum[k1]];
+	
+		(*FTrace[x_,{FieldStr[k1_]},y_]/;MemberQ[list,k1]:=DotProduct[x,Momentum[k1]]DotProduct[y,EpsilonPol[k1]]-DotProduct[x,EpsilonPol[k1]]DotProduct[y,Momentum[k1]];*)
+		(*FTrace[x_,{FieldStr[k1_],z___},y_]/;MemberQ[list,k1]:=DotProduct[x,Momentum[k1]] FTrace[EpsilonPol[k1],{z},y]-DotProduct[x,EpsilonPol[k1]]FTrace[Momentum[k1],{z},y];
+		FTrace[x_,{z___,FieldStr[k1_]},y_]/;MemberQ[list,k1]:=-FTrace[x,{z},EpsilonPol[k1]]DotProduct[Momentum[k1],y]+FTrace[x,{z},Momentum[k1]]DotProduct[EpsilonPol[k1],y];*)
+		FTrace[x_,{z1___,FieldStr[k_],z2___},y_]/;MemberQ[list,k]:=FTrace[EpsilonPol[k], {z2}, y]*FTrace[x, {z1}, Momentum[k]] - FTrace[x, {z1}, EpsilonPol[k]]*FTrace[Momentum[k], {z2}, y];
+		
+		FTrace[x_,{},y_]:=DotProduct[x,y];
+		
+		Return[localexp]
+	]
 
 
 (* ::Subsection:: *)

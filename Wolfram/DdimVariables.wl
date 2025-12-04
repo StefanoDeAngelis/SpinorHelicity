@@ -93,7 +93,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "metric" -> MetricBox["\[SelectionPlaceholder]","\[Placeholder]"]]]
 
 
-(* ::Subsubsection:: *)
+(* ::Subsubsection::Closed:: *)
 (*Properties*)
 
 
@@ -470,7 +470,7 @@ SetOptions[EvaluationNotebook[],
     InputAliases -> DeleteDuplicates @ Append[InputAliases /. Options[EvaluationNotebook[], InputAliases], "dotee" -> DotProduct[EpsilonPol["\[SelectionPlaceholder]"],EpsilonPol["\[Placeholder]"]]]]
 
 
-(* ::Subsubsection::Closed:: *)
+(* ::Subsubsection:: *)
 (*Properties*)
 
 
@@ -480,8 +480,13 @@ DotProduct /: MakeBoxes[DotProduct[a_,b_], StandardForm | TraditionalForm] := Do
 
 DotProduct[a_,b_] /; \[Not]OrderedQ[{a,b}] := DotProduct[b,a]
 
+DotProduct[a_] := DotProduct[a,a]
+
 DotProduct[a_Plus,b_]:=DotProduct[#,b]&/@a
 DotProduct[a_,b_Plus]:=DotProduct[a,#]&/@b
+
+DotProduct[Times[a_Plus,b_,x___],c_]:=DotProduct[Expand[a*b*x],c]
+DotProduct[a_,Times[b_Plus,c_,x___]]:=DotProduct[a,Expand[b*c*x]]
 
 (*DotProduct[Momentum[a_],Momentum[a_]] := Mass[a]^2*)
 
